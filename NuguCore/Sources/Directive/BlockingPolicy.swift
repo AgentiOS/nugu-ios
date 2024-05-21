@@ -43,4 +43,5 @@ public extension Set where Element == BlockingPolicy.Medium {
     static let audioOnly: Set<Element> = [.audio]
     static let visual: Set<Element> = [.visual, .any]
     static let visualOnly: Set<Element> = [.visual]
+    static let audioAndVisual: Set<Element> = [.audio, .visual]
 }
