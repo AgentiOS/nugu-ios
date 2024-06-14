@@ -59,6 +59,7 @@ public final class ASRAgent: ASRAgentProtocol {
     // Observers
     private let notificationCenter = NotificationCenter.default
     private var playSyncObserver: Any?
+    private var directiveReceiveObserver: Any?
     
     public var options: ASROptions = ASROptions(endPointing: .client)
     private(set) public var asrState: ASRState = .idle {
@@ -104,7 +105,6 @@ public final class ASRAgent: ASRAgentProtocol {
             case .partial:
                 break
             case .complete:
-                asrState = .idle
                 expectSpeech = nil
             case .cancel:
                 asrState = .idle
@@ -214,7 +214,8 @@ public final class ASRAgent: ASRAgentProtocol {
         dialogAttributeStore: DialogAttributeStoreable,
         sessionManager: SessionManageable,
         playSyncManager: PlaySyncManageable,
-        interactionControlManager: InteractionControlManageable
+        interactionControlManager: InteractionControlManageable,
+        streamDataRouter: StreamDataRoutable
     ) {
         self.focusManager = focusManager
         self.upstreamDataSender = upstreamDataSender
@@ -226,6 +227,7 @@ public final class ASRAgent: ASRAgentProtocol {
         self.interactionControlManager = interactionControlManager
         
         addPlaySyncObserver(playSyncManager)
+        addStreamDataObserver(streamDataRouter)
         contextManager.addProvider(contextInfoProvider)
         focusManager.add(channelDelegate: self)
         directiveSequencer.add(directiveHandleInfos: handleableDirectiveInfos.asDictionary)
@@ -234,6 +236,10 @@ public final class ASRAgent: ASRAgentProtocol {
     deinit {
         if let playSyncObserver = playSyncObserver {
             notificationCenter.removeObserver(playSyncObserver)
+        }
+        
+        if let directiveReceiveObserver = directiveReceiveObserver {
+            notificationCenter.removeObserver(directiveReceiveObserver)
         }
         
         contextManager.removeProvider(contextInfoProvider)
@@ -794,6 +800,29 @@ private extension ASRAgent {
                 guard notification.property == self.playSyncProperty, self.expectSpeech?.messageId == notification.messageId else { return }
                 
                 self.stopRecognition()
+            }
+        }
+    }
+    
+    func addStreamDataObserver(_ streamDataRouter: StreamDataRoutable) {
+        directiveReceiveObserver = streamDataRouter.observe(NuguCoreNotification.StreamDataRoute.ReceivedDirectives.self, queue: nil) { [weak self] (notification) in
+            self?.asrDispatchQueue.async { [weak self] in
+                guard let self else { return }
+                guard let dialogRequestId = asrRequest?.eventIdentifier.dialogRequestId else { return }
+                let asyncState = notification.directives
+                    .compactMap { directive -> AsyncKey? in
+                        guard let asyncKey = directive.payloadDictionary?["asyncKey"] as? [String: AnyHashable] else { return nil }
+                        return try? JSONDecoder().decode(AsyncKey.self, from: asyncKey)
+                    }
+                    .filter { $0.eventDialogRequestId == dialogRequestId }
+                    .map(\.state)
+                    .first
+                
+                guard let asyncState = asyncState,
+                      asyncState == .end else {
+                    return
+                }
+                asrState = .idle
             }
         }
     }
