@@ -646,7 +646,7 @@ private extension ASRAgent {
                               let asyncKey = try? JSONDecoder().decode(AsyncKey.self, from: data) else {
                             if case .complete = asrResult {
                                 asrState = .idle
-                            } else {
+                            } else if part.header.dialogRequestId == asrRequest.eventIdentifier.dialogRequestId {
                                 pendingStateDialogRequestId = part.header.dialogRequestId
                             }
                             return
