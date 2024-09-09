@@ -148,4 +148,8 @@ extension Downstream.Directive {
     public var payloadDictionary: [String: AnyHashable]? {
         try? JSONSerialization.jsonObject(with: payload, options: []) as? [String: AnyHashable]
     }
+    
+    public var asyncKey: AsyncKey? {
+        nil
+    }
 }
