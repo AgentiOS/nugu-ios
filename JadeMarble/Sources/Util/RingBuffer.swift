@@ -41,7 +41,7 @@ struct RingBuffer<T> {
     }
 
     mutating func dequeue() -> T? {
-        guard head != tail else { return nil }
+        guard head != tail, head < capacity else { return nil }
 
         let element = buffer[head]
         head = (head + 1) % capacity
@@ -58,6 +58,10 @@ struct RingBuffer<T> {
 
     func peek() -> T? {
         return buffer[head]
+    }
+    
+    mutating func moveHead(to index: Int) {
+        head = index % capacity
     }
 
     #if DEBUG

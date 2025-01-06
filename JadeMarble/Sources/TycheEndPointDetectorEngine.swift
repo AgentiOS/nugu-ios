@@ -31,6 +31,7 @@ public class TycheEndPointDetectorEngine {
     private var speexEncoder: SpeexEncoder?
     public weak var delegate: TycheEndPointDetectorEngineDelegate?
     private var ringBuffer: RingBuffer<Data>?
+    private var startOffset: Int32?
     
     #if DEBUG
     private var inputData = Data()
@@ -135,6 +136,12 @@ public class TycheEndPointDetectorEngine {
             
             ringBuffer?.enqueue(inputData)
             
+            let startPoint = epdClientGetSpeechStartPoint(engineHandle, .zero) / 100
+            if startPoint != -1, self.startOffset != startPoint {
+                self.startOffset = startPoint
+                ringBuffer?.moveHead(to: Int(startPoint))
+            }
+            
             if state == .start, let dequeuedInputData = ringBuffer?.dequeue() {
                 do {
                     let speexData = try speexEncoder.encode(data: dequeuedInputData)
@@ -207,6 +214,7 @@ public class TycheEndPointDetectorEngine {
         speexEncoder = nil
         state = .idle
         ringBuffer = nil
+        startOffset = nil
     }
     
     private func initDetectorEngine(
@@ -227,7 +235,7 @@ public class TycheEndPointDetectorEngine {
         
         let speexEncoder = SpeexEncoder(sampleRate: Int(sampleRate), inputType: EndPointDetectorConst.inputStreamType)
         self.speexEncoder = speexEncoder
-        ringBuffer = RingBuffer(capacity: 1024)
+        ringBuffer = RingBuffer(capacity: 2 * 10 * 10) // 20s
         guard let epdHandle = epdClientChannelSTART(
             modelPath,
             myint(sampleRate),
