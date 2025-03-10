@@ -28,6 +28,7 @@ struct AudioPlayerPlayPayload {
     let cacheKey: String?
     let audioItem: AudioItem
     let playServiceId: String
+    let service: [String: AnyHashable]?
     
     enum SourceType: String, Decodable {
         case url = "URL"
@@ -78,6 +79,7 @@ extension AudioPlayerPlayPayload: Decodable {
         case cacheKey
         case audioItem
         case playServiceId
+        case service
     }
     
     init(from decoder: Decoder) throws {
@@ -92,6 +94,7 @@ extension AudioPlayerPlayPayload: Decodable {
         cacheKey = try? container.decodeIfPresent(String.self, forKey: .cacheKey)
         audioItem = try container.decode(AudioItem.self, forKey: .audioItem)
         playServiceId = try container.decode(String.self, forKey: .playServiceId)
+        service = try? container.decodeIfPresent([String: AnyHashable].self, forKey: .service)
     }
 }
 
