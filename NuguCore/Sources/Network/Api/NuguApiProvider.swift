@@ -25,7 +25,7 @@ import NuguUtils
 import RxSwift
 
 class NuguApiProvider: NSObject {
-    private let requestTimeout: TimeInterval
+    private var requestTimeout: TimeInterval
     private var candidateResourceServers: [String]?
     private var disposeBag = DisposeBag()
     private let processorQueue = DispatchQueue(label: "com.skt.Romaine.nugu_api_provider.processor")
