@@ -203,6 +203,10 @@ class NuguApiProvider: NSObject {
         
         return partObserver.compactMap { $0 }
     }
+    
+    func setRequestTimeout(_ timeInterval: TimeInterval) {
+        requestTimeout = timeInterval
+    }
 }
 
 // MARK: - APIs

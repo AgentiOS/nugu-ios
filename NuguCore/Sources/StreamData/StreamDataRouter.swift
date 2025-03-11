@@ -41,6 +41,10 @@ public class StreamDataRouter: StreamDataRoutable {
         serverInitiatedDirectiveReceiver = ServerSentEventReceiver(apiProvider: nuguApiProvider)
         self.directiveSequencer = directiveSequencer
     }
+    
+    public func setRequestTimeout(_ timeoutInterval: TimeInterval) {
+        nuguApiProvider.setRequestTimeout(timeoutInterval)
+    }
 }
 
 // MARK: - APIs for Server side event
