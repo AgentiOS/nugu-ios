@@ -305,6 +305,13 @@ public extension NuguClient {
             return self
         }
         
+        @discardableResult public func setRequestTimeout(_ timeInterval: TimeInterval) -> Self {
+            if let streamDataRouter = streamDataRouter as? StreamDataRouter {
+                streamDataRouter.setRequestTimeout(timeInterval)
+            }
+            return self
+        }
+        
         /**
          Instantiate the NuguClient.
          

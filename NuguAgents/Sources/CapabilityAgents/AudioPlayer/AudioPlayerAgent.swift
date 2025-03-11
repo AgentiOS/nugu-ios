@@ -27,7 +27,7 @@ import RxSwift
 
 public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     // CapabilityAgentable
-    public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .audioPlayer, version: "1.10")
+    public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .audioPlayer, version: "1.11")
     private let playSyncProperty = PlaySyncProperty(layerType: .media, contextType: .sound)
     
     // AudioPlayerAgentProtocol
@@ -86,6 +86,7 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     )
     private var currentPlaylist: AudioPlayerPlaylist?
     private var enableAssetCaching: Bool = true
+    private var currentPlayService: [String: AnyHashable]?
     
     // Observers
     private let notificationCenter = NotificationCenter.default
@@ -818,7 +819,8 @@ private extension AudioPlayerAgent {
             // This is a mandatory in Play kit.
             offsetInMilliseconds: player.offset.truncatedMilliSeconds,
             playServiceId: player.payload.playServiceId,
-            referrerDialogRequestId: referrerDialogRequestId
+            referrerDialogRequestId: referrerDialogRequestId,
+            service: player.payload.service
         ).rx
     }
     
@@ -903,15 +905,11 @@ private extension AudioPlayerAgent {
                 return Disposables.create()
             }
             
-            do {
-                let badgeButtonEvent = BadgeButtonEvent(
-                    typeInfo: typeInfo,
-                    playServiceId: player.payload.playServiceId
-                )
-                observer(.success(badgeButtonEvent))
-            } catch {
-                observer(.failure(NuguAgentError.invalidState))
-            }
+            let badgeButtonEvent = BadgeButtonEvent(
+                typeInfo: typeInfo,
+                playServiceId: player.payload.playServiceId
+            )
+            observer(.success(badgeButtonEvent))
             
             return Disposables.create()
         }.subscribe(on: audioPlayerScheduler)
