@@ -31,6 +31,7 @@ extension AudioPlayerAgent {
         let offsetInMilliseconds: Int
         let playServiceId: String
         let referrerDialogRequestId: String?
+        let service: [String: AnyHashable]?
         
         enum TypeInfo {
             case playbackStarted
@@ -89,6 +90,8 @@ extension AudioPlayerAgent.PlayEvent: Eventable {
             ]
         case .playbackStopped(let reason):
             eventPayload["reason"] = reason
+        case .nextCommandIssued, .previousCommandIssued, .playbackFinished, .progressReportIntervalElapsed:
+            eventPayload["service"] = service
         default:
             break
         }
