@@ -314,17 +314,20 @@ private extension MediaPlayer {
     }
     
     func processPendingRequests() {
-        var requestsCompleted = Set<AVAssetResourceLoadingRequest>()
-        for loadingRequest in pendingRequests {
-            fillInContentInformation(contentInformationRequest: loadingRequest.contentInformationRequest)
-            let didRespondCompletely = respondWithDataForRequest(dataRequest: loadingRequest.dataRequest!)
-            if didRespondCompletely {
-                requestsCompleted.insert(loadingRequest)
-                loadingRequest.finishLoading()
-            }
-        }
         pendingRequestQueue.sync { [weak self] in
             guard let self else { return }
+            
+            var requestsCompleted = Set<AVAssetResourceLoadingRequest>()
+          
+            for loadingRequest in self.pendingRequests {
+                self.fillInContentInformation(contentInformationRequest: loadingRequest.contentInformationRequest)
+                let didRespondCompletely = self.respondWithDataForRequest(dataRequest: loadingRequest.dataRequest!)
+                if didRespondCompletely {
+                    requestsCompleted.insert(loadingRequest)
+                    loadingRequest.finishLoading()
+                }
+            }
+           
             self.pendingRequests.subtract(requestsCompleted)
         }
     }
