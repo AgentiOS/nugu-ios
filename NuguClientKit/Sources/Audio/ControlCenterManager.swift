@@ -31,6 +31,7 @@ public final class ControlCenterManager {
         }
     }
     private let remoteCommandCenter = MPRemoteCommandCenter.shared()
+    public weak var delegate: ControlCenterManagerDelegate?
     
     private let nowPlayInfoCenterQueue = DispatchQueue(label: "com.sktelecom.romaine.now_playing_info_update_queue")
     
@@ -234,6 +235,7 @@ private extension ControlCenterManager {
         if playCommandTarget == nil {
             playCommandTarget = remoteCommandCenter
                 .playCommand.addTarget { [weak self] _ -> MPRemoteCommandHandlerStatus in
+                    self?.delegate?.controlCenterManagerWillPlay()
                     self?.audioPlayerAgent.play()
                     return .success
             }
