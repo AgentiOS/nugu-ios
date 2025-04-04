@@ -1,9 +1,9 @@
 //
-//  shared.xcconfig
-//  nugu-ios
+//  ControlCenterManagerDelegate.swift
+//  NuguClientKit
 //
-//  Created by jaycesub on 10/24/24.
-//  Copyright © 2024 SK Telecom Co., Ltd. All rights reserved.
+//  Created by jaycesub on 2021/02/09.
+//  Copyright © 2025 SK Telecom Co., Ltd. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@
 //  limitations under the License.
 //
 
-// Configuration settings file format documentation can be found at:
-// https://help.apple.com/xcode/#/dev745c5c974
+import Foundation
 
-VERSION = 1.10.11
+public protocol ControlCenterManagerDelegate: AnyObject {
+    func controlCenterManagerWillPlay()
+}

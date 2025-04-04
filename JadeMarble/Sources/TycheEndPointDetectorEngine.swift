@@ -53,7 +53,7 @@ public class TycheEndPointDetectorEngine {
     public init() {}
     
     deinit {
-        internalStop()
+        releaseEPDIfNeeeded()
     }
     
     public func start(
@@ -204,12 +204,15 @@ public class TycheEndPointDetectorEngine {
         }
     }
     
+    private func releaseEPDIfNeeeded() {
+        guard engineHandle != nil else { return }
+        epdClientChannelRELEASE(engineHandle)
+        engineHandle = nil
+        log.debug("engine is destroyed")
+    }
+    
     private func internalStop() {
-        if engineHandle != nil {
-            epdClientChannelRELEASE(engineHandle)
-            engineHandle = nil
-            log.debug("engine is destroyed")
-        }
+        releaseEPDIfNeeeded()
         
         speexEncoder = nil
         state = .idle
