@@ -563,6 +563,8 @@ private extension ASRAgent {
                     self.asrResult = .partial(text: item.result ?? "", header: directive.header)
                 case .complete:
                     self.asrResult = .complete(text: item.result ?? "", header: directive.header, requestType: item.requestType)
+                case .none where item.asrErrorCode != nil:
+                    self.asrResult = .error(ASRError.recognizeFailed, header: directive.header)
                 case .none:
                     self.asrResult = .none(header: directive.header)
                 case .error:
