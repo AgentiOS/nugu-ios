@@ -25,6 +25,7 @@ struct ASRNotifyResult {
     let result: String?
     let state: State
     let requestType: String?
+    let asrErrorCode: Int?
     
     enum State: String, Decodable {
         /// 사용자 발화의 일부분
@@ -52,6 +53,7 @@ extension ASRNotifyResult: Decodable {
         case result
         case state
         case requestType
+        case asrErrorCode
     }
     
     public init(from decoder: Decoder) throws {
@@ -60,5 +62,6 @@ extension ASRNotifyResult: Decodable {
         result = try? container.decode(String.self, forKey: .result)
         state = try container.decode(State.self, forKey: .state)
         requestType = try? container.decode(String.self, forKey: .requestType)
+        asrErrorCode = try? container.decode(Int.self, forKey: .asrErrorCode)
     }
 }
