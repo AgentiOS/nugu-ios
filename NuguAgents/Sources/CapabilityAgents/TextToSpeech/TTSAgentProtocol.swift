@@ -45,6 +45,8 @@ public protocol TTSAgentProtocol: CapabilityAgentable, TypedNotifyable {
     /// This function retrieves the speed of the current `OpusPlayer`
     var speed: Float { get set }
     
+    var gain: Float { get set }
+    
     /// The cancellation policy when playback is implicitly stopped.
     var directiveCancelPolicy: DirectiveCancelPolicy { get set }
     

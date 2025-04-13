@@ -282,9 +282,11 @@ private extension AudioSessionManager {
     func setAudioCategoryIfNeeded(_ category: AVAudioSession.Category, options: AVAudioSession.CategoryOptions) throws {
         guard delegate?.allowsUpdateAudioSessionActivation == true else { return }
         
+        // Client에서 playAndRecord + voiceChat 을 사용하려고 할 때
+        let mode: AVAudioSession.Mode = category == .playAndRecord ? AVAudioSession.sharedInstance().mode : .default
         try AVAudioSession.sharedInstance().setCategory(
             category,
-            mode: .default,
+            mode: mode,
             options: options
         )
         
