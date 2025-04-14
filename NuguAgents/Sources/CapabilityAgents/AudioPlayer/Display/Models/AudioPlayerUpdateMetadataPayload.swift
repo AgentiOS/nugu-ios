@@ -1,6 +1,6 @@
 //
 //  AudioPlayerUpdateMetadataPayload.swift
-//  NuguUIKit
+//  NuguAgents
 //
 //  Created by jin kim on 2020/03/06.
 //  Copyright © 2020 SK Telecom Co., Ltd. All rights reserved.

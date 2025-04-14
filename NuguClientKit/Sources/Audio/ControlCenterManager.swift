@@ -22,7 +22,6 @@ import Foundation
 import MediaPlayer
 
 import NuguAgents
-import NuguUIKit
 
 public final class ControlCenterManager {
     private var nowPlayingInfo: [String: Any] = [:] {
@@ -85,7 +84,7 @@ public extension ControlCenterManager {
             // Set MPMediaItemArtwork if imageUrl exists
             self.mediaArtWorkDownloadDataTask?.cancel()
             if let imageUrl = parsedPayload.imageUrl, let artWorkUrl = URL(string: imageUrl) {
-                self.mediaArtWorkDownloadDataTask = ImageDataLoader.shared.load(imageUrl: artWorkUrl) { [weak self] (result) in
+                self.mediaArtWorkDownloadDataTask = load(imageUrl: artWorkUrl) { [weak self] (result) in
                     guard case let .success(imageData) = result,
                           let artWorkImage = UIImage(data: imageData),
                           var nowPlayingInfoForUpdate = self?.nowPlayingInfo else {
@@ -220,6 +219,36 @@ private extension ControlCenterManager {
             remove()
             return nil
         }
+    }
+    
+    func load(
+        imageUrl: URL,
+        completionQueue: DispatchQueue = DispatchQueue.main,
+        completion: @escaping ((Result<Data, Error>) -> Void)
+        ) -> URLSessionDataTask {
+        let task = URLSession.shared.dataTask(with: imageUrl) { (data, _, error) in
+            let result: Result<Data, Error>
+            defer {
+                completionQueue.async {
+                    completion(result)
+                }
+            }
+            
+            if let error = error {
+                result = .failure(error)
+                return
+            }
+            
+            guard let imageData = data else {
+                result = .failure(NSError())
+                return
+            }
+            
+            result = .success(imageData)
+        }
+        
+        task.resume()
+        return task
     }
 }
 

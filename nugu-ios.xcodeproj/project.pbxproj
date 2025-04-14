@@ -13,10 +13,8 @@
 		0600C3582570E4CF0071AEF3 /* ConfigurationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0600C3552570E4CF0071AEF3 /* ConfigurationStore.swift */; };
 		060DDE88256E67DC006B4F59 /* NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060DDE87256E67DC006B4F59 /* NetworkReachabilityManager.swift */; };
 		060FAAFA256668E000F01EE3 /* NuguLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */; };
-		060FAB382566693600F01EE3 /* NuguUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */; };
 		062CD13B2574D1FC00A04B22 /* ConfigurationMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062CD13A2574D1FC00A04B22 /* ConfigurationMetadata.swift */; };
 		06301FBC256B853D00FD97E8 /* TextAgentRedirectPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06301FBB256B853D00FD97E8 /* TextAgentRedirectPayload.swift */; };
-		063A84722565027D0032F13B /* VoiceChromePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063A84712565027D0032F13B /* VoiceChromePresenter.swift */; };
 		064FD86B25A2CEB800DE6454 /* UtilityAgentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064FD86A25A2CEB800DE6454 /* UtilityAgentProtocol.swift */; };
 		064FD88125A2CEE000DE6454 /* UtilityAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064FD88025A2CEE000DE6454 /* UtilityAgent.swift */; };
 		064FD88D25A2DC8B00DE6454 /* UtilityBlockItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064FD88C25A2DC8B00DE6454 /* UtilityBlockItem.swift */; };
@@ -25,8 +23,6 @@
 		066C9D2E25553EF0000C7800 /* MicInputProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF3192375707000C9A177 /* MicInputProvider.swift */; };
 		066C9D2F25553EF0000C7800 /* MicInputError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E35D79924623B53003289A2 /* MicInputError.swift */; };
 		066C9D3025553EF0000C7800 /* MicInputConst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF31A2375707000C9A177 /* MicInputConst.swift */; };
-		067CB451256E4DAA00D57AF0 /* VoiceChromePresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067CB450256E4DAA00D57AF0 /* VoiceChromePresenterDelegate.swift */; };
-		067CB473256E582200D57AF0 /* VoiceChromePresenterError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067CB472256E582200D57AF0 /* VoiceChromePresenterError.swift */; };
 		068C3C512581F80800EC0BEE /* MicInputProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C3C502581F80800EC0BEE /* MicInputProviderDelegate.swift */; };
 		06AC3D362592EA7900A71716 /* NuguServiceWebView+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC3D332592EA7800A71716 /* NuguServiceWebView+Convenience.swift */; };
 		06AC3D372592EA7900A71716 /* NuguOAuthClient+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AC3D342592EA7800A71716 /* NuguOAuthClient+Convenience.swift */; };
@@ -34,7 +30,6 @@
 		06CDA2A9257DC597009DA31B /* NuguServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7525AC84249AFE8E006800A3 /* NuguServiceKit.framework */; };
 		06CF28EB2547DE5700CEC3EC /* ContextManager+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CF28EA2547DE5700CEC3EC /* ContextManager+Rx.swift */; };
 		06CF293C254816C700CEC3EC /* UpstreamEventSendable+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CF293B254816C700CEC3EC /* UpstreamEventSendable+Convenience.swift */; };
-		06CFF675254276EF00A11CB4 /* Bundle+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CFF674254276EF00A11CB4 /* Bundle+Convenience.swift */; };
 		06EBF6BF254A5BAC00B01DC6 /* NuguAgentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EBF6BE254A5BAC00B01DC6 /* NuguAgentError.swift */; };
 		06FE563F253E9EC0002FAC9B /* TTSPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FE563E253E9EC0002FAC9B /* TTSPlayer.swift */; };
 		06FE5685253EDB64002FAC9B /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FE5684253EDB64002FAC9B /* AudioPlayer.swift */; };
@@ -116,7 +111,6 @@
 		1FFBC8D825EDFC3C00DFD0D6 /* AlertsAgentContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFBC8D725EDFC3C00DFD0D6 /* AlertsAgentContext.swift */; };
 		1FFFF00E23753F3100C9A177 /* NuguClientKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FFFF00C23753F3100C9A177 /* NuguClientKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FFFF01B23753F7D00C9A177 /* NuguLoginKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FFFF01923753F7D00C9A177 /* NuguLoginKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1FFFF02823753F8A00C9A177 /* NuguUIKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FFFF02623753F8A00C9A177 /* NuguUIKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FFFF03523753FA200C9A177 /* JadeMarble.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FFFF03323753FA200C9A177 /* JadeMarble.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FFFF04223753FB200C9A177 /* KeenSense.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FFFF04023753FB200C9A177 /* KeenSense.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FFFF3802375707000C9A177 /* MediaAVPlayerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF3102375707000C9A177 /* MediaAVPlayerItem.swift */; };
@@ -139,17 +133,9 @@
 		1FFFF41F23757DF800C9A177 /* ShiftingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF41A23757DF800C9A177 /* ShiftingData.swift */; };
 		1FFFF45323757F6600C9A177 /* NuguLoginKitError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF44523757F6600C9A177 /* NuguLoginKitError.swift */; };
 		1FFFF45423757F6600C9A177 /* AuthorizationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF44723757F6600C9A177 /* AuthorizationInfo.swift */; };
-		1FFFF474237580F500C9A177 /* NuguVoiceChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF45C237580F500C9A177 /* NuguVoiceChrome.swift */; };
-		1FFFF475237580F500C9A177 /* NuguVoiceChrome.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FFFF45D237580F500C9A177 /* NuguVoiceChrome.xib */; };
-		1FFFF476237580F500C9A177 /* NuguButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF45F237580F500C9A177 /* NuguButton.swift */; };
-		1FFFF478237580F500C9A177 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FFFF462237580F500C9A177 /* Assets.xcassets */; };
-		1FFFF4DF237672F100C9A177 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4A5237672F100C9A177 /* SettingViewController.swift */; };
-		1FFFF4E0237672F100C9A177 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4A6237672F100C9A177 /* IntroViewController.swift */; };
 		1FFFF4E1237672F100C9A177 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4A7237672F100C9A177 /* MainViewController.swift */; };
-		1FFFF4E2237672F100C9A177 /* GuideWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4A8237672F100C9A177 /* GuideWebViewController.swift */; };
 		1FFFF4F9237672F100C9A177 /* SampleAppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4C6237672F100C9A177 /* SampleAppError.swift */; };
 		1FFFF4FA237672F100C9A177 /* SampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4C7237672F100C9A177 /* SampleApp.swift */; };
-		1FFFF4FC237672F100C9A177 /* NuguCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4CA237672F100C9A177 /* NuguCentralManager.swift */; };
 		1FFFF4FE237672F100C9A177 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4CC237672F100C9A177 /* AppDelegate.swift */; };
 		1FFFF500237672F100C9A177 /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4CF237672F100C9A177 /* UserDefaultsWrapper.swift */; };
 		1FFFF501237672F100C9A177 /* UserDefaults+Standard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4D0237672F100C9A177 /* UserDefaults+Standard.swift */; };
@@ -158,8 +144,6 @@
 		1FFFF504237672F100C9A177 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FFFF4D5237672F100C9A177 /* Main.storyboard */; };
 		1FFFF516237674DF00C9A177 /* NuguLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */; };
 		1FFFF517237674DF00C9A177 /* NuguLoginKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1FFFF51A237674DF00C9A177 /* NuguUIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */; };
-		1FFFF51B237674DF00C9A177 /* NuguUIKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		680EF96124B30DA4003DE266 /* MediaPlayerAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680EF96024B30DA4003DE266 /* MediaPlayerAgent.swift */; };
 		680EF96324B30DAE003DE266 /* MediaPlayerAgentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680EF96224B30DAE003DE266 /* MediaPlayerAgentProtocol.swift */; };
 		680EF96524B30DBB003DE266 /* MediaPlayerAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680EF96424B30DBB003DE266 /* MediaPlayerAgentDelegate.swift */; };
@@ -377,18 +361,11 @@
 		73F0B71925CABC800025FC6A /* NuguClient+Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F0B71825CABC800025FC6A /* NuguClient+Builder.swift */; };
 		73F0B72F25CAC4930025FC6A /* AudioSessionManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F0B72E25CAC4930025FC6A /* AudioSessionManagerDelegate.swift */; };
 		73F0DF882A78A13000533B1B /* NuguClientConst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F0DF872A78A13000533B1B /* NuguClientConst.swift */; };
-		75021E4E259431B50014537C /* DisplayWebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75021E4D259431B50014537C /* DisplayWebViewPresenter.swift */; };
-		75021E64259436930014537C /* DisplayWebViewPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75021E63259436930014537C /* DisplayWebViewPresenterDelegate.swift */; };
-		75021EAC25945E670014537C /* AudioDisplayViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75021EAB25945E670014537C /* AudioDisplayViewPresenter.swift */; };
-		75021EB825945E7B0014537C /* AudioDisplayViewPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75021EB725945E7B0014537C /* AudioDisplayViewPresenterDelegate.swift */; };
 		75047D9A24F4DE8F007BBF22 /* responsefail.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75047D9724F4DE8E007BBF22 /* responsefail.wav */; };
 		75047D9B24F4DE8F007BBF22 /* listening_end.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75047D9824F4DE8F007BBF22 /* listening_end.wav */; };
 		75047D9C24F4DE8F007BBF22 /* listening_start.wav in Resources */ = {isa = PBXBuildFile; fileRef = 75047D9924F4DE8F007BBF22 /* listening_start.wav */; };
 		75082BC4243AC5B20027D76D /* MediaCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75082BC3243AC5B20027D76D /* MediaCacheManager.swift */; };
 		75082BC6243AC85E0027D76D /* FileManager+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75082BC5243AC85E0027D76D /* FileManager+Convenience.swift */; };
-		7522203C244F627E00192D88 /* NuguChipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7522203B244F627E00192D88 /* NuguChipsView.swift */; };
-		7522203E244F632800192D88 /* NuguChipsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7522203D244F632800192D88 /* NuguChipsView.xib */; };
-		7522205D244FFD1C00192D88 /* NuguToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7522205C244FFD1C00192D88 /* NuguToast.swift */; };
 		7525AC88249AFE8E006800A3 /* NuguServiceKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 7525AC86249AFE8E006800A3 /* NuguServiceKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7525AC8B249AFE8E006800A3 /* NuguServiceKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7525AC84249AFE8E006800A3 /* NuguServiceKit.framework */; };
 		7525AC8C249AFE8E006800A3 /* NuguServiceKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7525AC84249AFE8E006800A3 /* NuguServiceKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -397,43 +374,10 @@
 		7525AC99249B01C8006800A3 /* NuguServiceWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7525AC98249B01C8006800A3 /* NuguServiceWebView.swift */; };
 		7525ACB3249C3F36006800A3 /* NuguServiceWebJavascriptDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7525ACB2249C3F36006800A3 /* NuguServiceWebJavascriptDelegate.swift */; };
 		7525ACB6249C4255006800A3 /* NuguServiceKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7525ACB5249C4255006800A3 /* NuguServiceKit.swift */; };
-		7525AD0824AD6054006800A3 /* NuguServiceWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7525AD0724AD6054006800A3 /* NuguServiceWebViewController.swift */; };
 		754C7DAF2640DF8B00123EBB /* NuguServiceCookieKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754C7DAE2640DF8B00123EBB /* NuguServiceCookieKey.swift */; };
 		754C7DB12640E64900123EBB /* NuguServiceCookieValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754C7DB02640E64900123EBB /* NuguServiceCookieValue.swift */; };
-		754C7DCB266086F700123EBB /* AudioDisplayViewTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754C7DCA266086F700123EBB /* AudioDisplayViewTheme.swift */; };
-		758E8DFF2570D5F500F12268 /* NuguDisplayWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758E8DFE2570D5F500F12268 /* NuguDisplayWebView.swift */; };
-		758E8E2925710C9C00F12268 /* NuguDisplayWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 758E8E2825710C9C00F12268 /* NuguDisplayWebView.xib */; };
-		75A46EE725725986004BB472 /* UIColor+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4C1237672F100C9A177 /* UIColor+Convenience.swift */; };
-		75A46EE825725986004BB472 /* Int+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4C2237672F100C9A177 /* Int+Convenience.swift */; };
-		75A46EE925725986004BB472 /* UILabel+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CE557246E731D00E68733 /* UILabel+Convenience.swift */; };
-		75A46F00257259AD004BB472 /* FullLyricsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75962AFC24762EDF0003B189 /* FullLyricsView.xib */; };
-		75A46F02257259AD004BB472 /* DisplayTitleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 752CE55E246E84EC00E68733 /* DisplayTitleView.xib */; };
-		75A46F03257259AD004BB472 /* AudioPlayer1View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75962AF42475EDB20003B189 /* AudioPlayer1View.xib */; };
-		75A46F04257259AD004BB472 /* AudioPlayerBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75962B0A24763E120003B189 /* AudioPlayerBarView.xib */; };
-		75A46F05257259AD004BB472 /* AudioDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7500490F24766B1500B73DD8 /* AudioDisplayView.swift */; };
-		75A46F08257259AD004BB472 /* DisplayIdleBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75032BB3246A32CD0077B824 /* DisplayIdleBar.xib */; };
-		75A46F09257259AD004BB472 /* AudioPlayerBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75962B0824763E010003B189 /* AudioPlayerBarView.swift */; };
-		75A46F0B257259AD004BB472 /* DisplayTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CE55A246E849900E68733 /* DisplayTitleView.swift */; };
-		75A46F0C257259AD004BB472 /* DisplayIdleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75032BB1246A32B60077B824 /* DisplayIdleBar.swift */; };
-		75A46F0D257259AD004BB472 /* AudioPlayer1View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75962AF22475ED930003B189 /* AudioPlayer1View.swift */; };
-		75A46F11257259AD004BB472 /* FullLyricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75962AFA24762ECB0003B189 /* FullLyricsView.swift */; };
-		75A46F1C257259DC004BB472 /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFFF4C4237672F100C9A177 /* ImageDataLoader.swift */; };
-		75A46F2825725A55004BB472 /* NuguUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A46F2725725A55004BB472 /* NuguUIKit.swift */; };
-		75A46F5C2572962E004BB472 /* AudioDisplayViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A46F5B2572962E004BB472 /* AudioDisplayViewDelegate.swift */; };
-		75A46F882572A09E004BB472 /* AudioPlayerBarViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A46F872572A09E004BB472 /* AudioPlayerBarViewDelegate.swift */; };
-		75AE7FFB245173BC00E20E8C /* NuguChipsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AE7FFA245173BC00E20E8C /* NuguChipsButton.swift */; };
 		75AEA7CE25AFE5DB009E1B5E /* AudioSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75AEA7CC25AFE5DB009E1B5E /* AudioSessionManager.swift */; };
-		75C61BB324C6DB8700265228 /* 05_processing.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BAC24C6DB8700265228 /* 05_processing.json */; };
-		75C61BB424C6DB8700265228 /* 04_active.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BAD24C6DB8700265228 /* 04_active.json */; };
-		75C61BB524C6DB8700265228 /* 01_intro.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BAE24C6DB8700265228 /* 01_intro.json */; };
-		75C61BB624C6DB8700265228 /* 06_transition.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BAF24C6DB8700265228 /* 06_transition.json */; };
-		75C61BB724C6DB8700265228 /* 07_speaking.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BB024C6DB8700265228 /* 07_speaking.json */; };
-		75C61BB824C6DB8700265228 /* 02_passive.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BB124C6DB8700265228 /* 02_passive.json */; };
-		75C61BB924C6DB8700265228 /* 03_transition.json in Resources */ = {isa = PBXBuildFile; fileRef = 75C61BB224C6DB8700265228 /* 03_transition.json */; };
 		75D069C4247F76CC000B5D1F /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D069C3247F76CC000B5D1F /* SettingTableViewCell.swift */; };
-		75E6238A25E883F000EAAE3C /* ASRBeepPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B06D1239E28DB00D739E9 /* ASRBeepPlayer.swift */; };
-		75E623D625E89EC800EAAE3C /* ASRBeepPlayerResourcesURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E623D525E89EC800EAAE3C /* ASRBeepPlayerResourcesURL.swift */; };
-		75E624D62603257200EAAE3C /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E624D52603257200EAAE3C /* MarqueeLabel.swift */; };
 		75E62622260B2AD100EAAE3C /* Container+Merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758E8E3425710D2D00F12268 /* Container+Merge.swift */; };
 		7E0713DB24FCD01C009314DA /* NuguUserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0713DA24FCD01C009314DA /* NuguUserDefault.swift */; };
 		7E0713DE24FCD02C009314DA /* UserDefaults+Nugu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E0713DD24FCD02C009314DA /* UserDefaults+Nugu.swift */; };
@@ -486,8 +430,6 @@
 		A135E663241F1925006F82E5 /* AudioPlayerAgent+SettingsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135E662241F1925006F82E5 /* AudioPlayerAgent+SettingsEvent.swift */; };
 		A135E66B241F39D9006F82E5 /* AudioPlayerAgent+LyricsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135E66A241F39D9006F82E5 /* AudioPlayerAgent+LyricsEvent.swift */; };
 		A135E6952428B6C8006F82E5 /* AudioPlayerAgent+RequestPlayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135E6942428B6C8006F82E5 /* AudioPlayerAgent+RequestPlayEvent.swift */; };
-		A1700419265F346F006A90E4 /* NuguThemeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1700418265F346F006A90E4 /* NuguThemeController.swift */; };
-		A170041B265F37FC006A90E4 /* NuguTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A170041A265F37FC006A90E4 /* NuguTheme.swift */; };
 		A1700421266779A0006A90E4 /* UserInterfaceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1700420266779A0006A90E4 /* UserInterfaceUtil.swift */; };
 		A17B065E2394D22800D739E9 /* device_GW_error_002.wav in Resources */ = {isa = PBXBuildFile; fileRef = A17B06572394D22700D739E9 /* device_GW_error_002.wav */; };
 		A17B065F2394D22800D739E9 /* device_GW_error_001.wav in Resources */ = {isa = PBXBuildFile; fileRef = A17B06582394D22700D739E9 /* device_GW_error_001.wav */; };
@@ -496,10 +438,7 @@
 		A17B06622394D22800D739E9 /* device_GW_error_004.wav in Resources */ = {isa = PBXBuildFile; fileRef = A17B065B2394D22700D739E9 /* device_GW_error_004.wav */; };
 		A17B06642394D22800D739E9 /* device_GW_error_006.wav in Resources */ = {isa = PBXBuildFile; fileRef = A17B065D2394D22800D739E9 /* device_GW_error_006.wav */; };
 		A17B06D4239E28EB00D739E9 /* LocalTTSAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B06D3239E28EB00D739E9 /* LocalTTSAgent.swift */; };
-		A19EC86025761228003E53A9 /* SafeAreaUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19EC83D2575F8C1003E53A9 /* SafeAreaUtil.swift */; };
 		A19EC87625761343003E53A9 /* WeakScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F1A7D724B451F00023B6C9 /* WeakScriptMessageHandler.swift */; };
-		A19EC9FE2578CEA5003E53A9 /* NuguAgents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73152F9A23E0405900F843C3 /* NuguAgents.framework */; };
-		A19ECA022578CEA5003E53A9 /* NuguUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7314DF47255E3EA2004882BB /* NuguUtils.framework */; };
 		A19ECA1A2578CED3003E53A9 /* NuguUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7314DF47255E3EA2004882BB /* NuguUtils.framework */; };
 		E604803D2D2B3F29004933F2 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E604803C2D2B3F29004933F2 /* RingBuffer.swift */; };
 		E62A15F82BFAB5D600C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15F72BFAB5D600C336FA /* NattyLog */; };
@@ -511,7 +450,6 @@
 		E62A16052BFAB68A00C336FA /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16042BFAB68A00C336FA /* RxSwift */; };
 		E62A16072BFAB69E00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16062BFAB69E00C336FA /* NattyLog */; };
 		E62A16092BFAB6AA00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16082BFAB6AA00C336FA /* NattyLog */; };
-		E62A160B2BFAB6BB00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A160A2BFAB6BB00C336FA /* NattyLog */; };
 		E63952A228BEF16700DC158C /* TextInputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63952A128BEF16700DC158C /* TextInputSource.swift */; };
 		E649867C2833681A001AD733 /* AudioPlayerSettingsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64986772833681A001AD733 /* AudioPlayerSettingsTemplate.swift */; };
 		E649867D2833681A001AD733 /* AudioPlayerUpdateMetadataPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64986782833681A001AD733 /* AudioPlayerUpdateMetadataPayload.swift */; };
@@ -521,13 +459,10 @@
 		E649868228336BD8001AD733 /* TextAgentExpectTyping.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868128336BD8001AD733 /* TextAgentExpectTyping.swift */; };
 		E649868428336C9E001AD733 /* DisplayHistoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868328336C9E001AD733 /* DisplayHistoryControl.swift */; };
 		E649868628336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */; };
-		E649868828336E8D001AD733 /* AudioDisplayViewPresenterOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868728336E8D001AD733 /* AudioDisplayViewPresenterOptions.swift */; };
 		E649868A28337649001AD733 /* ControlCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868928337649001AD733 /* ControlCenterManager.swift */; };
 		E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17312BFAB8BF00AD26F0 /* RxSwift */; };
-		E69C17342BFAB9AB00AD26F0 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17332BFAB9AB00AD26F0 /* Lottie */; };
 		E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFD2BFAB7D80061C704 /* NattyLog */; };
 		E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFF2BFAB7D80061C704 /* RxSwift */; };
-		E69D1E022BFAB7D80061C704 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1E012BFAB7D80061C704 /* Lottie */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
 		E6BE047E2A0BA1BD00AE29E3 /* ImageAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */; };
 		E6BFB95C2C0698CB007AA282 /* Publishers+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */; };
@@ -569,13 +504,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1FFFF01623753F7D00C9A177;
 			remoteInfo = NuguLoginKit;
-		};
-		060FAB3A2566693600F01EE3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3D9C428722745894000A6585 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1FFFF02323753F8A00C9A177;
-			remoteInfo = NuguUIKit;
 		};
 		06CDA2AB257DC597009DA31B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -632,13 +560,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1FFFF01623753F7D00C9A177;
 			remoteInfo = NuguLoginKit;
-		};
-		1FFFF51C237674DF00C9A177 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3D9C428722745894000A6585 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1FFFF02323753F8A00C9A177;
-			remoteInfo = NuguUIKit;
 		};
 		7314DF4C255E3EA2004882BB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -766,20 +687,6 @@
 			remoteGlobalIDString = 7525AC83249AFE8E006800A3;
 			remoteInfo = NuguServiceKit;
 		};
-		A19ECA002578CEA5003E53A9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3D9C428722745894000A6585 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 73152F9923E0405900F843C3;
-			remoteInfo = NuguAgents;
-		};
-		A19ECA042578CEA5003E53A9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3D9C428722745894000A6585 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7314DF46255E3EA2004882BB;
-			remoteInfo = NuguUtils;
-		};
 		A19ECA1C2578CED3003E53A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3D9C428722745894000A6585 /* Project object */;
@@ -805,7 +712,6 @@
 				1F1008F32379247800D90FEE /* JadeMarble.framework in Embed Frameworks */,
 				73BF06E226A0208700112473 /* NuguObjcUtils.framework in Embed Frameworks */,
 				7525AC8C249AFE8E006800A3 /* NuguServiceKit.framework in Embed Frameworks */,
-				1FFFF51B237674DF00C9A177 /* NuguUIKit.framework in Embed Frameworks */,
 				1F1008F72379247800D90FEE /* NuguCore.framework in Embed Frameworks */,
 				7314DF4F255E3EA2004882BB /* NuguUtils.framework in Embed Frameworks */,
 				1FFFF517237674DF00C9A177 /* NuguLoginKit.framework in Embed Frameworks */,
@@ -822,21 +728,17 @@
 		060DDE87256E67DC006B4F59 /* NetworkReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityManager.swift; sourceTree = "<group>"; };
 		062CD13A2574D1FC00A04B22 /* ConfigurationMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationMetadata.swift; sourceTree = "<group>"; };
 		06301FBB256B853D00FD97E8 /* TextAgentRedirectPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAgentRedirectPayload.swift; sourceTree = "<group>"; };
-		063A84712565027D0032F13B /* VoiceChromePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChromePresenter.swift; sourceTree = "<group>"; };
 		064FD86A25A2CEB800DE6454 /* UtilityAgentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAgentProtocol.swift; sourceTree = "<group>"; };
 		064FD88025A2CEE000DE6454 /* UtilityAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAgent.swift; sourceTree = "<group>"; };
 		064FD88C25A2DC8B00DE6454 /* UtilityBlockItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityBlockItem.swift; sourceTree = "<group>"; };
 		065DF8BC25637D51009CF99E /* Attachable+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attachable+Convenience.swift"; sourceTree = "<group>"; };
 		065DF8C725637D57009CF99E /* Attachable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attachable.swift; sourceTree = "<group>"; };
-		067CB450256E4DAA00D57AF0 /* VoiceChromePresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChromePresenterDelegate.swift; sourceTree = "<group>"; };
-		067CB472256E582200D57AF0 /* VoiceChromePresenterError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChromePresenterError.swift; sourceTree = "<group>"; };
 		068C3C502581F80800EC0BEE /* MicInputProviderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicInputProviderDelegate.swift; sourceTree = "<group>"; };
 		06AC3D332592EA7800A71716 /* NuguServiceWebView+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NuguServiceWebView+Convenience.swift"; sourceTree = "<group>"; };
 		06AC3D342592EA7800A71716 /* NuguOAuthClient+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NuguOAuthClient+Convenience.swift"; sourceTree = "<group>"; };
 		06AC3D352592EA7800A71716 /* AuthorizationInfo+Scope.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthorizationInfo+Scope.swift"; sourceTree = "<group>"; };
 		06CF28EA2547DE5700CEC3EC /* ContextManager+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContextManager+Rx.swift"; sourceTree = "<group>"; };
 		06CF293B254816C700CEC3EC /* UpstreamEventSendable+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UpstreamEventSendable+Convenience.swift"; sourceTree = "<group>"; };
-		06CFF674254276EF00A11CB4 /* Bundle+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Convenience.swift"; sourceTree = "<group>"; };
 		06EBF6BE254A5BAC00B01DC6 /* NuguAgentError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguAgentError.swift; sourceTree = "<group>"; };
 		06FE563E253E9EC0002FAC9B /* TTSPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSPlayer.swift; sourceTree = "<group>"; };
 		06FE5684253EDB64002FAC9B /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
@@ -923,9 +825,6 @@
 		1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NuguLoginKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FFFF01923753F7D00C9A177 /* NuguLoginKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NuguLoginKit.h; sourceTree = "<group>"; };
 		1FFFF01A23753F7D00C9A177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NuguUIKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FFFF02623753F8A00C9A177 /* NuguUIKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NuguUIKit.h; sourceTree = "<group>"; };
-		1FFFF02723753F8A00C9A177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FFFF03123753FA200C9A177 /* JadeMarble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JadeMarble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FFFF03323753FA200C9A177 /* JadeMarble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JadeMarble.h; sourceTree = "<group>"; };
 		1FFFF03423753FA200C9A177 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -988,21 +887,10 @@
 		1FFFF41A23757DF800C9A177 /* ShiftingData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShiftingData.swift; sourceTree = "<group>"; };
 		1FFFF44523757F6600C9A177 /* NuguLoginKitError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguLoginKitError.swift; sourceTree = "<group>"; };
 		1FFFF44723757F6600C9A177 /* AuthorizationInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationInfo.swift; sourceTree = "<group>"; };
-		1FFFF45C237580F500C9A177 /* NuguVoiceChrome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguVoiceChrome.swift; sourceTree = "<group>"; };
-		1FFFF45D237580F500C9A177 /* NuguVoiceChrome.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NuguVoiceChrome.xib; sourceTree = "<group>"; };
-		1FFFF45F237580F500C9A177 /* NuguButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguButton.swift; sourceTree = "<group>"; };
-		1FFFF462237580F500C9A177 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1FFFF48D237671F500C9A177 /* SampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FFFF4A5237672F100C9A177 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
-		1FFFF4A6237672F100C9A177 /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		1FFFF4A7237672F100C9A177 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		1FFFF4A8237672F100C9A177 /* GuideWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GuideWebViewController.swift; sourceTree = "<group>"; };
-		1FFFF4C1237672F100C9A177 /* UIColor+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Convenience.swift"; sourceTree = "<group>"; };
-		1FFFF4C2237672F100C9A177 /* Int+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Convenience.swift"; sourceTree = "<group>"; };
-		1FFFF4C4237672F100C9A177 /* ImageDataLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
 		1FFFF4C6237672F100C9A177 /* SampleAppError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleAppError.swift; sourceTree = "<group>"; };
 		1FFFF4C7237672F100C9A177 /* SampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleApp.swift; sourceTree = "<group>"; };
-		1FFFF4CA237672F100C9A177 /* NuguCentralManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguCentralManager.swift; sourceTree = "<group>"; };
 		1FFFF4CC237672F100C9A177 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1FFFF4CF237672F100C9A177 /* UserDefaultsWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsWrapper.swift; sourceTree = "<group>"; };
 		1FFFF4D0237672F100C9A177 /* UserDefaults+Standard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Standard.swift"; sourceTree = "<group>"; };
@@ -1184,22 +1072,12 @@
 		73F0B71825CABC800025FC6A /* NuguClient+Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NuguClient+Builder.swift"; sourceTree = "<group>"; };
 		73F0B72E25CAC4930025FC6A /* AudioSessionManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionManagerDelegate.swift; sourceTree = "<group>"; };
 		73F0DF872A78A13000533B1B /* NuguClientConst.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguClientConst.swift; sourceTree = "<group>"; };
-		7500490F24766B1500B73DD8 /* AudioDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDisplayView.swift; sourceTree = "<group>"; };
-		75021E4D259431B50014537C /* DisplayWebViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayWebViewPresenter.swift; sourceTree = "<group>"; };
-		75021E63259436930014537C /* DisplayWebViewPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayWebViewPresenterDelegate.swift; sourceTree = "<group>"; };
-		75021EAB25945E670014537C /* AudioDisplayViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDisplayViewPresenter.swift; sourceTree = "<group>"; };
-		75021EB725945E7B0014537C /* AudioDisplayViewPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDisplayViewPresenterDelegate.swift; sourceTree = "<group>"; };
-		75032BB1246A32B60077B824 /* DisplayIdleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayIdleBar.swift; sourceTree = "<group>"; };
-		75032BB3246A32CD0077B824 /* DisplayIdleBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisplayIdleBar.xib; sourceTree = "<group>"; };
 		75047D9724F4DE8E007BBF22 /* responsefail.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = responsefail.wav; sourceTree = "<group>"; };
 		75047D9824F4DE8F007BBF22 /* listening_end.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = listening_end.wav; sourceTree = "<group>"; };
 		75047D9924F4DE8F007BBF22 /* listening_start.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = listening_start.wav; sourceTree = "<group>"; };
 		75082BC3243AC5B20027D76D /* MediaCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCacheManager.swift; sourceTree = "<group>"; };
 		75082BC5243AC85E0027D76D /* FileManager+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Convenience.swift"; sourceTree = "<group>"; };
 		75082BC7243ACA280027D76D /* CryptoUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtil.swift; sourceTree = "<group>"; };
-		7522203B244F627E00192D88 /* NuguChipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguChipsView.swift; sourceTree = "<group>"; };
-		7522203D244F632800192D88 /* NuguChipsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NuguChipsView.xib; sourceTree = "<group>"; };
-		7522205C244FFD1C00192D88 /* NuguToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguToast.swift; sourceTree = "<group>"; };
 		7525AC84249AFE8E006800A3 /* NuguServiceKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NuguServiceKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7525AC86249AFE8E006800A3 /* NuguServiceKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NuguServiceKit.h; sourceTree = "<group>"; };
 		7525AC87249AFE8E006800A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1208,37 +1086,11 @@
 		7525AC98249B01C8006800A3 /* NuguServiceWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguServiceWebView.swift; sourceTree = "<group>"; };
 		7525ACB2249C3F36006800A3 /* NuguServiceWebJavascriptDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguServiceWebJavascriptDelegate.swift; sourceTree = "<group>"; };
 		7525ACB5249C4255006800A3 /* NuguServiceKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguServiceKit.swift; sourceTree = "<group>"; };
-		7525AD0724AD6054006800A3 /* NuguServiceWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguServiceWebViewController.swift; sourceTree = "<group>"; };
-		752CE557246E731D00E68733 /* UILabel+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Convenience.swift"; sourceTree = "<group>"; };
-		752CE55A246E849900E68733 /* DisplayTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayTitleView.swift; sourceTree = "<group>"; };
-		752CE55E246E84EC00E68733 /* DisplayTitleView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisplayTitleView.xib; sourceTree = "<group>"; };
 		754C7DAE2640DF8B00123EBB /* NuguServiceCookieKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguServiceCookieKey.swift; sourceTree = "<group>"; };
 		754C7DB02640E64900123EBB /* NuguServiceCookieValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguServiceCookieValue.swift; sourceTree = "<group>"; };
-		754C7DCA266086F700123EBB /* AudioDisplayViewTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDisplayViewTheme.swift; sourceTree = "<group>"; };
-		758E8DFE2570D5F500F12268 /* NuguDisplayWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguDisplayWebView.swift; sourceTree = "<group>"; };
-		758E8E2825710C9C00F12268 /* NuguDisplayWebView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NuguDisplayWebView.xib; sourceTree = "<group>"; };
 		758E8E3425710D2D00F12268 /* Container+Merge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Container+Merge.swift"; sourceTree = "<group>"; };
-		75962AF22475ED930003B189 /* AudioPlayer1View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer1View.swift; sourceTree = "<group>"; };
-		75962AF42475EDB20003B189 /* AudioPlayer1View.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AudioPlayer1View.xib; sourceTree = "<group>"; };
-		75962AFA24762ECB0003B189 /* FullLyricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullLyricsView.swift; sourceTree = "<group>"; };
-		75962AFC24762EDF0003B189 /* FullLyricsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FullLyricsView.xib; sourceTree = "<group>"; };
-		75962B0824763E010003B189 /* AudioPlayerBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerBarView.swift; sourceTree = "<group>"; };
-		75962B0A24763E120003B189 /* AudioPlayerBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AudioPlayerBarView.xib; sourceTree = "<group>"; };
-		75A46F2725725A55004BB472 /* NuguUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguUIKit.swift; sourceTree = "<group>"; };
-		75A46F5B2572962E004BB472 /* AudioDisplayViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDisplayViewDelegate.swift; sourceTree = "<group>"; };
-		75A46F872572A09E004BB472 /* AudioPlayerBarViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerBarViewDelegate.swift; sourceTree = "<group>"; };
-		75AE7FFA245173BC00E20E8C /* NuguChipsButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguChipsButton.swift; sourceTree = "<group>"; };
 		75AEA7CC25AFE5DB009E1B5E /* AudioSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioSessionManager.swift; sourceTree = "<group>"; };
-		75C61BAC24C6DB8700265228 /* 05_processing.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 05_processing.json; sourceTree = "<group>"; };
-		75C61BAD24C6DB8700265228 /* 04_active.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 04_active.json; sourceTree = "<group>"; };
-		75C61BAE24C6DB8700265228 /* 01_intro.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 01_intro.json; sourceTree = "<group>"; };
-		75C61BAF24C6DB8700265228 /* 06_transition.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 06_transition.json; sourceTree = "<group>"; };
-		75C61BB024C6DB8700265228 /* 07_speaking.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 07_speaking.json; sourceTree = "<group>"; };
-		75C61BB124C6DB8700265228 /* 02_passive.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 02_passive.json; sourceTree = "<group>"; };
-		75C61BB224C6DB8700265228 /* 03_transition.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 03_transition.json; sourceTree = "<group>"; };
 		75D069C3247F76CC000B5D1F /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
-		75E623D525E89EC800EAAE3C /* ASRBeepPlayerResourcesURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRBeepPlayerResourcesURL.swift; sourceTree = "<group>"; };
-		75E624D52603257200EAAE3C /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
 		75F1A7D724B451F00023B6C9 /* WeakScriptMessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakScriptMessageHandler.swift; sourceTree = "<group>"; };
 		7E0713DA24FCD01C009314DA /* NuguUserDefault.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuguUserDefault.swift; sourceTree = "<group>"; };
 		7E0713DD24FCD02C009314DA /* UserDefaults+Nugu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Nugu.swift"; sourceTree = "<group>"; };
@@ -1291,8 +1143,6 @@
 		A135E662241F1925006F82E5 /* AudioPlayerAgent+SettingsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioPlayerAgent+SettingsEvent.swift"; sourceTree = "<group>"; };
 		A135E66A241F39D9006F82E5 /* AudioPlayerAgent+LyricsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioPlayerAgent+LyricsEvent.swift"; sourceTree = "<group>"; };
 		A135E6942428B6C8006F82E5 /* AudioPlayerAgent+RequestPlayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioPlayerAgent+RequestPlayEvent.swift"; sourceTree = "<group>"; };
-		A1700418265F346F006A90E4 /* NuguThemeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguThemeController.swift; sourceTree = "<group>"; };
-		A170041A265F37FC006A90E4 /* NuguTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguTheme.swift; sourceTree = "<group>"; };
 		A1700420266779A0006A90E4 /* UserInterfaceUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInterfaceUtil.swift; sourceTree = "<group>"; };
 		A17B06572394D22700D739E9 /* device_GW_error_002.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_002.wav; sourceTree = "<group>"; };
 		A17B06582394D22700D739E9 /* device_GW_error_001.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_001.wav; sourceTree = "<group>"; };
@@ -1300,9 +1150,7 @@
 		A17B065A2394D22700D739E9 /* device_GW_error_003.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_003.wav; sourceTree = "<group>"; };
 		A17B065B2394D22700D739E9 /* device_GW_error_004.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_004.wav; sourceTree = "<group>"; };
 		A17B065D2394D22800D739E9 /* device_GW_error_006.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_006.wav; sourceTree = "<group>"; };
-		A17B06D1239E28DB00D739E9 /* ASRBeepPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASRBeepPlayer.swift; sourceTree = "<group>"; };
 		A17B06D3239E28EB00D739E9 /* LocalTTSAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTTSAgent.swift; sourceTree = "<group>"; };
-		A19EC83D2575F8C1003E53A9 /* SafeAreaUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaUtil.swift; sourceTree = "<group>"; };
 		E604803C2D2B3F29004933F2 /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
 		E626A0372C0FDD94009C4E63 /* AsyncKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncKey.swift; sourceTree = "<group>"; };
 		E63952A128BEF16700DC158C /* TextInputSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInputSource.swift; sourceTree = "<group>"; };
@@ -1314,7 +1162,6 @@
 		E649868128336BD8001AD733 /* TextAgentExpectTyping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextAgentExpectTyping.swift; sourceTree = "<group>"; };
 		E649868328336C9E001AD733 /* DisplayHistoryControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayHistoryControl.swift; sourceTree = "<group>"; };
 		E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRedirectTriggerChildPayload.swift; sourceTree = "<group>"; };
-		E649868728336E8D001AD733 /* AudioDisplayViewPresenterOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioDisplayViewPresenterOptions.swift; sourceTree = "<group>"; };
 		E649868928337649001AD733 /* ControlCenterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlCenterManager.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
@@ -1366,7 +1213,6 @@
 				06CDA2A9257DC597009DA31B /* NuguServiceKit.framework in Frameworks */,
 				73152FED23E05D9700F843C3 /* NuguAgents.framework in Frameworks */,
 				060FAAFA256668E000F01EE3 /* NuguLoginKit.framework in Frameworks */,
-				060FAB382566693600F01EE3 /* NuguUIKit.framework in Frameworks */,
 				1F9C5B8223F664340086CC04 /* KeenSense.framework in Frameworks */,
 				1F1008E82379237F00D90FEE /* NuguCore.framework in Frameworks */,
 			);
@@ -1377,17 +1223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				732967F6256383AB0077C3C4 /* NuguUtils.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1FFFF02123753F8A00C9A177 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A19EC9FE2578CEA5003E53A9 /* NuguAgents.framework in Frameworks */,
-				E62A160B2BFAB6BB00C336FA /* NattyLog in Frameworks */,
-				A19ECA022578CEA5003E53A9 /* NuguUtils.framework in Frameworks */,
-				E69C17342BFAB9AB00AD26F0 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1422,11 +1257,9 @@
 				7525AC8B249AFE8E006800A3 /* NuguServiceKit.framework in Frameworks */,
 				731A0CEF26A584CF00569E47 /* TycheSDK.framework in Frameworks */,
 				73152FA123E0405900F843C3 /* NuguAgents.framework in Frameworks */,
-				1FFFF51A237674DF00C9A177 /* NuguUIKit.framework in Frameworks */,
 				1F1008CE2379221500D90FEE /* NuguClientKit.framework in Frameworks */,
 				1F1008F62379247800D90FEE /* NuguCore.framework in Frameworks */,
 				731A0D2A26A5935A00569E47 /* OpusSDK.framework in Frameworks */,
-				E69D1E022BFAB7D80061C704 /* Lottie in Frameworks */,
 				7314DF4E255E3EA2004882BB /* NuguUtils.framework in Frameworks */,
 				E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */,
 				73BF06E126A0208700112473 /* NuguObjcUtils.framework in Frameworks */,
@@ -1513,25 +1346,6 @@
 			path = Configuration;
 			sourceTree = "<group>";
 		};
-		063A8470256502700032F13B /* Presenter */ = {
-			isa = PBXGroup;
-			children = (
-				75E623D525E89EC800EAAE3C /* ASRBeepPlayerResourcesURL.swift */,
-				A17B06D1239E28DB00D739E9 /* ASRBeepPlayer.swift */,
-				063A84712565027D0032F13B /* VoiceChromePresenter.swift */,
-				067CB450256E4DAA00D57AF0 /* VoiceChromePresenterDelegate.swift */,
-				067CB472256E582200D57AF0 /* VoiceChromePresenterError.swift */,
-				75021E4D259431B50014537C /* DisplayWebViewPresenter.swift */,
-				75021E63259436930014537C /* DisplayWebViewPresenterDelegate.swift */,
-				75021EAB25945E670014537C /* AudioDisplayViewPresenter.swift */,
-				75021EB725945E7B0014537C /* AudioDisplayViewPresenterDelegate.swift */,
-				E649868728336E8D001AD733 /* AudioDisplayViewPresenterOptions.swift */,
-				A1700418265F346F006A90E4 /* NuguThemeController.swift */,
-				A170041A265F37FC006A90E4 /* NuguTheme.swift */,
-			);
-			path = Presenter;
-			sourceTree = "<group>";
-		};
 		064FD86925A2CE7800DE6454 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
@@ -1571,14 +1385,6 @@
 				F6D49D0E296BAE9600510498 /* AudioPlayerAgent+PlaylistEvent.swift */,
 			);
 			path = Event;
-			sourceTree = "<group>";
-		};
-		06CFF673254276D500A11CB4 /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				06CFF674254276EF00A11CB4 /* Bundle+Convenience.swift */,
-			);
-			path = Extension;
 			sourceTree = "<group>";
 		};
 		06EBF6BD254A5BAC00B01DC6 /* Common */ = {
@@ -1842,17 +1648,6 @@
 				1FFFF01A23753F7D00C9A177 /* Info.plist */,
 			);
 			path = NuguLoginKit;
-			sourceTree = "<group>";
-		};
-		1FFFF02523753F8A00C9A177 /* NuguUIKit */ = {
-			isa = PBXGroup;
-			children = (
-				1FFFF45A237580F500C9A177 /* Sources */,
-				1FFFF461237580F500C9A177 /* Resources */,
-				1FFFF02623753F8A00C9A177 /* NuguUIKit.h */,
-				1FFFF02723753F8A00C9A177 /* Info.plist */,
-			);
-			path = NuguUIKit;
 			sourceTree = "<group>";
 		};
 		1FFFF03223753FA200C9A177 /* JadeMarble */ = {
@@ -2179,7 +1974,6 @@
 			children = (
 				06AC3D322592EA7800A71716 /* Extensions */,
 				0600C3522570E4CF0071AEF3 /* Configuration */,
-				063A8470256502700032F13B /* Presenter */,
 				1FD1CFF623BDC0480000FB8C /* Business */,
 				1F2E803523966B1900569C59 /* Client */,
 				1FD4A98223A22302002EB56D /* Audio */,
@@ -2262,49 +2056,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		1FFFF45A237580F500C9A177 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				75A46F2725725A55004BB472 /* NuguUIKit.swift */,
-				75E624D42603250800EAAE3C /* MarqueeLabel */,
-				1FFFF4C0237672F100C9A177 /* Util */,
-				06CFF673254276D500A11CB4 /* Extension */,
-				75A46ED22572586F004BB472 /* AudioDisplayView */,
-				758E8DFD2570D5A300F12268 /* DisplayView */,
-				7522205B244FFCBD00192D88 /* Toast */,
-				7522203A244F622D00192D88 /* Chips */,
-				1FFFF45B237580F500C9A177 /* VoiceChrome */,
-				1FFFF45E237580F500C9A177 /* Button */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		1FFFF45B237580F500C9A177 /* VoiceChrome */ = {
-			isa = PBXGroup;
-			children = (
-				1FFFF45C237580F500C9A177 /* NuguVoiceChrome.swift */,
-				1FFFF45D237580F500C9A177 /* NuguVoiceChrome.xib */,
-			);
-			path = VoiceChrome;
-			sourceTree = "<group>";
-		};
-		1FFFF45E237580F500C9A177 /* Button */ = {
-			isa = PBXGroup;
-			children = (
-				1FFFF45F237580F500C9A177 /* NuguButton.swift */,
-			);
-			path = Button;
-			sourceTree = "<group>";
-		};
-		1FFFF461237580F500C9A177 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				7522202B244F0DE300192D88 /* animations */,
-				1FFFF462237580F500C9A177 /* Assets.xcassets */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		1FFFF48E237671F500C9A177 /* SampleApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -2333,11 +2084,7 @@
 			isa = PBXGroup;
 			children = (
 				1FFFF4A9237672F100C9A177 /* Views */,
-				1FFFF4A5237672F100C9A177 /* SettingViewController.swift */,
-				1FFFF4A6237672F100C9A177 /* IntroViewController.swift */,
-				7525AD0724AD6054006800A3 /* NuguServiceWebViewController.swift */,
 				1FFFF4A7237672F100C9A177 /* MainViewController.swift */,
-				1FFFF4A8237672F100C9A177 /* GuideWebViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2348,18 +2095,6 @@
 				75D069C3247F76CC000B5D1F /* SettingTableViewCell.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		1FFFF4C0237672F100C9A177 /* Util */ = {
-			isa = PBXGroup;
-			children = (
-				A19EC83D2575F8C1003E53A9 /* SafeAreaUtil.swift */,
-				1FFFF4C1237672F100C9A177 /* UIColor+Convenience.swift */,
-				1FFFF4C2237672F100C9A177 /* Int+Convenience.swift */,
-				752CE557246E731D00E68733 /* UILabel+Convenience.swift */,
-				1FFFF4C4237672F100C9A177 /* ImageDataLoader.swift */,
-			);
-			path = Util;
 			sourceTree = "<group>";
 		};
 		1FFFF4C5237672F100C9A177 /* Const */ = {
@@ -2374,7 +2109,6 @@
 		1FFFF4C8237672F100C9A177 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				1FFFF4CA237672F100C9A177 /* NuguCentralManager.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -2425,7 +2159,6 @@
 				1FFFEFFE23753F1800C9A177 /* NuguCore */,
 				1FFFF00B23753F3100C9A177 /* NuguClientKit */,
 				1FFFF01823753F7D00C9A177 /* NuguLoginKit */,
-				1FFFF02523753F8A00C9A177 /* NuguUIKit */,
 				7525AC85249AFE8E006800A3 /* NuguServiceKit */,
 				1FFFF03223753FA200C9A177 /* JadeMarble */,
 				1FFFF03F23753FB200C9A177 /* KeenSense */,
@@ -2451,7 +2184,6 @@
 				1FFFEFFD23753F1800C9A177 /* NuguCore.framework */,
 				1FFFF00A23753F3100C9A177 /* NuguClientKit.framework */,
 				1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */,
-				1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */,
 				1FFFF03123753FA200C9A177 /* JadeMarble.framework */,
 				1FFFF03E23753FB200C9A177 /* KeenSense.framework */,
 				1FFFF48D237671F500C9A177 /* SampleApp.app */,
@@ -2802,38 +2534,6 @@
 			path = SilverTray;
 			sourceTree = "<group>";
 		};
-		7522202B244F0DE300192D88 /* animations */ = {
-			isa = PBXGroup;
-			children = (
-				75C61BAE24C6DB8700265228 /* 01_intro.json */,
-				75C61BB124C6DB8700265228 /* 02_passive.json */,
-				75C61BB224C6DB8700265228 /* 03_transition.json */,
-				75C61BAD24C6DB8700265228 /* 04_active.json */,
-				75C61BAC24C6DB8700265228 /* 05_processing.json */,
-				75C61BAF24C6DB8700265228 /* 06_transition.json */,
-				75C61BB024C6DB8700265228 /* 07_speaking.json */,
-			);
-			path = animations;
-			sourceTree = "<group>";
-		};
-		7522203A244F622D00192D88 /* Chips */ = {
-			isa = PBXGroup;
-			children = (
-				75AE7FFA245173BC00E20E8C /* NuguChipsButton.swift */,
-				7522203B244F627E00192D88 /* NuguChipsView.swift */,
-				7522203D244F632800192D88 /* NuguChipsView.xib */,
-			);
-			path = Chips;
-			sourceTree = "<group>";
-		};
-		7522205B244FFCBD00192D88 /* Toast */ = {
-			isa = PBXGroup;
-			children = (
-				7522205C244FFD1C00192D88 /* NuguToast.swift */,
-			);
-			path = Toast;
-			sourceTree = "<group>";
-		};
 		7525AC85249AFE8E006800A3 /* NuguServiceKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -2856,52 +2556,6 @@
 				7525ACB5249C4255006800A3 /* NuguServiceKit.swift */,
 			);
 			path = Sources;
-			sourceTree = "<group>";
-		};
-		752CE559246E845E00E68733 /* ComponentViews */ = {
-			isa = PBXGroup;
-			children = (
-				75032BB1246A32B60077B824 /* DisplayIdleBar.swift */,
-				75032BB3246A32CD0077B824 /* DisplayIdleBar.xib */,
-				752CE55A246E849900E68733 /* DisplayTitleView.swift */,
-				752CE55E246E84EC00E68733 /* DisplayTitleView.xib */,
-				75962AFA24762ECB0003B189 /* FullLyricsView.swift */,
-				75962AFC24762EDF0003B189 /* FullLyricsView.xib */,
-				75962B0824763E010003B189 /* AudioPlayerBarView.swift */,
-				75962B0A24763E120003B189 /* AudioPlayerBarView.xib */,
-				75A46F872572A09E004BB472 /* AudioPlayerBarViewDelegate.swift */,
-			);
-			path = ComponentViews;
-			sourceTree = "<group>";
-		};
-		758E8DFD2570D5A300F12268 /* DisplayView */ = {
-			isa = PBXGroup;
-			children = (
-				758E8DFE2570D5F500F12268 /* NuguDisplayWebView.swift */,
-				758E8E2825710C9C00F12268 /* NuguDisplayWebView.xib */,
-			);
-			path = DisplayView;
-			sourceTree = "<group>";
-		};
-		75A46ED22572586F004BB472 /* AudioDisplayView */ = {
-			isa = PBXGroup;
-			children = (
-				754C7DCA266086F700123EBB /* AudioDisplayViewTheme.swift */,
-				7500490F24766B1500B73DD8 /* AudioDisplayView.swift */,
-				75A46F5B2572962E004BB472 /* AudioDisplayViewDelegate.swift */,
-				75962AF22475ED930003B189 /* AudioPlayer1View.swift */,
-				75962AF42475EDB20003B189 /* AudioPlayer1View.xib */,
-				752CE559246E845E00E68733 /* ComponentViews */,
-			);
-			path = AudioDisplayView;
-			sourceTree = "<group>";
-		};
-		75E624D42603250800EAAE3C /* MarqueeLabel */ = {
-			isa = PBXGroup;
-			children = (
-				75E624D52603257200EAAE3C /* MarqueeLabel.swift */,
-			);
-			path = MarqueeLabel;
 			sourceTree = "<group>";
 		};
 		7E0713DC24FCD02C009314DA /* Store */ = {
@@ -3149,14 +2803,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FFFF01F23753F8A00C9A177 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1FFFF02823753F8A00C9A177 /* NuguUIKit.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1FFFF02C23753FA200C9A177 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3288,7 +2934,6 @@
 				73152FF023E05D9700F843C3 /* PBXTargetDependency */,
 				1F9C5B8523F664340086CC04 /* PBXTargetDependency */,
 				060FAAFD256668E000F01EE3 /* PBXTargetDependency */,
-				060FAB3B2566693600F01EE3 /* PBXTargetDependency */,
 				0600C2C425709A450071AEF3 /* PBXTargetDependency */,
 				06CDA2AC257DC597009DA31B /* PBXTargetDependency */,
 			);
@@ -3319,31 +2964,6 @@
 			name = NuguLoginKit;
 			productName = NuguLoginKit;
 			productReference = 1FFFF01723753F7D00C9A177 /* NuguLoginKit.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		1FFFF02323753F8A00C9A177 /* NuguUIKit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1FFFF02923753F8A00C9A177 /* Build configuration list for PBXNativeTarget "NuguUIKit" */;
-			buildPhases = (
-				E60C8171285AB9610043D1F8 /* SwiftLint */,
-				1FFFF01F23753F8A00C9A177 /* Headers */,
-				1FFFF02023753F8A00C9A177 /* Sources */,
-				1FFFF02123753F8A00C9A177 /* Frameworks */,
-				1FFFF02223753F8A00C9A177 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A19ECA012578CEA5003E53A9 /* PBXTargetDependency */,
-				A19ECA052578CEA5003E53A9 /* PBXTargetDependency */,
-			);
-			name = NuguUIKit;
-			packageProductDependencies = (
-				E62A160A2BFAB6BB00C336FA /* NattyLog */,
-				E69C17332BFAB9AB00AD26F0 /* Lottie */,
-			);
-			productName = NuguUIKit;
-			productReference = 1FFFF02423753F8A00C9A177 /* NuguUIKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		1FFFF03023753FA200C9A177 /* JadeMarble */ = {
@@ -3409,7 +3029,6 @@
 				1FFFF511237674DF00C9A177 /* PBXTargetDependency */,
 				1FFFF515237674DF00C9A177 /* PBXTargetDependency */,
 				1FFFF519237674DF00C9A177 /* PBXTargetDependency */,
-				1FFFF51D237674DF00C9A177 /* PBXTargetDependency */,
 				1F1008F52379247800D90FEE /* PBXTargetDependency */,
 				1F1008F92379247800D90FEE /* PBXTargetDependency */,
 				73152FA023E0405900F843C3 /* PBXTargetDependency */,
@@ -3424,7 +3043,6 @@
 			packageProductDependencies = (
 				E69D1DFD2BFAB7D80061C704 /* NattyLog */,
 				E69D1DFF2BFAB7D80061C704 /* RxSwift */,
-				E69D1E012BFAB7D80061C704 /* Lottie */,
 			);
 			productName = SampleApp;
 			productReference = 1FFFF48D237671F500C9A177 /* SampleApp.app */;
@@ -3598,9 +3216,6 @@
 					1FFFF01623753F7D00C9A177 = {
 						CreatedOnToolsVersion = 11.0;
 					};
-					1FFFF02323753F8A00C9A177 = {
-						CreatedOnToolsVersion = 11.0;
-					};
 					1FFFF03023753FA200C9A177 = {
 						CreatedOnToolsVersion = 11.0;
 					};
@@ -3646,7 +3261,6 @@
 			packageReferences = (
 				E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */,
 				E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */,
-				E62A160C2BFAB6D200C336FA /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = 3D9C429122745894000A6585 /* Products */;
 			projectDirPath = "";
@@ -3656,7 +3270,6 @@
 				73152F9923E0405900F843C3 /* NuguAgents */,
 				1FFFF00923753F3100C9A177 /* NuguClientKit */,
 				1FFFF01623753F7D00C9A177 /* NuguLoginKit */,
-				1FFFF02323753F8A00C9A177 /* NuguUIKit */,
 				7525AC83249AFE8E006800A3 /* NuguServiceKit */,
 				731A0CE726A584CF00569E47 /* TycheSDK */,
 				1FFFF03023753FA200C9A177 /* JadeMarble */,
@@ -3691,29 +3304,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1FFFF02223753F8A00C9A177 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				75A46F04257259AD004BB472 /* AudioPlayerBarView.xib in Resources */,
-				75C61BB724C6DB8700265228 /* 07_speaking.json in Resources */,
-				75C61BB824C6DB8700265228 /* 02_passive.json in Resources */,
-				75A46F02257259AD004BB472 /* DisplayTitleView.xib in Resources */,
-				7522203E244F632800192D88 /* NuguChipsView.xib in Resources */,
-				75C61BB524C6DB8700265228 /* 01_intro.json in Resources */,
-				1FFFF478237580F500C9A177 /* Assets.xcassets in Resources */,
-				75C61BB924C6DB8700265228 /* 03_transition.json in Resources */,
-				75C61BB424C6DB8700265228 /* 04_active.json in Resources */,
-				75A46F03257259AD004BB472 /* AudioPlayer1View.xib in Resources */,
-				75C61BB624C6DB8700265228 /* 06_transition.json in Resources */,
-				1FFFF475237580F500C9A177 /* NuguVoiceChrome.xib in Resources */,
-				75A46F08257259AD004BB472 /* DisplayIdleBar.xib in Resources */,
-				758E8E2925710C9C00F12268 /* NuguDisplayWebView.xib in Resources */,
-				75C61BB324C6DB8700265228 /* 05_processing.json in Resources */,
-				75A46F00257259AD004BB472 /* FullLyricsView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3882,24 +3472,6 @@
 			shellScript = "\"$SRCROOT\"/scripts/swiftlint.sh\n";
 		};
 		E60C8170285AB9520043D1F8 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT\"/scripts/swiftlint.sh\n";
-		};
-		E60C8171285AB9610043D1F8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4147,14 +3719,11 @@
 			files = (
 				06AC3D362592EA7900A71716 /* NuguServiceWebView+Convenience.swift in Sources */,
 				06AC3D382592EA7900A71716 /* AuthorizationInfo+Scope.swift in Sources */,
-				75021EB825945E7B0014537C /* AudioDisplayViewPresenterDelegate.swift in Sources */,
 				1F2E803E2397A27300569C59 /* KeywordDetectorState.swift in Sources */,
-				A170041B265F37FC006A90E4 /* NuguTheme.swift in Sources */,
 				E649868A28337649001AD733 /* ControlCenterManager.swift in Sources */,
 				062CD13B2574D1FC00A04B22 /* ConfigurationMetadata.swift in Sources */,
 				73752BC725B8AFA6005C27DA /* NuguClientNotification.swift in Sources */,
 				75AEA7CE25AFE5DB009E1B5E /* AudioSessionManager.swift in Sources */,
-				75E6238A25E883F000EAAE3C /* ASRBeepPlayer.swift in Sources */,
 				7E341F8525AFFA1400734A45 /* SpeechRecognizerAggregatable.swift in Sources */,
 				7EF12B1423C41F5F0000E158 /* DialogState.swift in Sources */,
 				73E8F35326C3C31500B99140 /* SpeechRecognizerAggregatorState.swift in Sources */,
@@ -4162,25 +3731,17 @@
 				7E341F6F25AFFA0600734A45 /* AudioSessionManageable.swift in Sources */,
 				066C9D2F25553EF0000C7800 /* MicInputError.swift in Sources */,
 				E6D6F1AB2D9F667900FFD372 /* ControlCenterManagerDelegate.swift in Sources */,
-				75021E64259436930014537C /* DisplayWebViewPresenterDelegate.swift in Sources */,
 				0600C3572570E4CF0071AEF3 /* Configuration.swift in Sources */,
 				7EC282F325206A8C00E3F18A /* BackgroundFocusHolder.swift in Sources */,
-				A1700419265F346F006A90E4 /* NuguThemeController.swift in Sources */,
-				75021EAC25945E670014537C /* AudioDisplayViewPresenter.swift in Sources */,
 				1F2E80402397A2E500569C59 /* KeywordDetectorDelegate.swift in Sources */,
 				7386DA9923CF279C002BF24C /* NuguClientDelegate.swift in Sources */,
 				F7E224ED263957DE00E13F19 /* SpeechRecognizerAggregatorError.swift in Sources */,
 				73F0B72F25CAC4930025FC6A /* AudioSessionManagerDelegate.swift in Sources */,
-				063A84722565027D0032F13B /* VoiceChromePresenter.swift in Sources */,
 				1FD1CFF723BDC0660000FB8C /* DialogStateAggregator.swift in Sources */,
-				75021E4E259431B50014537C /* DisplayWebViewPresenter.swift in Sources */,
 				1FFFF3DE2375735E00C9A177 /* NuguClient.swift in Sources */,
-				E649868828336E8D001AD733 /* AudioDisplayViewPresenterOptions.swift in Sources */,
 				1FD4A97C23A0C2FD002EB56D /* NuguClientKit.swift in Sources */,
 				732B538225CD119A00126FE4 /* SpeechRecognizerAggregatorDelegate.swift in Sources */,
 				0600C3562570E4CF0071AEF3 /* ConfigurationError.swift in Sources */,
-				067CB451256E4DAA00D57AF0 /* VoiceChromePresenterDelegate.swift in Sources */,
-				067CB473256E582200D57AF0 /* VoiceChromePresenterError.swift in Sources */,
 				06AC3D372592EA7900A71716 /* NuguOAuthClient+Convenience.swift in Sources */,
 				066C9D3025553EF0000C7800 /* MicInputConst.swift in Sources */,
 				73F0B71925CABC800025FC6A /* NuguClient+Builder.swift in Sources */,
@@ -4189,7 +3750,6 @@
 				066C9D2E25553EF0000C7800 /* MicInputProvider.swift in Sources */,
 				73F0DF882A78A13000533B1B /* NuguClientConst.swift in Sources */,
 				7330CD84237A77D800FCD6E9 /* KeywordDetector.swift in Sources */,
-				75E623D625E89EC800EAAE3C /* ASRBeepPlayerResourcesURL.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4212,36 +3772,6 @@
 				1F5E4EF725A77B860089B6D7 /* ASAuthenticationOAuthHandler.swift in Sources */,
 				1FF3108525DB75940008E1A2 /* WebTheme.swift in Sources */,
 				1F5E4ED525A77B550089B6D7 /* OAuthHandler.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1FFFF02023753F8A00C9A177 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				75A46F09257259AD004BB472 /* AudioPlayerBarView.swift in Sources */,
-				75A46F05257259AD004BB472 /* AudioDisplayView.swift in Sources */,
-				7522205D244FFD1C00192D88 /* NuguToast.swift in Sources */,
-				75A46F1C257259DC004BB472 /* ImageDataLoader.swift in Sources */,
-				75A46EE825725986004BB472 /* Int+Convenience.swift in Sources */,
-				754C7DCB266086F700123EBB /* AudioDisplayViewTheme.swift in Sources */,
-				1FFFF476237580F500C9A177 /* NuguButton.swift in Sources */,
-				75A46F882572A09E004BB472 /* AudioPlayerBarViewDelegate.swift in Sources */,
-				75A46F11257259AD004BB472 /* FullLyricsView.swift in Sources */,
-				758E8DFF2570D5F500F12268 /* NuguDisplayWebView.swift in Sources */,
-				75A46EE925725986004BB472 /* UILabel+Convenience.swift in Sources */,
-				1FFFF474237580F500C9A177 /* NuguVoiceChrome.swift in Sources */,
-				A19EC86025761228003E53A9 /* SafeAreaUtil.swift in Sources */,
-				75A46F0D257259AD004BB472 /* AudioPlayer1View.swift in Sources */,
-				75A46F5C2572962E004BB472 /* AudioDisplayViewDelegate.swift in Sources */,
-				75A46F2825725A55004BB472 /* NuguUIKit.swift in Sources */,
-				06CFF675254276EF00A11CB4 /* Bundle+Convenience.swift in Sources */,
-				75AE7FFB245173BC00E20E8C /* NuguChipsButton.swift in Sources */,
-				75A46F0B257259AD004BB472 /* DisplayTitleView.swift in Sources */,
-				75A46F0C257259AD004BB472 /* DisplayIdleBar.swift in Sources */,
-				7522203C244F627E00192D88 /* NuguChipsView.swift in Sources */,
-				75E624D62603257200EAAE3C /* MarqueeLabel.swift in Sources */,
-				75A46EE725725986004BB472 /* UIColor+Convenience.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4275,14 +3805,9 @@
 				1FFFF500237672F100C9A177 /* UserDefaultsWrapper.swift in Sources */,
 				1FFFF4E1237672F100C9A177 /* MainViewController.swift in Sources */,
 				A17B06D4239E28EB00D739E9 /* LocalTTSAgent.swift in Sources */,
-				7525AD0824AD6054006800A3 /* NuguServiceWebViewController.swift in Sources */,
-				1FFFF4DF237672F100C9A177 /* SettingViewController.swift in Sources */,
 				1FFFF4FE237672F100C9A177 /* AppDelegate.swift in Sources */,
-				1FFFF4E0237672F100C9A177 /* IntroViewController.swift in Sources */,
 				1FFFF4F9237672F100C9A177 /* SampleAppError.swift in Sources */,
-				1FFFF4FC237672F100C9A177 /* NuguCentralManager.swift in Sources */,
 				1FFFF501237672F100C9A177 /* UserDefaults+Standard.swift in Sources */,
-				1FFFF4E2237672F100C9A177 /* GuideWebViewController.swift in Sources */,
 				1FFFF4FA237672F100C9A177 /* SampleApp.swift in Sources */,
 				75D069C4247F76CC000B5D1F /* SettingTableViewCell.swift in Sources */,
 			);
@@ -4587,11 +4112,6 @@
 			target = 1FFFF01623753F7D00C9A177 /* NuguLoginKit */;
 			targetProxy = 060FAAFC256668E000F01EE3 /* PBXContainerItemProxy */;
 		};
-		060FAB3B2566693600F01EE3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1FFFF02323753F8A00C9A177 /* NuguUIKit */;
-			targetProxy = 060FAB3A2566693600F01EE3 /* PBXContainerItemProxy */;
-		};
 		06CDA2AC257DC597009DA31B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7525AC83249AFE8E006800A3 /* NuguServiceKit */;
@@ -4631,11 +4151,6 @@
 			isa = PBXTargetDependency;
 			target = 1FFFF01623753F7D00C9A177 /* NuguLoginKit */;
 			targetProxy = 1FFFF518237674DF00C9A177 /* PBXContainerItemProxy */;
-		};
-		1FFFF51D237674DF00C9A177 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1FFFF02323753F8A00C9A177 /* NuguUIKit */;
-			targetProxy = 1FFFF51C237674DF00C9A177 /* PBXContainerItemProxy */;
 		};
 		7314DF4D255E3EA2004882BB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4726,16 +4241,6 @@
 			isa = PBXTargetDependency;
 			target = 7525AC83249AFE8E006800A3 /* NuguServiceKit */;
 			targetProxy = 7525AC89249AFE8E006800A3 /* PBXContainerItemProxy */;
-		};
-		A19ECA012578CEA5003E53A9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 73152F9923E0405900F843C3 /* NuguAgents */;
-			targetProxy = A19ECA002578CEA5003E53A9 /* PBXContainerItemProxy */;
-		};
-		A19ECA052578CEA5003E53A9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7314DF46255E3EA2004882BB /* NuguUtils */;
-			targetProxy = A19ECA042578CEA5003E53A9 /* PBXContainerItemProxy */;
 		};
 		A19ECA1D2578CED3003E53A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4946,66 +4451,6 @@
 			};
 			name = Release;
 		};
-		1FFFF02A23753F8A00C9A177 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Manual;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NuguUIKit/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = "${VERSION}";
-				OTHER_SWIFT_FLAGS = "-DDEPLOY_OTHER_PACKAGE_MANAGER";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.romaine.NuguUIKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		1FFFF02B23753F8A00C9A177 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Manual;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NuguUIKit/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MARKETING_VERSION = "${VERSION}";
-				OTHER_SWIFT_FLAGS = "-DDEPLOY_OTHER_PACKAGE_MANAGER";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.romaine.NuguUIKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		1FFFF03723753FA200C9A177 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5151,7 +4596,6 @@
 		1FFFF49F237671FE00C9A177 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "SampleApp/Supporting Files/SampleApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -5178,7 +4622,6 @@
 		1FFFF4A0237671FE00C9A177 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "SampleApp/Supporting Files/SampleApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -5759,15 +5202,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1FFFF02923753F8A00C9A177 /* Build configuration list for PBXNativeTarget "NuguUIKit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1FFFF02A23753F8A00C9A177 /* Debug */,
-				1FFFF02B23753F8A00C9A177 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		1FFFF03623753FA200C9A177 /* Build configuration list for PBXNativeTarget "JadeMarble" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -5886,14 +5320,6 @@
 				minimumVersion = 6.7.1;
 			};
 		};
-		E62A160C2BFAB6D200C336FA /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios";
-			requirement = {
-				kind = exactVersion;
-				version = 4.4.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -5942,20 +5368,10 @@
 			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
 			productName = NattyLog;
 		};
-		E62A160A2BFAB6BB00C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
 		E69C17312BFAB8BF00AD26F0 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
-		};
-		E69C17332BFAB9AB00AD26F0 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A160C2BFAB6D200C336FA /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
 		};
 		E69D1DFD2BFAB7D80061C704 /* NattyLog */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -5966,11 +5382,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
-		};
-		E69D1E012BFAB7D80061C704 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A160C2BFAB6D200C336FA /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

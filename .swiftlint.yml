@@ -4,7 +4,6 @@ included:
   - NuguCore/Sources
   - NuguClientKit/Sources
   - NuguLoginKit/Sources
-  - NuguUIKit/Sources
   - NuguServiceKit/Sources
   - JadeMarble/Sources
   - KeenSense/Sources
@@ -13,7 +12,6 @@ included:
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - NuguTests
-  - NuguUIKit/Sources/MarqueeLabel
 
 disabled_rules: # rule identifiers to exclude from running
   - trailing_whitespace

@@ -23,7 +23,6 @@ import Foundation
 import NuguCore
 import NuguUtils
 import NuguLoginKit
-import NuguUIKit
 
 /// The entry point of NUGU SDKs.
 ///
@@ -39,7 +38,6 @@ public class ConfigurationStore {
             guard let configuration = configuration else { return }
             
             NuguOAuthServerInfo.serverBaseUrl = configuration.authServerUrl
-            NuguDisplayWebView.deviceTypeCode = configuration.deviceTypeCode
             
             requestDiscovery(completion: nil)
         }
@@ -270,10 +268,6 @@ private extension ConfigurationStore {
                           completion?(.failure(ConfigurationError.invalidPayload))
                           return
                       }
-                
-                if let url = metaData.templateServerUri {
-                    NuguDisplayWebView.displayWebServerAddress = url
-                }
                 
                 self?.configurationMetadata = metaData
                 log.debug("configuration metadata: \(metaData)")
