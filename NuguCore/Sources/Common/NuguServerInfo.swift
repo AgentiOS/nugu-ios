@@ -22,8 +22,6 @@ import Foundation
 
 /// Manage the device-gateway server address.
 public enum NuguServerInfo {
-    /// The resource server address.
-    public static var l4SwitchAddress: String?
     /// The registry server address.
     public static var registryServerAddress: String?
 }
