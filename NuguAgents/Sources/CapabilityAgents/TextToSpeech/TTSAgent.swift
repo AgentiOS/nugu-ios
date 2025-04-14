@@ -60,6 +60,8 @@ public final class TTSAgent: TTSAgentProtocol {
         }
     }
     
+    public var gain: Float = .zero
+    
     // Private
     private let playSyncManager: PlaySyncManageable
     private let contextManager: ContextManageable
@@ -351,20 +353,21 @@ extension TTSAgent: MediaPlayerDelegate {
 private extension TTSAgent {
     func prefetchPlay() -> PrefetchDirective {
         return { [weak self] directive in
-            let player = try TTSPlayer(directive: directive)
-            player.speed = self?.speed ?? 1.0
+            guard let self else { return }
+            let player = try TTSPlayer(directive: directive, gain: gain)
+            player.speed = speed
             
-            self?.ttsDispatchQueue.sync { [weak self] in
-                guard let self = self else { return }
+            ttsDispatchQueue.sync { [weak self] in
+                guard let self else { return }
                 
                 log.debug(directive.header.messageId)
-                if self.prefetchPlayer?.stop(reason: .playAnother) == true ||
-                    self.currentPlayer?.stop(reason: .playAnother) == true {
-                    self.ttsState = .stopped
+                if prefetchPlayer?.stop(reason: .playAnother) == true ||
+                    currentPlayer?.stop(reason: .playAnother) == true {
+                    ttsState = .stopped
                 }
                 
-                self.prefetchPlayer = player
-                self.focusManager.prepareFocus(channelDelegate: self)
+                prefetchPlayer = player
+                focusManager.prepareFocus(channelDelegate: self)
             }
         }
     }

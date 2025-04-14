@@ -38,6 +38,7 @@ public class DataStreamPlayer {
     #if !os(watchOS)
     private let speedController = AVAudioUnitVarispeed()
     private let pitchController = AVAudioUnitTimePitch()
+    private let gainController: AVAudioUnitEQ
     #endif
     
     private let audioEnginePrepareTimeout: DispatchTimeInterval = .seconds(2)
@@ -158,7 +159,7 @@ public class DataStreamPlayer {
 
      - If you use the same format of decoder, You can use `init(decoder: AudioDecodable)`
      */
-    public init(decoder: AudioDecodable, audioFormat: AVAudioFormat) throws {
+    public init(decoder: AudioDecodable, audioFormat: AVAudioFormat, gain: Float = .zero) throws {
         // Identification
         var id: UInt = 0
         DataStreamPlayer._id.mutate {
@@ -172,6 +173,7 @@ public class DataStreamPlayer {
         self.id = id
         self.audioFormat = audioFormat
         self.decoder = decoder
+        self.gainController = AVAudioUnitEQ(gain: gain)
         
         if let error = UnifiedErrorCatcher.try ({
             // Attach nodes to the engine
@@ -203,7 +205,7 @@ public class DataStreamPlayer {
      
      AVAudioFormat follows decoder's format will be created automatically.
      */
-    public convenience init(decoder: AudioDecodable) throws {
+    public convenience init(decoder: AudioDecodable, gain: Float = .zero) throws {
         guard let audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32,
                                               sampleRate: decoder.sampleRate,
                                               channels: AVAudioChannelCount(decoder.channels),
@@ -211,7 +213,7 @@ public class DataStreamPlayer {
                                                 throw DataStreamPlayerError.unsupportedAudioFormat
         }
         
-        try self.init(decoder: decoder, audioFormat: audioFormat)
+        try self.init(decoder: decoder, audioFormat: audioFormat, gain: gain)
     }
     
     private func attachAudioNodes() {
@@ -219,6 +221,7 @@ public class DataStreamPlayer {
             #if !os(watchOS)
             Self.audioEngineManager.attach(speedController)
             Self.audioEngineManager.attach(pitchController)
+            Self.audioEngineManager.attach(gainController)
             #endif
             
             Self.audioEngineManager.attach(player)
@@ -233,6 +236,7 @@ public class DataStreamPlayer {
             #if !os(watchOS)
             Self.audioEngineManager.detach(speedController)
             Self.audioEngineManager.detach(pitchController)
+            Self.audioEngineManager.attach(gainController)
             #endif
             
             Self.audioEngineManager.detach(player)
@@ -255,8 +259,10 @@ public class DataStreamPlayer {
             // To control pitch, Put pitchController into the chain
             Self.audioEngineManager.connect(speedController, to: pitchController, format: audioFormat)
             
+            Self.audioEngineManager.connect(pitchController, to: gainController, format: audioFormat)
+
             // To control volume, Last of chain must me mixer node.
-            Self.audioEngineManager.connect(pitchController, to: Self.audioEngineManager.mainMixerNode, format: audioFormat)
+            Self.audioEngineManager.connect(gainController, to: Self.audioEngineManager.mainMixerNode, format: audioFormat)
             #endif
             
             return nil
@@ -270,6 +276,7 @@ public class DataStreamPlayer {
             #if !os(watchOS)
             Self.audioEngineManager.disconnectNodeOutput(pitchController)
             Self.audioEngineManager.disconnectNodeOutput(speedController)
+            Self.audioEngineManager.disconnectNodeOutput(gainController)
             #endif
             
             Self.audioEngineManager.disconnectNodeOutput(player)
@@ -622,7 +629,7 @@ private extension DataStreamPlayer {
                 self.scheduleBuffer(audioBuffer: nextBuffer)
             }
         }
-
+        
         if let error = UnifiedErrorCatcher.try({ () -> Error? in
             player.scheduleBuffer(audioBuffer, completionHandler: bufferHandler)
             scheduleBufferIndex += 1
@@ -708,4 +715,16 @@ private extension Array where Element == Float {
 
 private extension Notification.Name {
     static let audioBufferChange = Notification.Name(rawValue: "com.sktelecom.silver_tray.audio_buffer")
+}
+
+private extension AVAudioUnitEQ {
+    convenience init(gain: Float = .zero) {
+        self.init(numberOfBands: 1)
+        let band = self.bands[0]
+        band.filterType = .parametric
+        band.frequency = 1000 // 중심 주파수 (Hz)
+        band.bandwidth = 2.0 // 옥타브 단위로 넓게 설정
+        band.gain = gain
+        band.bypass = false
+    }
 }

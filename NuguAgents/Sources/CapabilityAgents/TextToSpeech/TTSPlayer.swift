@@ -36,14 +36,14 @@ final class TTSPlayer {
     let header: Downstream.Header
     var cancelAssociation: Bool = false
     
-    init(directive: Downstream.Directive) throws {
+    init(directive: Downstream.Directive, gain: Float = .zero) throws {
         payload = try JSONDecoder().decode(TTSSpeakPayload.self, from: directive.payload)
         guard case .attachment = payload.sourceType else {
             throw TTSError.notSupportedSourceType
         }
         
         header = directive.header
-        internalPlayer = try OpusPlayer()
+        internalPlayer = try OpusPlayer(gain: gain)
         internalPlayer?.delegate = self
     }
     
