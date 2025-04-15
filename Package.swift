@@ -12,7 +12,7 @@ let package = Package(
     products: [
         .library(
             name: "nugu-ios",
-            targets: ["NuguClientKit", "NuguAgents", "NuguUtils", "NuguServiceKit", "NuguLoginKit", "NuguUIKit", "KeenSense", "NuguCore"]
+            targets: ["NuguClientKit", "NuguAgents", "NuguUtils", "NuguServiceKit", "NuguLoginKit", "KeenSense", "NuguCore"]
         ),
         .library(
             name: "nugu-core",
@@ -21,8 +21,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "RxSwift", url: "https://github.com/ReactiveX/RxSwift", from: "6.0.0"),
-        .package(name: "NattyLog", url: "https://github.com/nugu-developers/natty-log-ios", from: "1.2.2"),
-        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios", from: "4.0.0")
+        .package(name: "NattyLog", url: "https://github.com/nugu-developers/natty-log-ios", from: "1.2.2")
     ],
     targets: [
         .target(
@@ -118,22 +117,6 @@ let package = Package(
             exclude: ["Info.plist", "README.md"]
         ),
         .target(
-            name: "NuguUIKit",
-            dependencies: ["NattyLog", "NuguAgents", "NuguUtils", "Lottie"],
-            path: "NuguUIKit/",
-            exclude: ["Info.plist", "README.md"],
-            resources: [
-                .process("Resources/animations/07_speaking.json"),
-                .process("Resources/animations/06_transition.json"),
-                .process("Resources/animations/05_processing.json"),
-                .process("Resources/animations/04_active.json"),
-                .process("Resources/animations/03_transition.json"),
-                .process("Resources/animations/02_passive.json"),
-                .process("Resources/animations/01_intro.json"),
-                .process("Resources/Assets.xcassets")
-            ]
-        ),
-        .target(
             name: "NuguLoginKit",
             dependencies: ["NuguUtils", "NattyLog"],
             path: "NuguLoginKit/",
@@ -141,7 +124,7 @@ let package = Package(
         ),
         .target(
             name: "NuguClientKit",
-            dependencies: ["NuguAgents", "NattyLog", "RxSwift", "NuguUtils", "NuguServiceKit", "NuguLoginKit", "NuguUIKit", "KeenSense", "NuguCore"],
+            dependencies: ["NuguAgents", "NattyLog", "RxSwift", "NuguUtils", "NuguServiceKit", "NuguLoginKit", "KeenSense", "NuguCore"],
             path: "NuguClientKit/",
             exclude: ["Info.plist", "README.md"]
         ),
