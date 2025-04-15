@@ -30,7 +30,6 @@ import NuguLoginKit
 public class ConfigurationStore {
     public static let shared = ConfigurationStore()
     private let discoveryQueue = DispatchQueue(label: "com.sktelecom.romaine.jademarble.tyche_end_point_detector")
-    private let urlSession = URLSession(configuration: .ephemeral, delegate: nil, delegateQueue: nil)
     
     public var configuration: Configuration? {
         didSet {
@@ -43,7 +42,7 @@ public class ConfigurationStore {
         }
     }
     
-    @Atomic public var configurationMetadata: ConfigurationMetadata?
+    private var configurationMetadata: ConfigurationMetadata?
     
     /// Configure with `Configuration`
     public func configure(configuration: Configuration) {
@@ -239,7 +238,7 @@ private extension ConfigurationStore {
             forHTTPHeaderField: "Authorization"
         )
         
-        urlSession.dataTask(with: urlRequest) { [weak self] (data, _, error) in
+        URLSession.shared.dataTask(with: urlRequest) { [weak self] (data, _, error) in
             self?.discoveryQueue.async { [weak self] in
                 guard error == nil else {
                     log.error(error)
