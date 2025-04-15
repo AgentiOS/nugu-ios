@@ -662,15 +662,6 @@ extension NuguClient {
         serverInitiatedDirectiveReceiverStateObserver = object.observe(NuguCoreNotification.StreamDataRoute.ServerInitiatedDirectiveReceiverState.self, queue: nil) { [weak self] (notification) in
             self?.delegate?.nuguClientServerInitiatedDirectiveRecevierStateDidChange(notification)
         }
-        
-        // Device gateway address
-        ConfigurationStore.shared.l4SwitchUrl { result in
-            guard case let .success(url) = result else {
-                return
-            }
-            
-            NuguServerInfo.l4SwitchAddress = url
-        }
     }
     
     private func removeStreamDataRouterObservers() {

@@ -201,21 +201,6 @@ public extension ConfigurationStore {
             completion(.success(registryServerUrl))
         }
     }
-    
-    /// Get the normal device gateway url for the events and the directives
-    ///
-    /// - Parameter completion: The closure to receive result.
-    func l4SwitchUrl(completion: @escaping (Result<String, Error>) -> Void) {
-        configurationMetadata { result in
-            guard case let .success(metadata) = result,
-                  let l4SwitchUrl = metadata.deviceGatewayServerH2Uri else {
-                completion(.failure(ConfigurationError.invalidUrl))
-                return
-            }
-            
-            completion(.success(l4SwitchUrl))
-        }
-    }
 }
 
 // MARK: - Private
