@@ -1,5 +1,5 @@
 //
-//  EndPointDetectorEngineProtocol.swift
+//  EndPointDetectorEngineState.swift
 //  nugu-ios
 //
 //  Created by 김승찬님/iOS개발팀 on 4/21/25.
