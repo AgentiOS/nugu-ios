@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1190,6 +1190,10 @@
 		F7E224EC263957DE00E13F19 /* SpeechRecognizerAggregatorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRecognizerAggregatorError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		89BC6D162DB6130E00320FBD /* EndPointDetectorEngine */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = EndPointDetectorEngine; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		1FFFEFFA23753F1800C9A177 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -2229,6 +2233,7 @@
 		7303C68223C5BF5E00610343 /* EndPointDetector */ = {
 			isa = PBXGroup;
 			children = (
+				89BC6D162DB6130E00320FBD /* EndPointDetectorEngine */,
 				7303C68523C5BFD400610343 /* ClientEndPointDetector.swift */,
 				7303C68323C5BFD400610343 /* EndPointDetectorDelegate.swift */,
 				7303C68423C5BFD400610343 /* EndPointDetectorState.swift */,
@@ -3085,6 +3090,9 @@
 			dependencies = (
 				73152FD823E042D000F843C3 /* PBXTargetDependency */,
 				73152FEC23E05D1100F843C3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				89BC6D162DB6130E00320FBD /* EndPointDetectorEngine */,
 			);
 			name = NuguAgents;
 			packageProductDependencies = (

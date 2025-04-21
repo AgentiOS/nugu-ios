@@ -706,7 +706,13 @@ private extension ASRAgent {
         
         switch asrRequest.options.endPointing {
         case .client:
-            endPointDetector = ClientEndPointDetector(asrOptions: asrRequest.options)
+            // TODO: EPD Engine Injection
+            let engine = TycheEndPointDetectorEngineAdapter()
+            
+            endPointDetector = ClientEndPointDetector(
+                asrOptions: asrRequest.options,
+                engine: engine
+            )
         case .server:
             // TODO: after server preparation.
             log.error("Server side end point detector does not support yet.")
