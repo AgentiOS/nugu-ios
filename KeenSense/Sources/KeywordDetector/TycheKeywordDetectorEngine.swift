@@ -32,7 +32,7 @@ import TycheSDK
  */
 public class TycheKeywordDetectorEngine: TypedNotifyable {
     private let kwdQueue = DispatchQueue(label: "com.sktelecom.romaine.keensense.tyche_key_word_detector")
-    private var engineHandle: WakeupHandle?
+    private var engineHandles: [WakeupHandle] = []
     
     /// Window buffer for user's voice. This will help extract certain section of speaking keyword
     private var detectingData = ShiftingData(capacity: Int(KeywordDetectorConst.sampleRate*5*2))
@@ -48,18 +48,18 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
     }
     
     /// Keyword to detect
-    public var keyword: Keyword {
+    public var keywords: [Keyword] {
         get {
-            internalKeyword
+            internalKeywords
         }
         
         set {
             kwdQueue.async { [weak self] in
-                self?.internalKeyword = newValue
+                self?.internalKeywords = newValue
             }
         }
     }
-    private var internalKeyword: Keyword = .aria
+    private var internalKeywords: [Keyword] = [.aria]
     
     #if DEBUG
     private let filename = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("detecting.raw")
@@ -68,7 +68,7 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
     public init() {}
     
     deinit {
-        internalStop()
+        releaseWakeupHandle()
     }
     
     /**
@@ -78,12 +78,9 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
         log.debug("try to start")
         
         kwdQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
-            if self.engineHandle != nil {
-                // Release last components
-                self.internalStop()
-            }
+            releaseWakeupHandle()
             
              do {
                 try self.initTriggerEngine()
@@ -117,11 +114,13 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
                 self.detectingData.append(Data(bytes: ptrData, count: Int(buffer.frameLength)*2))
             }
             
-            let isDetected = Wakeup_PutAudio(self.engineHandle, ptrPcmData, Int32(buffer.frameLength)) == 1
-            if isDetected {
+            for engineHandle in engineHandles {
+                guard Wakeup_PutAudio(engineHandle, ptrPcmData, Int32(buffer.frameLength)) == 1 else { continue }
                 log.debug("detected")
-                self.notifyDetection()
+                self.notifyDetection(engineHandle)
                 self.internalStop()
+                
+                return
             }
         }
     }
@@ -138,13 +137,19 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
     }
     
     private func internalStop() {
-        if engineHandle != nil {
-            Wakeup_Destroy(engineHandle)
-            engineHandle = nil
-            log.debug("engine is destroyed")
-        }
+        releaseWakeupHandle()
         
         state = .inactive
+    }
+    
+    private func releaseWakeupHandle() {
+        guard engineHandles.isEmpty == false else { return }
+        for engineHandle in engineHandles {
+            Wakeup_Destroy(engineHandle)
+        }
+        
+        engineHandles.removeAll()
+        log.debug("engines are destroyed")
     }
 }
 
@@ -158,21 +163,28 @@ extension TycheKeywordDetectorEngine {
      Then only you have to do is making decision which key word you use.
      */
     private func initTriggerEngine() throws {
-        if engineHandle != nil {
-            Wakeup_Destroy(engineHandle)
+        releaseWakeupHandle()
+        
+        var wakeUpHandles: [WakeupHandle] = []
+        for keyword in self.internalKeywords {
+            guard let wakeUpHandle = Wakeup_Create(keyword.netFilePath, keyword.searchFilePath, 0) else {
+                wakeUpHandles.forEach { handle in
+                    Wakeup_Destroy(handle)
+                }
+                
+                throw KeywordDetectorError.initEngineFailed
+            }
+            
+            wakeUpHandles.append(wakeUpHandle)
         }
         
-        guard let wakeUpHandle = Wakeup_Create(keyword.netFilePath, keyword.searchFilePath, 0) else {
-            throw KeywordDetectorError.initEngineFailed
-        }
-        
-        engineHandle = wakeUpHandle
+        engineHandles = wakeUpHandles
     }
 }
 
 // MARK: - ETC
 extension TycheKeywordDetectorEngine {
-    private func notifyDetection() {
+    private func notifyDetection(_ engineHandle: WakeupHandle) {
         let startMargin = convertTimeToDataOffset(Wakeup_GetStartMargin(engineHandle))
         let start = convertTimeToDataOffset(Wakeup_GetStartTime(engineHandle))
         let end = convertTimeToDataOffset(Wakeup_GetEndTime(engineHandle))

@@ -42,10 +42,17 @@ public class KeywordDetector: ContextInfoProvidable {
     }
     
     /// Must set `keywordSource` for using `KeywordDetector`
+    @available(*, deprecated, message: "Use `keywords` property. It will be removed in 2.0.0")
     @Atomic public var keyword: Keyword = .aria {
         didSet {
-            log.debug("set keyword: \(keyword)")
-            engine.keyword = keyword
+            keywords = [keyword]
+        }
+    }
+    
+    @Atomic public var keywords: [Keyword] = [.aria] {
+        didSet {
+            log.debug("set keywords: \(keywords)")
+            engine.keywords = keywords
         }
     }
     
@@ -69,7 +76,7 @@ public class KeywordDetector: ContextInfoProvidable {
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
         guard let self = self else { return }
         
-        completion(ContextInfo(contextType: .client, name: "wakeupWord", payload: self.keyword.description))
+        completion(ContextInfo(contextType: .client, name: "wakeupWord", payload: self.keywords.description))
     }
     
     /// Start keyword detection.
@@ -120,7 +127,7 @@ extension KeywordDetector {
                 guard let self = self else { return }
                 log.debug("tyche keyword detector engine detected: \(notification))")
                 
-                self.delegate?.keywordDetectorDidDetect(keyword: self.keyword.description, data: notification.data, start: notification.start, end: notification.end, detection: notification.detection)
+                self.delegate?.keywordDetectorDidDetect(keyword: self.keywords.description, data: notification.data, start: notification.start, end: notification.end, detection: notification.detection)
                 self.stop()
             }
         }
