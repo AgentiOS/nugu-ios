@@ -26,7 +26,7 @@ import JadeMarble
 
 class ClientEndPointDetector: EndPointDetectable {
     public weak var delegate: EndPointDetectorDelegate?
-    private let engine: TycheEndPointDetectorEngine
+    private let engine: EndPointDetectorEngineProtocol
     private let asrOptions: ASROptions
     
     private var state: EndPointDetectorState = .idle {
@@ -35,9 +35,12 @@ class ClientEndPointDetector: EndPointDetectable {
         }
     }
     
-    public init(asrOptions: ASROptions) {
+    public init(
+        asrOptions: ASROptions,
+        engine: EndPointDetectorEngineProtocol
+    ) {
         self.asrOptions = asrOptions
-        engine = TycheEndPointDetectorEngine()
+        self.engine = engine
         engine.delegate = self
     }
     
@@ -72,8 +75,8 @@ class ClientEndPointDetector: EndPointDetectable {
     }
 }
 
-extension ClientEndPointDetector: TycheEndPointDetectorEngineDelegate {
-    public func tycheEndPointDetectorEngineDidChange(state: TycheEndPointDetectorEngine.State) {
+extension ClientEndPointDetector: EndPointDetectorEngineDelegate {
+    public func endPointDetectorEngineDidChange(state: EndPointDetectorEngineState) {
         switch state {
         case .idle:
             self.state = .idle
@@ -96,7 +99,7 @@ extension ClientEndPointDetector: TycheEndPointDetectorEngineDelegate {
         }
     }
     
-    public func tycheEndPointDetectorEngineDidExtract(speechData: Data) {
+    public func endPointDetectorEngineDidExtract(speechData: Data) {
         delegate?.endPointDetectorSpeechDataExtracted(speechData: speechData)
     }
 }
