@@ -43,16 +43,6 @@ class NuguApiProvider: NSObject {
     
     /// Resource server array
     @Atomic private var serverPolicies = [Policy.ServerPolicy]()
-    
-    private var resourceServerAddress: String? {
-        loadBalancedUrl
-        // cslb State에 관계 없이 registry를 통해 수신한 서버로 연결시키도록 변경
-//        if cslbState == .activated {
-//            return
-//        } else {
-//            return NuguServerInfo.l4SwitchAddress
-//        }
-    }
 
     // handle response for upload task.
     @Atomic private var eventResponseProcessors = [URLSessionTask: EventResponseProcessor]()
@@ -66,12 +56,6 @@ class NuguApiProvider: NSObject {
             if oldValue != cslbState {
                 log.debug("client side load balancing: \(cslbState)")
             }
-            
-            // To connect last resource server, Comment out clearing loadBalancedUrl codes below.
-            // But it must be remained as a comment for history.
-//            if oldValue == false, isCSLBEnabled == true {
-//                loadBalancedUrl = nil
-//            }
         }
     }
     
@@ -228,14 +212,14 @@ extension NuguApiProvider {
                     return
                 }
                 
-                guard let resourceServerUrl = self.resourceServerAddress else {
+                guard let loadBalancedUrl = self.loadBalancedUrl else {
                     single(.failure(NetworkError.noSuitableResourceServer))
                     return
                 }
                 
-                guard let urlComponent = URLComponents(string: NuguApi.events.uri(baseUrl: resourceServerUrl)),
+                guard let urlComponent = URLComponents(string: NuguApi.events.uri(baseUrl: loadBalancedUrl)),
                     let url = urlComponent.url else {
-                        log.error("invailid url: \(NuguApi.events.uri(baseUrl: resourceServerUrl))")
+                        log.error("invailid url: \(NuguApi.events.uri(baseUrl: loadBalancedUrl))")
                         single(.failure(NetworkError.badRequest))
                         return
                 }
@@ -348,7 +332,7 @@ extension NuguApiProvider {
      Send ping data to keep stream of server side event
      */
     var ping: Completable {
-        guard let baseUrl = resourceServerAddress,
+        guard let baseUrl = loadBalancedUrl,
               let pingUrl = URL(string: NuguApi.ping.uri(baseUrl: baseUrl)) else {
             log.error("no resource server url")
             return Completable.error(NetworkError.noSuitableResourceServer)

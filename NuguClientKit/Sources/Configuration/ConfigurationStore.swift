@@ -23,7 +23,6 @@ import Foundation
 import NuguCore
 import NuguUtils
 import NuguLoginKit
-import NuguUIKit
 
 /// The entry point of NUGU SDKs.
 ///
@@ -31,7 +30,6 @@ import NuguUIKit
 public class ConfigurationStore {
     public static let shared = ConfigurationStore()
     private let discoveryQueue = DispatchQueue(label: "com.sktelecom.romaine.jademarble.tyche_end_point_detector")
-    private let urlSession = URLSession(configuration: .ephemeral, delegate: nil, delegateQueue: nil)
     
     public var configuration: Configuration? {
         didSet {
@@ -39,13 +37,12 @@ public class ConfigurationStore {
             guard let configuration = configuration else { return }
             
             NuguOAuthServerInfo.serverBaseUrl = configuration.authServerUrl
-            NuguDisplayWebView.deviceTypeCode = configuration.deviceTypeCode
             
             requestDiscovery(completion: nil)
         }
     }
     
-    @Atomic public var configurationMetadata: ConfigurationMetadata?
+    private var configurationMetadata: ConfigurationMetadata?
     
     /// Configure with `Configuration`
     public func configure(configuration: Configuration) {
@@ -201,21 +198,6 @@ public extension ConfigurationStore {
             completion(.success(registryServerUrl))
         }
     }
-    
-    /// Get the normal device gateway url for the events and the directives
-    ///
-    /// - Parameter completion: The closure to receive result.
-    func l4SwitchUrl(completion: @escaping (Result<String, Error>) -> Void) {
-        configurationMetadata { result in
-            guard case let .success(metadata) = result,
-                  let l4SwitchUrl = metadata.deviceGatewayServerH2Uri else {
-                completion(.failure(ConfigurationError.invalidUrl))
-                return
-            }
-            
-            completion(.success(l4SwitchUrl))
-        }
-    }
 }
 
 // MARK: - Private
@@ -256,7 +238,7 @@ private extension ConfigurationStore {
             forHTTPHeaderField: "Authorization"
         )
         
-        urlSession.dataTask(with: urlRequest) { [weak self] (data, _, error) in
+        URLSession.shared.dataTask(with: urlRequest) { [weak self] (data, _, error) in
             self?.discoveryQueue.async { [weak self] in
                 guard error == nil else {
                     log.error(error)
@@ -270,10 +252,6 @@ private extension ConfigurationStore {
                           completion?(.failure(ConfigurationError.invalidPayload))
                           return
                       }
-                
-                if let url = metaData.templateServerUri {
-                    NuguDisplayWebView.displayWebServerAddress = url
-                }
                 
                 self?.configurationMetadata = metaData
                 log.debug("configuration metadata: \(metaData)")

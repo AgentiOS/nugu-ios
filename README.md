@@ -17,7 +17,6 @@ NUGU SDK for iOS is composed of following Libraries
 - [NuguAgents](NuguAgents/) - The Framework which includes built-in capability-agents.
 - [NuguClientKit](NuguClientKit/) - The Framework for initializing essential components and inject dependency between components to use NUGU SDK
 - [NuguLoginKit](NuguLoginKit/) - The Framework for user authentication with OAuth2.0
-- [NuguUIKit](NuguUIKit/) - The Framework for user interface components
 - [NuguServiceKit](NuguServiceKit/) - The Framework provides customized webview for NUGU service
 
 ## Sample Application

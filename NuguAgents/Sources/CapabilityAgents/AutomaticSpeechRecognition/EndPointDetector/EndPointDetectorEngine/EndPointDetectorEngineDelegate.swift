@@ -1,9 +1,9 @@
 //
-//  NuguServerInfo.swift
-//  NuguCore
+//  EndPointDetectorEngineDelegate.swift
+//  nugu-ios
 //
-//  Created by childc on 2019/11/20.
-//  Copyright (c) 2019 SK Telecom Co., Ltd. All rights reserved.
+//  Created by 김승찬님/iOS개발팀 on 4/21/25.
+//  Copyright © 2025 SK Telecom Co., Ltd. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@
 //
 
 import Foundation
+import AVFoundation
 
-/// Manage the device-gateway server address.
-public enum NuguServerInfo {
-    /// The registry server address.
-    public static var registryServerAddress: String?
+public protocol EndPointDetectorEngineDelegate: AnyObject {
+    func endPointDetectorEngineDidChange(state: EndPointDetectorEngineState)
+    func endPointDetectorEngineDidExtract(speechData: Data)
 }
