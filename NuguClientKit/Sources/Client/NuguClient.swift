@@ -583,6 +583,10 @@ extension NuguClient: AuthorizationStoreDelegate {
     public func authorizationStoreRequestAccessToken() -> String? {
         delegate?.nuguClientRequestAccessToken()
     }
+    
+    public func authorizationStoreRequestPersonaId() -> String? {
+        delegate?.nuguClientRequestPersonaId()
+    }
 }
 
 // MARK: - FocusManagerDelegate

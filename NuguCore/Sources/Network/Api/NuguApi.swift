@@ -89,33 +89,32 @@ extension NuguApi {
             return nil
         }
         
-        switch self {
-        case .policy:
-            return [
-                "Authorization": token
-            ]
-        case .directives:
-            return [
-                "Authorization": token,
-                "User-Agent": NetworkConst.userAgent
-            ]
-        case .events:
-             return [
-                "Authorization": token,
-                "User-Agent": NetworkConst.userAgent
-                ]
-        case .eventAttachment:
-            return [
-                "Authorization": token,
-                "User-Agent": NetworkConst.userAgent,
-                "Content-Type": "audio/speex"
-            ]
-        case .ping:
-            return [
-                "Authorization": token,
-                "User-Agent": NetworkConst.userAgent
-            ]
+        var header: [String: String] = ["Authorization": token]
+        
+        if let personaId = AuthorizationStore.shared.personaId {
+            header["Persona-Id"] = personaId
         }
+        
+        switch self {
+        case .directives:
+            header["User-Agent"] = NetworkConst.userAgent
+            return header
+        case .events:
+            header["User-Agent"] = NetworkConst.userAgent
+             return header
+        case .eventAttachment:
+            header["User-Agent"] = NetworkConst.userAgent
+            header["Content-Type"] = "audio/speex"
+        case .ping:
+            header["User-Agent"] = NetworkConst.userAgent
+            return [
+                "Authorization": token,
+                "User-Agent": NetworkConst.userAgent
+            ]
+        default: break
+        }
+        
+        return header
     }
 }
 

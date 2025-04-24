@@ -34,4 +34,9 @@ public class AuthorizationStore: AuthorizationStoreable {
         guard let accessToken = accessToken else { return nil }
         return "Bearer \(accessToken)"
     }
+    
+    public var personaId: String? {
+        guard let delegate = delegate else { return nil }
+        return delegate.authorizationStoreRequestPersonaId()
+    }
 }
