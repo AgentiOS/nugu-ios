@@ -26,4 +26,5 @@ public protocol AuthorizationStoreDelegate: AnyObject {
     ///
     /// - returns: The current authorization token.
     func authorizationStoreRequestAccessToken() -> String?
+    func authorizationStoreRequestPersonaId() -> String?
 }

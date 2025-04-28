@@ -84,6 +84,7 @@ public protocol NuguClientDelegate: AnyObject {
     func nuguClientServerInitiatedDirectiveRecevierStateDidChange(_ state: ServerSentEventReceiverState)
     
     func nuguClientRequestRecognitionWithTriggerContext() -> [String: AnyHashable]
+    func nuguClientRequestPersonaId() -> String?
 }
 
 // MARK: - Optional
@@ -112,4 +113,5 @@ public extension NuguClientDelegate {
     func nuguClientDidSend(attachment: EventAttachment, error: Error?) {}
     func nuguClientServerInitiatedDirectiveRecevierStateDidChange(_ state: ServerSentEventReceiverState) {}
     func nuguClientRequestRecognitionWithTriggerContext() -> [String: AnyHashable] { [:] }
+    func nuguClientRequestPersonaId() -> String? { nil }
 }
