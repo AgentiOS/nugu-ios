@@ -102,7 +102,7 @@ public extension PhoneCallAgent {
         completion: ((StreamDataState) -> Void)?
     ) -> String {
         let event = Event(
-            typeInfo: .candidatesListed(interactionControl: currentInteractionControl),
+            typeInfo: .candidatesListed(interactionControl: currentInteractionControl, service: payload.service),
             playServiceId: payload.playServiceId,
             referrerDialogRequestId: header?.dialogRequestId
         )
@@ -203,9 +203,9 @@ private extension PhoneCallAgent {
                     payload: makeCallItem,
                     header: directive.header
                 ) {
-                    typeInfo = .makeCallFailed(errorCode: errorCode, callType: makeCallItem.callType)
+                    typeInfo = .makeCallFailed(errorCode: errorCode, callType: makeCallItem.callType, service: makeCallItem.service)
                 } else {
-                    typeInfo = .makeCallSucceeded(recipient: makeCallItem.recipient)
+                    typeInfo = .makeCallSucceeded(recipient: makeCallItem.recipient, service: makeCallItem.service)
                 }
                 
                 self.sendCompactContextEvent(Event(

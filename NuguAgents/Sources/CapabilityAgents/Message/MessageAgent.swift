@@ -91,7 +91,7 @@ public extension MessageAgent {
         completion: ((StreamDataState) -> Void)?
     ) -> String {
         let event = Event(
-            typeInfo: .candidatesListed(interactionControl: currentInteractionControl),
+            typeInfo: .candidatesListed(interactionControl: currentInteractionControl, service: payload.service),
             playServiceId: payload.playServiceId,
             referrerDialogRequestId: header?.dialogRequestId
         )
@@ -170,10 +170,10 @@ private extension MessageAgent {
                 
                 var typeInfo: Event.TypeInfo {
                     if let errorCode = delegate.messageAgentDidReceiveSendMessage(payload: sendMessageItem, header: directive.header) {
-                        return .sendMessageFailed(recipient: sendMessageItem.recipient, errorCode: errorCode)
+                        return .sendMessageFailed(recipient: sendMessageItem.recipient, errorCode: errorCode, service: sendMessageItem.service)
                     }
                     
-                    return .sendMessageSucceeded(recipient: sendMessageItem.recipient)
+                    return .sendMessageSucceeded(recipient: sendMessageItem.recipient, service: sendMessageItem.service)
                 }
                 
                 self.sendCompactContextEvent(

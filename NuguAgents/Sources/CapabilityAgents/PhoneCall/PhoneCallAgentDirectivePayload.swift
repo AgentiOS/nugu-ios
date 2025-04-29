@@ -40,6 +40,7 @@ public enum PhoneCallAgentDirectivePayload {
         public let searchScene: String?
         /// <#Description#>
         public let interactionControl: InteractionControl?
+        public let service: [String: AnyHashable]?
     }
     
     /// An Item received through the 'MakeCall' directive in `PhoneCallAgent`.
@@ -50,6 +51,7 @@ public enum PhoneCallAgentDirectivePayload {
         public let recipient: PhoneCallPerson
         /// <#Description#>
         public let callType: PhoneCallType
+        public let service: [String: AnyHashable]?
     }
     
     /// An Item received through the 'BlockNumber' directive in `PhoneCallAgent`.
@@ -71,11 +73,73 @@ public enum PhoneCallAgentDirectivePayload {
 
 // MARK: - PhoneCallAgentDirectivePayload.SendCandidates + Codable
 
-extension PhoneCallAgentDirectivePayload.SendCandidates: Codable {}
+extension PhoneCallAgentDirectivePayload.SendCandidates: Codable {
+    enum CodingKeys: String, CodingKey {
+        case playServiceId
+        case intent
+        case callType
+        case recipientIntended
+        case candidates
+        case searchScene
+        case interactionControl
+        case service
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        playServiceId = try container.decode(String.self, forKey: .playServiceId)
+        intent = try container.decode(PhoneCallIntent.self, forKey: .intent)
+        callType = try container.decodeIfPresent(PhoneCallType.self, forKey: .callType)
+        recipientIntended = try container.decodeIfPresent(PhoneCallRecipientIntended.self, forKey: .recipientIntended)
+        candidates = try container.decodeIfPresent([PhoneCallPerson].self, forKey: .candidates)
+        searchScene = try container.decodeIfPresent(String.self, forKey: .searchScene)
+        interactionControl = try container.decodeIfPresent(InteractionControl.self, forKey: .interactionControl)
+        service = try container.decodeIfPresent([String: AnyHashable].self, forKey: .service)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(playServiceId, forKey: .playServiceId)
+        try container.encode(intent, forKey: .intent)
+        try container.encodeIfPresent(callType, forKey: .callType)
+        try container.encodeIfPresent(recipientIntended, forKey: .recipientIntended)
+        try container.encodeIfPresent(candidates, forKey: .candidates)
+        try container.encodeIfPresent(searchScene, forKey: .searchScene)
+        try container.encodeIfPresent(interactionControl, forKey: .interactionControl)
+        try container.encodeIfPresent(service, forKey: .service)
+    }
+}
 
 // MARK: - PhoneCallAgentDirectivePayload.MakeCall + Codable
 
-extension PhoneCallAgentDirectivePayload.MakeCall: Codable {}
+extension PhoneCallAgentDirectivePayload.MakeCall: Codable {
+    enum CodingKeys: String, CodingKey {
+        case playServiceId
+        case recipient
+        case callType
+        case service
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        playServiceId = try container.decode(String.self, forKey: .playServiceId)
+        recipient = try container.decode(PhoneCallPerson.self, forKey: .recipient)
+        callType = try container.decode(PhoneCallType.self, forKey: .callType)
+        service = try container.decodeIfPresent([String: AnyHashable].self, forKey: .service)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(playServiceId, forKey: .playServiceId)
+        try container.encode(recipient, forKey: .recipient)
+        try container.encodeIfPresent(callType, forKey: .callType)
+        try container.encodeIfPresent(service, forKey: .service)
+    }
+}
 
 // MARK: - PhoneCallAgentDirectivePayload.BlockNumber + Codable
 
