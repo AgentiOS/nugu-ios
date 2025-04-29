@@ -29,9 +29,9 @@ extension PhoneCallAgent {
         let referrerDialogRequestId: String?
         
         enum TypeInfo {
-            case candidatesListed(interactionControl: InteractionControl?)
-            case makeCallFailed(errorCode: PhoneCallErrorCode, callType: PhoneCallType)
-            case makeCallSucceeded(recipient: PhoneCallPerson)
+            case candidatesListed(interactionControl: InteractionControl?, service: [String: AnyHashable]?)
+            case makeCallFailed(errorCode: PhoneCallErrorCode, callType: PhoneCallType, service: [String: AnyHashable]?)
+            case makeCallSucceeded(recipient: PhoneCallPerson, service: [String: AnyHashable]?)
         }
     }
 }
@@ -45,19 +45,29 @@ extension PhoneCallAgent.Event: Eventable {
         ]
         
         switch typeInfo {
-        case .candidatesListed(let interactionControl):
+        case .candidatesListed(let interactionControl, let service):
             if let interactionControl = interactionControl,
                let interactionControlData = try? JSONEncoder().encode(interactionControl),
                let interactionControlDictionary = try? JSONSerialization.jsonObject(with: interactionControlData, options: []) as? [String: AnyHashable] {
                 payload["interactionControl"] = interactionControlDictionary
             }
-        case .makeCallFailed(let errorCode, let callType):
+            
+            if let service {
+                payload["service"] = service
+            }
+        case .makeCallFailed(let errorCode, let callType, let service):
             payload["errorCode"] = errorCode.rawValue
             payload["callType"] = callType.rawValue
-        case .makeCallSucceeded(let recipient):
+            if let service {
+                payload["service"] = service
+            }
+        case .makeCallSucceeded(let recipient, let service):
             if let recipientData = try? JSONEncoder().encode(recipient),
                 let recipientDictionary = try? JSONSerialization.jsonObject(with: recipientData, options: []) as? [String: AnyHashable] {
                 payload["recipient"] = recipientDictionary
+            }
+            if let service {
+                payload["service"] = service
             }
         }
         

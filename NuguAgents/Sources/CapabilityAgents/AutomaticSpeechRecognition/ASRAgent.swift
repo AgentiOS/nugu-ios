@@ -20,6 +20,7 @@
 
 import Foundation
 import AVFoundation
+import Accelerate
 
 import NuguCore
 import NuguUtils
@@ -317,6 +318,34 @@ public extension ASRAgent {
     
     func putAudioBuffer(buffer: AVAudioPCMBuffer) {
         endPointDetector?.putAudioBuffer(buffer: buffer)
+        print("@@@@@@ db \(String(describing: calculateRMS(buffer: buffer)))")
+        
+        func calculateRMS(buffer: AVAudioPCMBuffer) -> Float? {
+            guard let pcmBuffer: AVAudioPCMBuffer = buffer.copy() as? AVAudioPCMBuffer, let int16ChannelData = pcmBuffer.int16ChannelData else {
+                return nil
+            }
+            
+            let channelData = int16ChannelData[0]  // 첫 번째 채널 사용
+            let frameLength = Int(buffer.frameLength)
+            
+            // Int16 샘플을 Float로 변환 (정규화)
+            var floatSamples = [Float](repeating: 0.0, count: frameLength)
+            let scale: Float = 1.0 / 32768.0  // Int16 최대값 기준 정규화
+
+            vDSP_vflt16(channelData, 1, &floatSamples, 1, vDSP_Length(frameLength))  // Int16 -> Float 변환
+            vDSP_vsmul(floatSamples, 1, [scale], &floatSamples, 1, vDSP_Length(frameLength))  // 스케일링해서 -1.0 ~ 1.0로 맞추기
+            
+            // RMS 계산
+            var rms: Float = 0.0
+            vDSP_rmsqv(floatSamples, 1, &rms, vDSP_Length(frameLength))
+            
+            print("@@@@@@ rms \(rms)")
+            
+            // dB 변환
+            let db = 20 * log10(rms)
+            
+            return db
+        }
     }
     
     func stopRecognition() {
