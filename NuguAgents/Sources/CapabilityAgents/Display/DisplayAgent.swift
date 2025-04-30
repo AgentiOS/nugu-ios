@@ -147,12 +147,11 @@ public final class DisplayAgent: DisplayAgentProtocol {
 // MARK: - DisplayAgentProtocol
 
 public extension DisplayAgent {
-    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String {
+    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String {
         return sendFullContextEvent(elementSelected(
             templateId: templateId,
             token: token,
-            postback: postback,
-            service: service
+            postback: postback
         ), completion: completion).dialogRequestId
     }
     
@@ -497,7 +496,7 @@ private extension DisplayAgent {
 // MARK: - Private (Eventable)
 
 private extension DisplayAgent {
-    func elementSelected(templateId: String, token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?) -> Single<Eventable> {
+    func elementSelected(templateId: String, token: String, postback: [String: AnyHashable]?) -> Single<Eventable> {
         return Single.create { [weak self] (observer) -> Disposable in
             guard let item = self?.templateList.first(where: { $0.templateId == templateId }) else {
                 observer(.failure(NuguAgentError.invalidState))
@@ -505,7 +504,7 @@ private extension DisplayAgent {
             }
             
             let settingEvent = Event(
-                typeInfo: .elementSelected(token: token, postback: postback, service: service),
+                typeInfo: .elementSelected(token: token, postback: postback, service: item.template.service),
                     playServiceId: item.template.playServiceId,
                     referrerDialogRequestId: item.dialogRequestId
                 )
