@@ -29,9 +29,9 @@ extension MessageAgent {
         let referrerDialogRequestId: String?
         
         enum TypeInfo {
-            case candidatesListed(interactionControl: InteractionControl?)
-            case sendMessageSucceeded(recipient: MessageAgentContact)
-            case sendMessageFailed(recipient: MessageAgentContact, errorCode: String)
+            case candidatesListed(interactionControl: InteractionControl?, service: [String: AnyHashable]?)
+            case sendMessageSucceeded(recipient: MessageAgentContact, service: [String: AnyHashable]?)
+            case sendMessageFailed(recipient: MessageAgentContact, errorCode: String, service: [String: AnyHashable]?)
         }
     }
 }
@@ -43,21 +43,33 @@ extension MessageAgent.Event: Eventable {
         ]
         
         switch typeInfo {
-        case .candidatesListed(let interactionControl):
+        case .candidatesListed(let interactionControl, let service):
             if let interactionControl = interactionControl,
                let interactionControlData = try? JSONEncoder().encode(interactionControl),
                let interactionControlDictionary = try? JSONSerialization.jsonObject(with: interactionControlData, options: []) as? [String: AnyHashable] {
                 payload["interactionControl"] = interactionControlDictionary
             }
-        case .sendMessageSucceeded(let recipient):
+            
+            if let service = service {
+                payload["service"] = service
+            }
+        case .sendMessageSucceeded(let recipient, let service):
             if let recipientData = try? JSONEncoder().encode(recipient),
                 let recipientDictionary = try? JSONSerialization.jsonObject(with: recipientData, options: []) as? [String: AnyHashable] {
                 payload["recipient"] = recipientDictionary
             }
-        case .sendMessageFailed(let recipient, let errorCode):
+            
+            if let service = service {
+                payload["service"] = service
+            }
+        case .sendMessageFailed(let recipient, let errorCode, let service):
             if let recipientData = try? JSONEncoder().encode(recipient),
                 let recipientDictionary = try? JSONSerialization.jsonObject(with: recipientData, options: []) as? [String: AnyHashable] {
                 payload["recipient"] = recipientDictionary
+            }
+            
+            if let service = service {
+                payload["service"] = service
             }
             
             payload["errorCode"] = errorCode

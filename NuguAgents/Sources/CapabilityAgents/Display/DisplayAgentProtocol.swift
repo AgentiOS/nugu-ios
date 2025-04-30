@@ -52,7 +52,11 @@ public protocol DisplayAgentProtocol: CapabilityAgentable {
 // MARK: - Default
 
 public extension DisplayAgentProtocol {
-    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?) -> String {
+    @discardableResult func elementDidSelect(
+        templateId: String,
+        token: String,
+        postback: [String: AnyHashable]? = nil
+    ) -> String {
         return elementDidSelect(templateId: templateId, token: token, postback: postback, completion: nil)
     }
     
