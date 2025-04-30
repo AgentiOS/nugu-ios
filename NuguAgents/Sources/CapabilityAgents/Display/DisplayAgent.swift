@@ -147,11 +147,12 @@ public final class DisplayAgent: DisplayAgentProtocol {
 // MARK: - DisplayAgentProtocol
 
 public extension DisplayAgent {
-    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String {
+    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String {
         return sendFullContextEvent(elementSelected(
             templateId: templateId,
             token: token,
-            postback: postback
+            postback: postback,
+            service: service
         ), completion: completion).dialogRequestId
     }
     
@@ -214,7 +215,7 @@ private extension DisplayAgent {
                 
                 guard let item = self.templateList.first(where: { $0.template.playServiceId == payload.playServiceId }) else {
                     self.sendCompactContextEvent(Event(
-                        typeInfo: .closeFailed,
+                        typeInfo: .closeFailed(service: payload.service),
                         playServiceId: payload.playServiceId,
                         referrerDialogRequestId: directive.header.dialogRequestId
                     ).rx)
@@ -233,7 +234,7 @@ private extension DisplayAgent {
 
                 self.playSyncManager.stopPlay(dialogRequestId: item.dialogRequestId)
                 self.sendCompactContextEvent(Event(
-                    typeInfo: .closeSucceeded,
+                    typeInfo: .closeSucceeded(service: payload.service),
                     playServiceId: payload.playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
                 ).rx)
@@ -253,7 +254,7 @@ private extension DisplayAgent {
                 guard let self = self else { return }
                 guard let item = self.templateList.first(where: { $0.template.playServiceId == payload.playServiceId }) else {
                     self.sendCompactContextEvent(Event(
-                        typeInfo: .controlFocusFailed(direction: payload.direction),
+                        typeInfo: .controlFocusFailed(direction: payload.direction, service: payload.service),
                         playServiceId: payload.playServiceId,
                         referrerDialogRequestId: directive.header.dialogRequestId
                     ).rx)
@@ -264,7 +265,7 @@ private extension DisplayAgent {
                     guard let self = self else { return }
                     
                     self.playSyncManager.resetTimer(property: item.template.playSyncProperty)
-                    let typeInfo: Event.TypeInfo = focusResult ? .controlFocusSucceeded(direction: payload.direction) : .controlFocusFailed(direction: payload.direction)
+                    let typeInfo: Event.TypeInfo = focusResult ? .controlFocusSucceeded(direction: payload.direction, service: payload.service) : .controlFocusFailed(direction: payload.direction, service: payload.service)
                     self.sendCompactContextEvent(Event(
                         typeInfo: typeInfo,
                         playServiceId: payload.playServiceId,
@@ -287,7 +288,7 @@ private extension DisplayAgent {
                 guard let self = self, let delegate = self.delegate else { return }
                 guard let item = self.templateList.first(where: { $0.template.playServiceId == payload.playServiceId }) else {
                     self.sendCompactContextEvent(Event(
-                        typeInfo: .controlScrollFailed(direction: payload.direction, interactionControl: payload.interactionControl),
+                        typeInfo: .controlScrollFailed(direction: payload.direction, interactionControl: payload.interactionControl, service: payload.service),
                         playServiceId: payload.playServiceId,
                         referrerDialogRequestId: directive.header.dialogRequestId
                     ).rx)
@@ -303,10 +304,10 @@ private extension DisplayAgent {
                     
                     var typeInfo: Event.TypeInfo {
                         guard scrollResult else {
-                            return .controlScrollFailed(direction: payload.direction, interactionControl: payload.interactionControl)
+                            return .controlScrollFailed(direction: payload.direction, interactionControl: payload.interactionControl, service: payload.service)
                         }
                         
-                        return .controlScrollSucceeded(direction: payload.direction, interactionControl: payload.interactionControl)
+                        return .controlScrollSucceeded(direction: payload.direction, interactionControl: payload.interactionControl, service: payload.service)
                     }
                     
                     self.sendCompactContextEvent(Event(
@@ -496,7 +497,7 @@ private extension DisplayAgent {
 // MARK: - Private (Eventable)
 
 private extension DisplayAgent {
-    func elementSelected(templateId: String, token: String, postback: [String: AnyHashable]?) -> Single<Eventable> {
+    func elementSelected(templateId: String, token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?) -> Single<Eventable> {
         return Single.create { [weak self] (observer) -> Disposable in
             guard let item = self?.templateList.first(where: { $0.templateId == templateId }) else {
                 observer(.failure(NuguAgentError.invalidState))
@@ -504,7 +505,7 @@ private extension DisplayAgent {
             }
             
             let settingEvent = Event(
-                    typeInfo: .elementSelected(token: token, postback: postback),
+                typeInfo: .elementSelected(token: token, postback: postback, service: service),
                     playServiceId: item.template.playServiceId,
                     referrerDialogRequestId: item.dialogRequestId
                 )

@@ -52,6 +52,7 @@ public struct DisplayTemplate {
         public var playSyncProperty: PlaySyncProperty {
             PlaySyncProperty(layerType: contextLayer, contextType: .display)
         }
+        public let service: [String: AnyHashable]?
         
         public enum Duration: String, Codable {
             case short = "SHORT"
@@ -72,6 +73,7 @@ extension DisplayTemplate.Payload: Codable {
         case duration
         case focusable
         case contextLayer
+        case service
     }
     
     public init(from decoder: Decoder) throws {
@@ -83,6 +85,18 @@ extension DisplayTemplate.Payload: Codable {
         duration = try? container.decode(Duration.self, forKey: .duration)
         focusable = try? container.decodeIfPresent(Bool.self, forKey: .focusable)
         contextLayer = (try? container.decode(PlaySyncProperty.LayerType.self, forKey: .contextLayer)) ?? .info
+        service = try? container.decodeIfPresent([String: AnyHashable].self, forKey: .focusable)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(token, forKey: .token)
+        try container.encode(playServiceId, forKey: .playServiceId)
+        try container.encodeIfPresent(playStackControl, forKey: .playStackControl)
+        try container.encodeIfPresent(duration, forKey: .duration)
+        try container.encodeIfPresent(focusable, forKey: .focusable)
+        try container.encode(contextLayer, forKey: .contextLayer)
+        try container.encodeIfPresent(service, forKey: .service)
     }
 }
 

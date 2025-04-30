@@ -38,7 +38,7 @@ public protocol DisplayAgentProtocol: CapabilityAgentable {
     /// - Parameter templateId: The unique identifier for the template.
     /// - Parameter token: The unique identifier for the element.
     /// - Parameter postback: Additional data for the element.
-    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String
+    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?, completion: ((StreamDataState) -> Void)?) -> String
     
     /// This should be called when occur interaction(input event such as touch, drag, etc...) for display
     func notifyUserInteraction()
@@ -52,8 +52,13 @@ public protocol DisplayAgentProtocol: CapabilityAgentable {
 // MARK: - Default
 
 public extension DisplayAgentProtocol {
-    @discardableResult func elementDidSelect(templateId: String, token: String, postback: [String: AnyHashable]?) -> String {
-        return elementDidSelect(templateId: templateId, token: token, postback: postback, completion: nil)
+    @discardableResult func elementDidSelect(
+        templateId: String,
+        token: String,
+        postback: [String: AnyHashable]? = nil,
+        service: [String: AnyHashable]? = nil
+    ) -> String {
+        return elementDidSelect(templateId: templateId, token: token, postback: postback, service: service, completion: nil)
     }
     
     func triggerChild(templateId: String, data: [String: AnyHashable]) {}
