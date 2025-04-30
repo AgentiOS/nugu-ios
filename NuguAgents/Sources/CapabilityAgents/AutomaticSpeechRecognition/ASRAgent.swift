@@ -20,7 +20,6 @@
 
 import Foundation
 import AVFoundation
-import Accelerate
 
 import NuguCore
 import NuguUtils
