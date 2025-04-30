@@ -440,6 +440,7 @@
 		A17B06D4239E28EB00D739E9 /* LocalTTSAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17B06D3239E28EB00D739E9 /* LocalTTSAgent.swift */; };
 		A19EC87625761343003E53A9 /* WeakScriptMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F1A7D724B451F00023B6C9 /* WeakScriptMessageHandler.swift */; };
 		A19ECA1A2578CED3003E53A9 /* NuguUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7314DF47255E3EA2004882BB /* NuguUtils.framework */; };
+		A6637DE92DC2178800BC3C2C /* TTSAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6637DE82DC2178800BC3C2C /* TTSAgentDelegate.swift */; };
 		E604803D2D2B3F29004933F2 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E604803C2D2B3F29004933F2 /* RingBuffer.swift */; };
 		E62A15F82BFAB5D600C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15F72BFAB5D600C336FA /* NattyLog */; };
 		E62A15FA2BFAB5FA00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15F92BFAB5FA00C336FA /* NattyLog */; };
@@ -1151,6 +1152,7 @@
 		A17B065B2394D22700D739E9 /* device_GW_error_004.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_004.wav; sourceTree = "<group>"; };
 		A17B065D2394D22800D739E9 /* device_GW_error_006.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = device_GW_error_006.wav; sourceTree = "<group>"; };
 		A17B06D3239E28EB00D739E9 /* LocalTTSAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTTSAgent.swift; sourceTree = "<group>"; };
+		A6637DE82DC2178800BC3C2C /* TTSAgentDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSAgentDelegate.swift; sourceTree = "<group>"; };
 		E604803C2D2B3F29004933F2 /* RingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBuffer.swift; sourceTree = "<group>"; };
 		E626A0372C0FDD94009C4E63 /* AsyncKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncKey.swift; sourceTree = "<group>"; };
 		E63952A128BEF16700DC158C /* TextInputSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextInputSource.swift; sourceTree = "<group>"; };
@@ -1857,6 +1859,7 @@
 			children = (
 				736508622462F7FA00EF4549 /* Opus */,
 				1FFFF3502375707000C9A177 /* TTSAgent.swift */,
+				A6637DE82DC2178800BC3C2C /* TTSAgentDelegate.swift */,
 				1FFFF3522375707000C9A177 /* TTSAgent+Event.swift */,
 				7373890224A46CA00018DDD2 /* TTSAgentProtocol.swift */,
 				1FFFF3532375707000C9A177 /* TTSSpeakPayload.swift */,
@@ -3988,6 +3991,7 @@
 				1FFBC8A825EDFB5100DFD0D6 /* AlertsAgent.swift in Sources */,
 				73152FBC23E0414700F843C3 /* ASRAgent+Event.swift in Sources */,
 				1FD5D19324D2A0F0007BA384 /* MediaPlayerAgentContext.swift in Sources */,
+				A6637DE92DC2178800BC3C2C /* TTSAgentDelegate.swift in Sources */,
 				1F3B2F1D2660C01300D6432B /* RoutineAgentDelegate.swift in Sources */,
 				A135E663241F1925006F82E5 /* AudioPlayerAgent+SettingsEvent.swift in Sources */,
 				737388EE24A46C680018DDD2 /* AudioPlayerDisplayRepeat.swift in Sources */,
