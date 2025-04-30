@@ -145,24 +145,12 @@ final class AudioPlayer {
     }
     
     func shouldResume(player: AudioPlayer) -> Bool {
-        guard payload.playServiceId == player.payload.playServiceId else {
+        guard payload.audioItem.stream.token == player.payload.audioItem.stream.token,
+                payload.playServiceId == player.payload.playServiceId,
+                player.internalPlayer != nil else {
             return false
         }
-        
-        guard payload.sourceType == player.payload.sourceType else {
-            return false
-        }
-        
-        switch player.payload.sourceType {
-        case .url:
-            return payload.audioItem.stream.url == player.payload.audioItem.stream.url
-        case .attachment:
-            return payload.audioItem.stream.token == player.payload.audioItem.stream.token
-        default:
-            return false
-        }
-        
-        return false
+        return true
     }
 
     func replacePlayer(_ player: AudioPlayer) {
