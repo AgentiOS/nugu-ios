@@ -29,13 +29,13 @@ extension DisplayAgent {
         let referrerDialogRequestId: String?
         
         enum TypeInfo {
-            case elementSelected(token: String, postback: [String: AnyHashable]?)
-            case closeSucceeded
-            case closeFailed
-            case controlFocusSucceeded(direction: DisplayControlPayload.Direction)
-            case controlFocusFailed(direction: DisplayControlPayload.Direction)
-            case controlScrollSucceeded(direction: DisplayControlPayload.Direction, interactionControl: InteractionControl?)
-            case controlScrollFailed(direction: DisplayControlPayload.Direction, interactionControl: InteractionControl?)
+            case elementSelected(token: String, postback: [String: AnyHashable]?, service: [String: AnyHashable]?)
+            case closeSucceeded(service: [String: AnyHashable]?)
+            case closeFailed(service: [String: AnyHashable]?)
+            case controlFocusSucceeded(direction: DisplayControlPayload.Direction, service: [String: AnyHashable]?)
+            case controlFocusFailed(direction: DisplayControlPayload.Direction, service: [String: AnyHashable]?)
+            case controlScrollSucceeded(direction: DisplayControlPayload.Direction, interactionControl: InteractionControl?, service: [String: AnyHashable]?)
+            case controlScrollFailed(direction: DisplayControlPayload.Direction, interactionControl: InteractionControl?, service: [String: AnyHashable]?)
             case triggerChild(parentToken: String, data: [String: AnyHashable])
         }
     }
@@ -49,22 +49,39 @@ extension DisplayAgent.Event: Eventable {
             "playServiceId": playServiceId
         ]
         switch typeInfo {
-        case .elementSelected(let token, let postback):
+        case .elementSelected(let token, let postback, let service):
             payload["token"] = token
             if let postback = postback {
                 payload["postback"] = postback
             }
-        case .controlFocusSucceeded(let direction),
-                .controlFocusFailed(let direction):
+            
+            if let service {
+                payload["service"] = service
+            }
+        case let .closeSucceeded(service),
+            let .closeFailed(service):
+            if let service {
+                payload["service"] = service
+            }
+        case .controlFocusSucceeded(let direction, let service),
+                .controlFocusFailed(let direction, let service):
             payload["direction"] = direction
-        case .controlScrollSucceeded(let direction, let interactionControl),
-             .controlScrollFailed(let direction, let interactionControl):
+            
+            if let service {
+                payload["service"] = service
+            }
+        case .controlScrollSucceeded(let direction, let interactionControl, let service),
+             .controlScrollFailed(let direction, let interactionControl, let service):
             payload["direction"] = direction
             
             if let interactionControl = interactionControl,
                let interactionControlData = try? JSONEncoder().encode(interactionControl),
                let interactionControlDictionary = try? JSONSerialization.jsonObject(with: interactionControlData, options: []) as? [String: AnyHashable] {
                 payload["interactionControl"] = interactionControlDictionary
+            }
+            
+            if let service {
+                payload["service"] = service
             }
         case .triggerChild(let parentToken, let data):
             payload["parentToken"] = parentToken
