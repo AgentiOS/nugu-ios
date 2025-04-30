@@ -22,6 +22,7 @@ import Foundation
 
 struct DisplayClosePayload {
     let playServiceId: String
+    let service: [String: AnyHashable]?
 }
 
 // MARK: - Decodable
@@ -29,11 +30,13 @@ struct DisplayClosePayload {
 extension DisplayClosePayload: Decodable {
     enum CodingKeys: String, CodingKey {
         case playServiceId
+        case service
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         playServiceId = try container.decode(String.self, forKey: .playServiceId)
+        service = try container.decodeIfPresent([String: AnyHashable].self, forKey: .service)
     }
 }
