@@ -27,7 +27,8 @@ import RxSwift
 
 public final class TTSAgent: TTSAgentProtocol {
     // CapabilityAgentable
-    public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .textToSpeech, version: "1.3")
+    public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .textToSpeech, version: "1.4")
+    public weak var delegate: TTSAgentDelegate?
     private let playSyncProperty = PlaySyncProperty(layerType: .info, contextType: .sound)
     
     // TTSAgentProtocol
@@ -196,7 +197,8 @@ public final class TTSAgent: TTSAgentProtocol {
             "ttsActivity": self.ttsState.value,
             "version": self.capabilityAgentProperty.version,
             "engine": "skt",
-            "token": self.currentPlayer?.payload.token
+            "token": self.currentPlayer?.payload.token,
+            "allowSpeak": self.delegate?.ttsAgentAllowSpeak() ?? false
         ]
         completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
     }

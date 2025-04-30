@@ -85,7 +85,7 @@ extension DisplayTemplate.Payload: Codable {
         duration = try? container.decode(Duration.self, forKey: .duration)
         focusable = try? container.decodeIfPresent(Bool.self, forKey: .focusable)
         contextLayer = (try? container.decode(PlaySyncProperty.LayerType.self, forKey: .contextLayer)) ?? .info
-        service = try? container.decodeIfPresent([String: AnyHashable].self, forKey: .focusable)
+        service = try? container.decodeIfPresent([String: AnyHashable].self, forKey: .service)
     }
     
     public func encode(to encoder: Encoder) throws {
