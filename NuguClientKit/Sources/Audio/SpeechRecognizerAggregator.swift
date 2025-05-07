@@ -35,6 +35,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private var asrResultObserver: Any?
     private var becomeActiveObserver: Any?
     private var audioSessionInterruptionObserver: Any?
+    private var micInputBufferObserver: Any?
     
     private let asrAgent: ASRAgentProtocol
     private let keywordDetector: KeywordDetector
@@ -43,6 +44,8 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private var micInputProviderDelay: DispatchTime = .now()
     private let micQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.mic")
     @Atomic private var startMicWorkItem: DispatchWorkItem?
+    
+    private var audioBufferHandler: ((AVAudioPCMBuffer) -> Void)?
     
     private var audioSessionInterrupted = false
     private let recognizeQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.recognize")
@@ -82,6 +85,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
         
         addAsrStateObserver()
         addAsrResultObserver()
+        addMicInputBufferObserver()
     }
     
     deinit {
@@ -93,6 +97,9 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
         }
         if let becomeActiveObserver = becomeActiveObserver {
             notificationCenter.removeObserver(becomeActiveObserver)
+        }
+        if let micInputBufferObserver = micInputBufferObserver {
+            notificationCenter.removeObserver(micInputBufferObserver)
         }
         removeAudioSessionObservers()
     }
@@ -213,7 +220,7 @@ public extension SpeechRecognizerAggregator {
         }
     }
     
-    func startMicInputProvider(requestingFocus: Bool, completion: @escaping (EndedUp<Error>) -> Void) {
+    func startMicInputProvider(requestingFocus: Bool, handleAudioBuffer: ((AVAudioPCMBuffer) -> Void)?, completion: @escaping (EndedUp<Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
@@ -234,9 +241,15 @@ public extension SpeechRecognizerAggregator {
                     
                     do {
                         try self.micInputProvider.start()
+                        
+                        if let handleAudioBuffer {
+                            self.audioBufferHandler = handleAudioBuffer
+                        }
+                        
                         completion(.success)
                     } catch {
                         log.error(error)
+                        audioBufferHandler = nil
                         completion(.failure(error))
                     }
                 }
@@ -248,6 +261,7 @@ public extension SpeechRecognizerAggregator {
         micQueue.async { [weak self] in
             self?.startMicWorkItem?.cancel()
             self?.micInputProvider.stop()
+            self?.audioBufferHandler = nil
             completion?()
         }
     }
@@ -388,6 +402,20 @@ private extension SpeechRecognizerAggregator {
         if let audioSessionInterruptionObserver = audioSessionInterruptionObserver {
             NotificationCenter.default.removeObserver(audioSessionInterruptionObserver)
             self.audioSessionInterruptionObserver = nil
+        }
+    }
+}
+
+// MARK: - MicInputProviderObserver
+
+private extension SpeechRecognizerAggregator {
+    func addMicInputBufferObserver() {
+        if let micInputBufferObserver = micInputBufferObserver {
+            notificationCenter.removeObserver(micInputBufferObserver)
+        }
+        
+        micInputBufferObserver = micInputProvider.observe(NuguClientNotification.MicInputProvider.Buffer.self, queue: .main) { [weak self] (notification) in
+            self?.audioBufferHandler?(notification.buffer)
         }
     }
 }

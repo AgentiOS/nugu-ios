@@ -19,6 +19,7 @@
 //
 
 import Foundation
+import AVKit
 
 import NuguAgents
 import NuguCore
@@ -47,7 +48,7 @@ public protocol SpeechRecognizerAggregatable: AnyObject {
     /// Stop microphone, keyword detector and ASR.
     func stopListening()
     
-    func startMicInputProvider(requestingFocus: Bool, completion: @escaping (EndedUp<Error>) -> Void)
+    func startMicInputProvider(requestingFocus: Bool, handleAudioBuffer: ((AVAudioPCMBuffer) -> Void)?, completion: @escaping (EndedUp<Error>) -> Void)
     
     func stopMicInputProvider(completion: (() -> Void)?)
 }
@@ -68,6 +69,13 @@ public extension SpeechRecognizerAggregatable {
     
     func startListeningWithTrigger() {
         startListeningWithTrigger(completion: nil)
+    }
+    
+    func startMicInputProvider(
+        requestingFocus: Bool,
+        completion: @escaping (EndedUp<Error>) -> Void
+    ) {
+        startMicInputProvider(requestingFocus: requestingFocus, handleAudioBuffer: nil, completion: completion)
     }
     
     func stopMicInputProvider() {
