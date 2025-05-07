@@ -22,9 +22,10 @@ import Foundation
 import AVFoundation
 
 import NuguObjcUtils
+import NuguUtils
 
 /// Record audio input from a microphone.
-public class MicInputProvider {
+public class MicInputProvider: TypedNotifyable {
     public weak var delegate: MicInputProviderDelegate?
     
     /// Whether the microphone is currently running.
@@ -83,6 +84,8 @@ public class MicInputProvider {
     /// - throws: An error of type `MicInputError`
     public func start() throws {
         try start { [weak self] (buffer, _) in
+            let typedNotification = NuguClientNotification.MicInputProvider.Buffer(buffer: buffer)
+            self?.notificationCenter.post(name: .micInputAudioBuffer, object: self, userInfo: typedNotification.dictionary)
             self?.delegate?.micInputProviderDidReceive(buffer: buffer)
         }
     }
@@ -212,6 +215,27 @@ extension MicInputProvider {
         if let audioEngineConfigurationObserver = audioEngineConfigurationObserver {
             notificationCenter.removeObserver(audioEngineConfigurationObserver)
             self.audioEngineConfigurationObserver = nil
+        }
+    }
+}
+
+// MARK: - Observers
+
+extension Notification.Name {
+    static let micInputAudioBuffer = Notification.Name("com.sktelecom.romaine.notification.name.mic_input_audio_buffer")
+}
+
+public extension NuguClientNotification {
+    enum MicInputProvider {
+        public struct Buffer: TypedNotification {
+            public static let name: Notification.Name = .micInputAudioBuffer
+            public let buffer: AVAudioPCMBuffer
+
+            public static func make(from: [String: Any]) -> Buffer? {
+                guard let buffer = from["buffer"] as? AVAudioPCMBuffer else { return nil }
+                
+                return Buffer(buffer: buffer)
+            }
         }
     }
 }
