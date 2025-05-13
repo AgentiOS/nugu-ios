@@ -11,7 +11,7 @@ import Testing
 @testable import NuguCore
 
 struct NuguCoreTests {
-    @Test("get Context using Combine")
+    @Test("get contexts using combine")
     func contextManagerTest1() async throws {
         let sut = ContextManager()
         
