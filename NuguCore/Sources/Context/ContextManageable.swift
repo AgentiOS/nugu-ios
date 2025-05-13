@@ -19,6 +19,7 @@
 //
 
 import Foundation
+import Combine
 
 /// Manage capability agent's context.
 /// Context is a container used to communicate the state of the capability agents to server.
@@ -63,5 +64,31 @@ public extension ContextManageable {
                 continuation.resume(returning: contextInfos)
             }
         }
+    }
+     
+    func contexts() -> AnyPublisher<[ContextInfo], Error> {
+        Future { [weak self] promise in
+            guard let self else {
+                promise(.failure(NuguCoreError.invalidState))
+                return
+            }
+            
+            getContexts { contextInfos in
+                promise(.success(contextInfos))
+            }
+        }.eraseToAnyPublisher()
+    }
+    
+    func contexts(namespace: String) -> AnyPublisher<[ContextInfo], Error> {
+        Future { [weak self] promise in
+            guard let self else {
+                promise(.failure(NuguCoreError.invalidState))
+                return
+            }
+            
+            getContexts(namespace: namespace) { contextInfos in
+                promise(.success(contextInfos))
+            }
+        }.eraseToAnyPublisher()
     }
 }
