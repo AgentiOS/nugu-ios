@@ -8,10 +8,35 @@
 
 import Testing
 
+@testable import NuguCore
+
 struct NuguCoreTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test("get Context using Combine")
+    func contextManagerTest1() async throws {
+        let sut = ContextManager()
+        
+        let expectNamespaces: Set<String> = ["test1", "test2", "test3"]
+        
+        expectNamespaces.forEach {
+            sut.addProvider(makeContextProvider(namespace: $0))
+        }
+        
+        let result = await withCheckedContinuation { continuation in
+            let _ = sut.contexts()
+                .sink(
+                    receiveCompletion: { _ in },
+                    receiveValue: { contextInfo in
+                        continuation.resume(returning: Set(contextInfo.map(\.name)))
+                    }
+                )
+        }
+        
+        #expect(result == expectNamespaces)
+        
+        func makeContextProvider(namespace: String) -> ContextInfoProviderType {
+            { completion in
+                completion(.init(contextType: .client, name: namespace, payload: [:] as [String: AnyHashable]))
+            }
+        }
     }
-
 }
