@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "0FFEEA19-06D8-4DFA-8896-898B961C1D0F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:nugu-ios.xcodeproj",
+        "identifier" : "E62BF1172DD2D47B0054322D",
+        "name" : "NuguAgentsTests"
+      }
+    }
+  ],
+  "version" : 1
+}
