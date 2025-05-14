@@ -190,7 +190,7 @@ public extension NuguClient {
             contextManager = ContextManager()
             directiveSequencer = DirectiveSequencer()
             focusManager = FocusManager()
-            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer)
+            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer, nuguApiProvider: NuguApiProvider())
             playSyncManager = PlaySyncManager(contextManager: contextManager)
             dialogAttributeStore = DialogAttributeStore()
             sessionManager = SessionManager()

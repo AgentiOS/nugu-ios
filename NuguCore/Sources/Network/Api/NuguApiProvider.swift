@@ -24,7 +24,7 @@ import NuguUtils
 
 import RxSwift
 
-class NuguApiProvider: NSObject {
+public class NuguApiProvider: NSObject, NuguApiProvidable {
     private var requestTimeout: TimeInterval
     private var candidateResourceServers: [String]?
     private var disposeBag = DisposeBag()
@@ -51,7 +51,7 @@ class NuguApiProvider: NSObject {
     private var serverSentEventProcessor: ServerSentEventProcessor?
     
     // state of client side load balanceing
-    private(set) public var cslbState: ClientSideLoadBalanceState = .unnecessary {
+    private var cslbState: ClientSideLoadBalanceState = .unnecessary {
         didSet {
             if oldValue != cslbState {
                 log.debug("client side load balancing: \(cslbState)")
@@ -65,7 +65,7 @@ class NuguApiProvider: NSObject {
      - Parameter registryServerUrl: server url for client load balancing
      - Parameter options: api options.
      */
-    init(timeout: TimeInterval = 20.0) {
+    public init(timeout: TimeInterval = 20.0) {
         requestTimeout = timeout
         super.init()
     }
@@ -188,7 +188,7 @@ class NuguApiProvider: NSObject {
         return partObserver.compactMap { $0 }
     }
     
-    func setRequestTimeout(_ timeInterval: TimeInterval) {
+    public func setRequestTimeout(_ timeInterval: TimeInterval) {
         requestTimeout = timeInterval
     }
 }
@@ -199,7 +199,7 @@ extension NuguApiProvider {
     /**
      Request to device gateway (resource server)
      */
-    func events(boundary: String, httpHeaderFields: [String: String]?, inputStream: InputStream) -> Observable<MultiPartParser.Part> {
+    public func events(boundary: String, httpHeaderFields: [String: String]?, inputStream: InputStream) -> Observable<MultiPartParser.Part> {
         var uploadTask: URLSessionUploadTask!
         
         return Single<Observable<Data>>.create { [weak self] (single) -> Disposable in
@@ -262,7 +262,7 @@ extension NuguApiProvider {
     /**
      Find available device gateway (resource server)
     */
-    var policies: Single<Policy> {
+    public var policies: Single<Policy> {
         return internalPolicies
             .do { [weak self] networkPolicy in
                 log.debug("Server initiated directive policies: \(networkPolicy.serverPolicies)")
@@ -313,7 +313,7 @@ extension NuguApiProvider {
     /**
     Start to receive data which is not requested but sent by server. (server side event)
     */
-    var directive: Observable<MultiPartParser.Part> {
+    public var directive: Observable<MultiPartParser.Part> {
         serverPolicies.removeAll()
         
         return policies
@@ -331,7 +331,7 @@ extension NuguApiProvider {
     /**
      Send ping data to keep stream of server side event
      */
-    var ping: Completable {
+    public var ping: Completable {
         guard let baseUrl = loadBalancedUrl,
               let pingUrl = URL(string: NuguApi.ping.uri(baseUrl: baseUrl)) else {
             log.error("no resource server url")
@@ -354,7 +354,7 @@ extension NuguApiProvider {
 // MARK: - URLSessionDelegate
 
 extension NuguApiProvider: URLSessionDataDelegate, StreamDelegate {
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         log.debug("didReceive response:\n\(response)\n")
         
         guard let processor: MultiPartProcessable = eventResponseProcessors[dataTask] ?? serverSentEventProcessor else {
@@ -396,7 +396,7 @@ extension NuguApiProvider: URLSessionDataDelegate, StreamDelegate {
         }
     }
     
-    func urlSession(_ session: URLSession, task: URLSessionTask, needNewBodyStream completionHandler: @escaping (InputStream?) -> Void) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, needNewBodyStream completionHandler: @escaping (InputStream?) -> Void) {
         guard let processor = eventResponseProcessors[task] else {
             log.error("Can't send an event. Unknown URLSessionTask requested input stream")
             return
@@ -411,11 +411,11 @@ extension NuguApiProvider: URLSessionDataDelegate, StreamDelegate {
         completionHandler(processor.inputStream)
     }
     
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         (eventResponseProcessors[dataTask]?.subject ?? serverSentEventProcessor?.subject)?.onNext(data)
     }
     
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         defer {
             processorQueue.async { [weak self] in
                 self?.eventResponseProcessors.keys.contains(task) == true ? (self?.eventResponseProcessors[task] = nil) : (self?.serverSentEventProcessor = nil)

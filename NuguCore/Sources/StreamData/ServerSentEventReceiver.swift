@@ -23,7 +23,7 @@ import Foundation
 import RxSwift
 
 class ServerSentEventReceiver {
-    private let apiProvider: NuguApiProvider
+    private let apiProvider: NuguApiProvidable
     private var pingDisposable: Disposable?
     private let stateSubject = PublishSubject<ServerSentEventReceiverState>()
     private let sseStateQueue = DispatchQueue(label: "com.sktelecom.romaine.core.server_sent_event_state")
@@ -39,7 +39,7 @@ class ServerSentEventReceiver {
         }
     }
     
-    init(apiProvider: NuguApiProvider) {
+    init(apiProvider: NuguApiProvidable) {
         self.apiProvider = apiProvider
     }
 
