@@ -22,8 +22,6 @@ import Foundation
 
 import NuguUtils
 
-import RxSwift
-
 public class DirectiveSequencer: DirectiveSequenceable {
     private var handlingDirectives = [(directive: Downstream.Directive, blockingPolicy: BlockingPolicy)]()
     private var blockedDirectives = [(directive: Downstream.Directive, blockingPolicy: BlockingPolicy)]()
@@ -31,7 +29,6 @@ public class DirectiveSequencer: DirectiveSequenceable {
     @Atomic private var directiveHandleInfos = DirectiveHandleInfos()
     private var directiveCancelPolicies = [(dialogRequestId: String, policy: DirectiveCancelPolicy)]()
     private let directiveSequencerDispatchQueue = DispatchQueue(label: "com.sktelecom.romaine.directive_sequencer", qos: .utility)
-    private let disposeBag = DisposeBag()
     
     public init() {}
 }
