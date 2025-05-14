@@ -8,10 +8,51 @@
 
 import Testing
 
+@testable import NuguAgents
+
 struct NuguAgentsTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+    @Test("interactionControlManager start")
+    func interactionControlManagerTest1() async throws {
+        let sut = InteractionControlManager()
+        sut.start(mode: .multiTurn, category: .audioPlayer)
+        
+        let result = await withCheckedContinuation { continuation in
+            NotificationCenter.default.addObserver(
+                forName: Notification.Name.interactionControlDidChange,
+                object: nil,
+                queue: nil
+            ) { notification in
+                let multiTurn = notification.userInfo?["multiTurn"] as? Bool
+                
+                if multiTurn == true {
+                    continuation.resume(returning: multiTurn)
+                }
+            }
+        }
+        
+        #expect(result == true)
     }
-
+    
+    @Test("interactionControlManager start-finish")
+    func interactionControlManagerTest2() async throws {
+        let sut = InteractionControlManager()
+        sut.start(mode: .multiTurn, category: .audioPlayer)
+        sut.finish(mode: .multiTurn, category: .audioPlayer)
+        
+        let result = await withCheckedContinuation { continuation in
+            NotificationCenter.default.addObserver(
+                forName: Notification.Name.interactionControlDidChange,
+                object: nil,
+                queue: nil
+            ) { notification in
+                let multiTurn = notification.userInfo?["multiTurn"] as? Bool
+                
+                if multiTurn == false {
+                    continuation.resume(returning: multiTurn)
+                }
+            }
+        }
+        
+        #expect(result == false)
+    }
 }

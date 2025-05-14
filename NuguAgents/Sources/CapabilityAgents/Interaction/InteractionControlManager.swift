@@ -19,21 +19,15 @@
 //
 
 import Foundation
+import Combine
 
 import NuguUtils
 import NuguCore
 
-import RxSwift
-
 public class InteractionControlManager: InteractionControlManageable {
     private let interactionDispatchQueue = DispatchQueue(label: "com.sktelecom.romaine.interaction_control", qos: .userInitiated)
-    private lazy var interactioniScheduler = SerialDispatchQueueScheduler(
-        queue: interactionDispatchQueue,
-        internalSerialQueueName: "com.sktelecom.romaine.interaction_control"
-    )
-    
     private var interactionControls = Set<CapabilityAgentCategory>()
-    private var timeoutTimers = [String: Disposable]()
+    private var timeoutTimers = [String: AnyCancellable]()
     
     public init() {}
 }
@@ -44,12 +38,12 @@ public extension InteractionControlManager {
     func start(mode: InteractionControl.Mode, category: CapabilityAgentCategory) {
         log.debug(category)
         interactionDispatchQueue.async { [weak self] in
-            guard let self = self, mode == .multiTurn else { return }
+            guard let self, mode == .multiTurn else { return }
             
-            self.addTimer(category: category)
-            self.interactionControls.insert(category)
-            if self.interactionControls.count == 1 {
-                self.post(NuguAgentNotification.InteractionControl.MultiTurn(multiTurn: true))
+            addTimer(category: category)
+            interactionControls.insert(category)
+            if interactionControls.count == 1 {
+                post(NuguAgentNotification.InteractionControl.MultiTurn(multiTurn: true))
             }
         }
     }
@@ -57,13 +51,10 @@ public extension InteractionControlManager {
     func finish(mode: InteractionControl.Mode, category: CapabilityAgentCategory) {
         log.debug(category)
         interactionDispatchQueue.async { [weak self] in
-            guard let self = self, mode == .multiTurn else { return }
+            guard let self, mode == .multiTurn else { return }
             
-            self.removeTimer(category: category)
-            self.interactionControls.remove(category)
-            if self.interactionControls.isEmpty {
-                self.post(NuguAgentNotification.InteractionControl.MultiTurn(multiTurn: false))
-            }
+            removeTimer(category: category)
+            clearInterfaction(category)
         }
     }
 }
@@ -71,22 +62,32 @@ public extension InteractionControlManager {
 private extension InteractionControlManager {
     func addTimer(category: CapabilityAgentCategory) {
         log.debug(category)
-        timeoutTimers[category.name] = Single<Int>.timer(InteractionControlConst.timeout, scheduler: interactioniScheduler)
-            .subscribe(onSuccess: { [weak self] _ in
-                guard let self = self else { return }
+        
+        timeoutTimers[category.name] = Just(())
+            .delay(
+                for: .seconds(InteractionControlConst.timeout),
+                scheduler: interactionDispatchQueue
+            )
+            .sink { [weak self] _ in
+                guard let self else { return }
                 
                 log.debug("Timer fired. \(category)")
-                self.interactionControls.remove(category)
-                if self.interactionControls.isEmpty {
-                    self.post(NuguAgentNotification.InteractionControl.MultiTurn(multiTurn: false))
-                }
-            })
+                clearInterfaction(category)
+            }
     }
     
     func removeTimer(category: CapabilityAgentCategory) {
         log.debug(category)
-        timeoutTimers[category.name]?.dispose()
+        timeoutTimers[category.name]?.cancel()
         timeoutTimers[category.name] = nil
+    }
+    
+    func clearInterfaction(_ category: CapabilityAgentCategory) {
+        interactionControls.remove(category)
+        
+        if interactionControls.isEmpty {
+            post(NuguAgentNotification.InteractionControl.MultiTurn(multiTurn: false))
+        }
     }
 }
 

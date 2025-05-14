@@ -21,5 +21,5 @@
 import Foundation
 
 enum InteractionControlConst {
-    static let timeout: DispatchTimeInterval = .seconds(60)
+    static let timeout: TimeInterval = 60.0
 }
