@@ -459,6 +459,13 @@ public extension NuguClient {
         }
     }
     
+    func configureDeviceGatewayAddress(completion: ((StreamDataState) -> Void)? = nil) {
+        directiveConnectionQueue.async { [weak self] in
+            guard let self else { return }
+            streamDataRouter.configureDeviceGatewayAddress(completion: completion)
+        }
+    }
+    
     /// Send event that needs a text-based recognition
     ///
     /// This function cancel speech recognition.(e.g. `ASRAgentProtocol.startRecognition(:initiator)`)
