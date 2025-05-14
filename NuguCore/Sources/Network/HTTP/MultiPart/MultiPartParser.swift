@@ -20,7 +20,7 @@
 
 import Foundation
 
-class MultiPartParser {
+public class MultiPartParser {
     let boundary: String
     
     init(boundary: String) {
@@ -102,7 +102,7 @@ class MultiPartParser {
 }
 
 extension MultiPartParser {
-    struct Part {
+    public struct Part {
         public let header: [String: String]
         public let body: Data
     }

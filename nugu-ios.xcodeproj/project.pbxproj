@@ -466,6 +466,7 @@
 		E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17312BFAB8BF00AD26F0 /* RxSwift */; };
 		E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFD2BFAB7D80061C704 /* NattyLog */; };
 		E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFF2BFAB7D80061C704 /* RxSwift */; };
+		E6A10AFA2DD3223C00084FBD /* NuguApiProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A10AF92DD3223C00084FBD /* NuguApiProvidable.swift */; };
 		E6AA8F902DD46649001C4099 /* NuguCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */; };
 		E6AA8F932DD4664C001C4099 /* NuguAgentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
@@ -1186,6 +1187,7 @@
 		E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRedirectTriggerChildPayload.swift; sourceTree = "<group>"; };
 		E649868928337649001AD733 /* ControlCenterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlCenterManager.swift; sourceTree = "<group>"; };
 		E66E33992DD2E73B00F80880 /* NuguCoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguCoreError.swift; sourceTree = "<group>"; };
+		E6A10AF92DD3223C00084FBD /* NuguApiProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguApiProvidable.swift; sourceTree = "<group>"; };
 		E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguCoreTests.swift; sourceTree = "<group>"; };
 		E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguAgentsTests.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
@@ -2507,6 +2509,7 @@
 				735A4CBA241172F0004E7A41 /* EventResponseProcessor.swift */,
 				735A4CBD241172F1004E7A41 /* NuguApi.swift */,
 				735A4CBC241172F0004E7A41 /* NuguApiProvider.swift */,
+				E6A10AF92DD3223C00084FBD /* NuguApiProvidable.swift */,
 				735A4CBB241172F0004E7A41 /* ServerSentEventProcessor.swift */,
 			);
 			name = Api;
@@ -3804,6 +3807,7 @@
 				1FFFF3C82375707100C9A177 /* FocusConst.swift in Sources */,
 				7373895924A473A60018DDD2 /* FocusManageable.swift in Sources */,
 				73A76A5A2B6B942C007F4178 /* ServerSentEventReceiver.swift in Sources */,
+				E6A10AFA2DD3223C00084FBD /* NuguApiProvidable.swift in Sources */,
 				7373892C24A46D430018DDD2 /* StreamDataState.swift in Sources */,
 				7373894224A46E5F0018DDD2 /* ContextInfo.swift in Sources */,
 				73454FC32387BDF00073AF48 /* NuguServerInfo.swift in Sources */,
