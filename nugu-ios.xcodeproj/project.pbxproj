@@ -471,6 +471,7 @@
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
 		E6BE047E2A0BA1BD00AE29E3 /* ImageAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */; };
 		E6BFB95C2C0698CB007AA282 /* Publishers+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */; };
+		E6C3EEDF2DD4681600519D46 /* NuguAgentsTestplan.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */; };
 		E6D10A982B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A972B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9A2B9FD9C20004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9C2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */; };
@@ -1190,6 +1191,8 @@
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
 		E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+Convenience.swift"; sourceTree = "<group>"; };
+		E6C3EEDD2DD467CA00519D46 /* NuguCoreTestplan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = NuguCoreTestplan.xctestplan; sourceTree = "<group>"; };
+		E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = NuguAgentsTestplan.xctestplan; sourceTree = "<group>"; };
 		E6D10A972B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -2792,6 +2795,7 @@
 			isa = PBXGroup;
 			children = (
 				E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */,
+				E6C3EEDD2DD467CA00519D46 /* NuguCoreTestplan.xctestplan */,
 			);
 			path = NuguCoreTests;
 			sourceTree = "<group>";
@@ -2800,6 +2804,7 @@
 			isa = PBXGroup;
 			children = (
 				E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */,
+				E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */,
 			);
 			path = NuguAgentsTests;
 			sourceTree = "<group>";
@@ -3524,6 +3529,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6C3EEDF2DD4681600519D46 /* NuguAgentsTestplan.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

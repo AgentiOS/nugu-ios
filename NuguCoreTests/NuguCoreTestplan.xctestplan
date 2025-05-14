@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "FAFBD130-05B4-4840-8663-8FC39864414C",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:nugu-ios.xcodeproj",
+        "identifier" : "E62BF1092DD2D4690054322D",
+        "name" : "NuguCoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}
