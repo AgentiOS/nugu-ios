@@ -19,18 +19,12 @@
 //
 
 import Foundation
+import Combine
 
 import NuguUtils
 
-import RxSwift
-
 public class PlaySyncManager: PlaySyncManageable {
     private let playSyncDispatchQueue = DispatchQueue(label: "com.sktelecom.romaine.play_sync", qos: .userInitiated)
-    private lazy var playSyncScheduler = SerialDispatchQueueScheduler(
-        queue: playSyncDispatchQueue,
-        internalSerialQueueName: "com.sktelecom.romaine.play_sync"
-    )
-    
     private let contextManager: ContextManageable
     
     private var playStack = PlayStack() {
@@ -39,7 +33,7 @@ public class PlaySyncManager: PlaySyncManageable {
             post(NuguCoreNotification.PlaySync.SynchronizedProperties(properties: properties))
         }
     }
-    private var playContextTimers = [PlaySyncProperty: Disposable]() {
+    private var playContextTimers = [PlaySyncProperty: Cancellable]() {
         didSet {
             log.debug(playContextTimers.keys.map { (property) -> String in
                 "\(property) \(timerDuration[property]?.seconds ?? 0)"
@@ -61,12 +55,12 @@ public class PlaySyncManager: PlaySyncManageable {
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
         self?.playSyncDispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 completion(nil)
                 return
             }
-            log.debug("\(self.playStack.playServiceIds)")
-            completion(ContextInfo(contextType: .client, name: "playStack", payload: self.playStack.playServiceIds))
+            log.debug("\(playStack.playServiceIds)")
+            completion(ContextInfo(contextType: .client, name: "playStack", payload: playStack.playServiceIds))
         }
     }
 }
@@ -77,23 +71,23 @@ public extension PlaySyncManager {
     func startPlay(property: PlaySyncProperty, info: PlaySyncInfo) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug("startPlay property: \(property) playSyncInfo: \(info)")
-            guard let self = self else { return }
+            guard let self else { return }
 
             // Push to play stack
-            self.pushToPlayStack(property: property, info: info)
+            pushToPlayStack(property: property, info: info)
             
             // Cancel timers
-            let timerGroup = self.playStack
+            let timerGroup = playStack
                 .filter { $0.property.layerType == property.layerType && $0.info.playStackServiceId == info.playStackServiceId }
                 .map { $0.property }
             log.debug("Cancel layer timer \(timerGroup)")
-            timerGroup.forEach(self.removeTimer)
+            timerGroup.forEach(removeTimer)
             
             // Start display only timer
-            let directiveGroup = self.playStack.filter { $0.info.dialogRequestId == info.dialogRequestId }
+            let directiveGroup = playStack.filter { $0.info.dialogRequestId == info.dialogRequestId }
             if property.contextType == .display && directiveGroup.count == 1 {
                 log.debug("Add display only timer \(property) \(info.duration)")
-                self.addTimer(property: property, duration: info.duration)
+                addTimer(property: property, duration: info.duration)
             }
         }
     }
@@ -101,23 +95,23 @@ public extension PlaySyncManager {
     func endPlay(property: PlaySyncProperty) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug("endPlay property: \(property)")
-            guard let self = self else { return }
-            guard let play = self.playStack[property] else { return }
+            guard let self else { return }
+            guard let play = playStack[property] else { return }
             
             // Set timers
-            let timerGroup = self.playStack
+            let timerGroup = playStack
                 .filter { $0.property.layerType == property.layerType && $0.info.playStackServiceId == play.playStackServiceId }
                 .map { $0.property }
             log.debug("Start layer timer \(timerGroup)")
-            timerGroup.forEach {
-                guard let duration = self.playStack[$0]?.duration else { return }
-                self.addTimer(property: $0, duration: duration)
+            timerGroup.forEach { [weak self] timer in
+                guard let duration = self?.playStack[timer]?.duration else { return }
+                self?.addTimer(property: timer, duration: duration)
             }
             
             // Multi-layer exceptions
-            if self.playStack.multiLayerSynced {
+            if playStack.multiLayerSynced {
                 // Pop from play stack
-                self.popFromPlayStack(property: property)
+                popFromPlayStack(property: property)
             }
         }
     }
@@ -125,10 +119,10 @@ public extension PlaySyncManager {
     func stopPlay(dialogRequestId: String, property: PlaySyncProperty? = nil) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug(dialogRequestId)
-            guard let self = self else { return }
+            guard let self else { return }
             
             // Pop from play stack
-            self.playStack
+            playStack
                 .filter { $0.info.dialogRequestId == dialogRequestId }
                 .filter {
                     guard let property = property else {
@@ -145,23 +139,23 @@ public extension PlaySyncManager {
     func startTimer(property: PlaySyncProperty, duration: TimeIntervallic) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug(property)
-            guard let self = self else { return }
-            guard self.playStack[property] != nil else { return }
+            guard let self else { return }
+            guard playStack[property] != nil else { return }
             
             // Start timers
-            self.addTimer(property: property, duration: duration)
+            addTimer(property: property, duration: duration)
         }
     }
     
     func resetTimer(property: PlaySyncProperty) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug("resetTimer property: \(property)")
-            guard let self = self else { return }
-            guard self.playContextTimers[property] != nil else { return }
+            guard let self else { return }
+            guard playContextTimers[property] != nil else { return }
             guard let play = self.playStack[property] else { return }
                         
             // Start timers
-            self.addTimer(property: property, duration: play.duration)
+            addTimer(property: property, duration: play.duration)
         }
     }
     
@@ -175,13 +169,13 @@ public extension PlaySyncManager {
     func pauseTimer(property: PlaySyncProperty) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug(property)
-            guard let self = self else { return }
+            guard let self else { return }
             
-            self.timerPaused = true
+            timerPaused = true
             
-            if self.playContextTimers[property] != nil {
-                self.removeTimer(property: property)
-                self.pausedTimers.insert(property)
+            if playContextTimers[property] != nil {
+                removeTimer(property: property)
+                pausedTimers.insert(property)
             }
         }
     }
@@ -189,15 +183,15 @@ public extension PlaySyncManager {
     func resumeTimer(property: PlaySyncProperty) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug(property)
-            guard let self = self else { return }
+            guard let self else { return }
             
-            self.timerPaused = false
+            timerPaused = false
 
-            self.pausedTimers.forEach { property in
-                guard let duration = self.timerDuration[property] else { return }
-                self.addTimer(property: property, duration: duration)
+            pausedTimers.forEach { [weak self] property in
+                guard let duration = self?.timerDuration[property] else { return }
+                self?.addTimer(property: property, duration: duration)
             }
-            self.pausedTimers.removeAll()
+            pausedTimers.removeAll()
         }
     }
 }
@@ -262,11 +256,16 @@ private extension PlaySyncManager {
         }
         
         log.debug("Timer will be fired")
-        playContextTimers[property] = Single<Int>.timer(duration.dispatchTimeInterval, scheduler: playSyncScheduler)
-            .subscribe(onSuccess: { [weak self] _ in
+
+        playContextTimers[property] = Just(())
+            .delay(
+                for: .milliseconds(duration.truncatedMilliSeconds),
+                scheduler: playSyncDispatchQueue
+            )
+            .sink { [weak self] _ in
                 log.debug("Timer fired. \(property) duration \(duration)")
                 self?.popFromPlayStack(property: property)
-            })
+            }
         
         // Post adjusted PlayStacks
         let properties = playStack.filter { self.playContextTimers[$0.property] == nil }
@@ -277,7 +276,7 @@ private extension PlaySyncManager {
         log.debug("removeTimer property: \(property)")
         guard playContextTimers[property] != nil || pausedTimers.contains(property) else { return }
         
-        playContextTimers[property]?.dispose()
+        playContextTimers[property]?.cancel()
         playContextTimers[property] = nil
         pausedTimers.remove(property)
     }
