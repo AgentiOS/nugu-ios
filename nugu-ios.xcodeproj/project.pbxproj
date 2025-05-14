@@ -466,9 +466,12 @@
 		E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17312BFAB8BF00AD26F0 /* RxSwift */; };
 		E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFD2BFAB7D80061C704 /* NattyLog */; };
 		E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFF2BFAB7D80061C704 /* RxSwift */; };
+		E6AA8F902DD46649001C4099 /* NuguCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */; };
+		E6AA8F932DD4664C001C4099 /* NuguAgentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
 		E6BE047E2A0BA1BD00AE29E3 /* ImageAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */; };
 		E6BFB95C2C0698CB007AA282 /* Publishers+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */; };
+		E6C3EEDF2DD4681600519D46 /* NuguAgentsTestplan.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */; };
 		E6D10A982B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A972B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9A2B9FD9C20004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9C2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */; };
@@ -1183,9 +1186,13 @@
 		E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRedirectTriggerChildPayload.swift; sourceTree = "<group>"; };
 		E649868928337649001AD733 /* ControlCenterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlCenterManager.swift; sourceTree = "<group>"; };
 		E66E33992DD2E73B00F80880 /* NuguCoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguCoreError.swift; sourceTree = "<group>"; };
+		E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguCoreTests.swift; sourceTree = "<group>"; };
+		E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguAgentsTests.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
 		E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+Convenience.swift"; sourceTree = "<group>"; };
+		E6C3EEDD2DD467CA00519D46 /* NuguCoreTestplan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = NuguCoreTestplan.xctestplan; sourceTree = "<group>"; };
+		E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = NuguAgentsTestplan.xctestplan; sourceTree = "<group>"; };
 		E6D10A972B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -1212,8 +1219,6 @@
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		89BC6D162DB6130E00320FBD /* EndPointDetectorEngine */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = EndPointDetectorEngine; sourceTree = "<group>"; };
-		E62BF10B2DD2D4690054322D /* NuguCoreTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NuguCoreTests; sourceTree = "<group>"; };
-		E62BF1192DD2D47B0054322D /* NuguAgentsTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = NuguAgentsTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2212,8 +2217,8 @@
 				73C256302695D5860008FE7F /* SilverTray */,
 				73BF06DB26A0208700112473 /* NuguObjcUtils */,
 				731A0CE926A584CF00569E47 /* TycheSDK */,
-				E62BF10B2DD2D4690054322D /* NuguCoreTests */,
-				E62BF1192DD2D47B0054322D /* NuguAgentsTests */,
+				E6AA8F8F2DD46649001C4099 /* NuguCoreTests */,
+				E6AA8F922DD4664C001C4099 /* NuguAgentsTests */,
 				731B932B26A6EB3000E77A07 /* Frameworks */,
 				3D9C429122745894000A6585 /* Products */,
 			);
@@ -2786,6 +2791,24 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		E6AA8F8F2DD46649001C4099 /* NuguCoreTests */ = {
+			isa = PBXGroup;
+			children = (
+				E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */,
+				E6C3EEDD2DD467CA00519D46 /* NuguCoreTestplan.xctestplan */,
+			);
+			path = NuguCoreTests;
+			sourceTree = "<group>";
+		};
+		E6AA8F922DD4664C001C4099 /* NuguAgentsTests */ = {
+			isa = PBXGroup;
+			children = (
+				E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */,
+				E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */,
+			);
+			path = NuguAgentsTests;
+			sourceTree = "<group>";
+		};
 		E6BE047A2A0BA18700AE29E3 /* Image */ = {
 			isa = PBXGroup;
 			children = (
@@ -3260,9 +3283,6 @@
 			dependencies = (
 				E62BF1102DD2D4690054322D /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				E62BF10B2DD2D4690054322D /* NuguCoreTests */,
-			);
 			name = NuguCoreTests;
 			packageProductDependencies = (
 			);
@@ -3282,9 +3302,6 @@
 			);
 			dependencies = (
 				E62BF11E2DD2D47B0054322D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E62BF1192DD2D47B0054322D /* NuguAgentsTests */,
 			);
 			name = NuguAgentsTests;
 			packageProductDependencies = (
@@ -3512,6 +3529,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6C3EEDF2DD4681600519D46 /* NuguAgentsTestplan.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4223,6 +4241,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6AA8F902DD46649001C4099 /* NuguCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4230,6 +4249,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6AA8F932DD4664C001C4099 /* NuguAgentsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5328,19 +5348,17 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.NuguCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -5354,18 +5372,16 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.NuguCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -5379,19 +5395,17 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.NuguAgentsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -5405,18 +5419,16 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sktelecom.NuguAgentsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
