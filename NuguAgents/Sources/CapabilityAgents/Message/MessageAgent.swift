@@ -65,7 +65,7 @@ public final class MessageAgent: MessageAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         
@@ -126,7 +126,7 @@ private extension MessageAgent {
             
             
             self?.messageDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
@@ -157,7 +157,7 @@ private extension MessageAgent {
     func handleSendMessage() -> HandleDirective {
         return { [weak self] directive, completion in
             self?.messageDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
