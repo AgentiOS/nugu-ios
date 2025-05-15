@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public final class MessageAgent: MessageAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .message, version: "1.5")
@@ -38,7 +37,7 @@ public final class MessageAgent: MessageAgentProtocol {
     private let interactionControlManager: InteractionControlManageable
     private var currentInteractionControl: InteractionControl?
     
-    private lazy var disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     
     // Handleable Directive
     private lazy var handleableDirectiveInfos: [DirectiveHandleInfo] = [
@@ -66,7 +65,7 @@ public final class MessageAgent: MessageAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         
@@ -96,17 +95,17 @@ public extension MessageAgent {
             referrerDialogRequestId: header?.dialogRequestId
         )
         
-        return sendFullContextEvent(event.rx) { [weak self] state in
+        return sendFullContextEvent(event) { [weak self] state in
             completion?(state)
             
             self?.messageDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch state {
                 case .finished, .error:
-                    self.currentInteractionControl = nil
+                    currentInteractionControl = nil
                     
                     if let interactionControl = payload.interactionControl {
-                        self.interactionControlManager.finish(
+                        interactionControlManager.finish(
                             mode: interactionControl.mode,
                             category: self.capabilityAgentProperty.category
                         )
@@ -127,7 +126,7 @@ private extension MessageAgent {
             
             
             self?.messageDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
@@ -158,7 +157,7 @@ private extension MessageAgent {
     func handleSendMessage() -> HandleDirective {
         return { [weak self] directive, completion in
             self?.messageDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
@@ -181,7 +180,7 @@ private extension MessageAgent {
                         typeInfo: typeInfo,
                         playServiceId: sendMessageItem.playServiceId,
                         referrerDialogRequestId: directive.header.dialogRequestId
-                    ).rx
+                    )
                 )
                 
                 completion(.finished)
@@ -194,32 +193,32 @@ private extension MessageAgent {
 
 private extension MessageAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: contextManager.rxContexts(namespace: capabilityAgentProperty.name),
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
             property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
     
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: contextManager.rxContexts(),
+            context: contextManager.contexts(),
             property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
