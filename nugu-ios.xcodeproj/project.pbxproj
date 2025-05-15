@@ -479,6 +479,10 @@
 		E6D10A9E2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D6F1AB2D9F667900FFD372 /* ControlCenterManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */; };
 		E6D81A8E2C8E812700E813F5 /* AsyncKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626A0372C0FDD94009C4E63 /* AsyncKey.swift */; };
+		E6EC9B5E2DD56685006B38C6 /* StreamDataRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EC9B5D2DD56685006B38C6 /* StreamDataRouterTests.swift */; };
+		E6EC9B612DD566BB006B38C6 /* NuguApiProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EC9B602DD566BB006B38C6 /* NuguApiProvider.swift */; };
+		E6EC9B632DD566D0006B38C6 /* DirectiveSequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EC9B622DD566D0006B38C6 /* DirectiveSequencer.swift */; };
+		E6EC9B652DD56700006B38C6 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E6EC9B642DD56700006B38C6 /* RxSwift */; };
 		E6F3DCBD2B4CB9D800298A20 /* ASRAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */; };
 		E6FBA02B2A1379C500AF8B05 /* MessengerAgentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FBA02A2A1379C400AF8B05 /* MessengerAgentProtocol.swift */; };
 		E6FBA02D2A137A9700AF8B05 /* ImageAgentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FBA02C2A137A9700AF8B05 /* ImageAgentProtocol.swift */; };
@@ -1200,6 +1204,9 @@
 		E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCenterManagerDelegate.swift; sourceTree = "<group>"; };
+		E6EC9B5D2DD56685006B38C6 /* StreamDataRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataRouterTests.swift; sourceTree = "<group>"; };
+		E6EC9B602DD566BB006B38C6 /* NuguApiProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguApiProvider.swift; sourceTree = "<group>"; };
+		E6EC9B622DD566D0006B38C6 /* DirectiveSequencer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectiveSequencer.swift; sourceTree = "<group>"; };
 		E6EFD4202CCA0A4C0003DD00 /* shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = shared.xcconfig; path = SupportingFiles/shared.xcconfig; sourceTree = "<group>"; };
 		E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASRAgentDelegate.swift; sourceTree = "<group>"; };
 		E6FBA02A2A1379C400AF8B05 /* MessengerAgentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessengerAgentProtocol.swift; sourceTree = "<group>"; };
@@ -1377,6 +1384,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6EC9B652DD56700006B38C6 /* RxSwift in Frameworks */,
 				E62BF11C2DD2D47B0054322D /* NuguAgents.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2806,7 +2814,9 @@
 		E6AA8F922DD4664C001C4099 /* NuguAgentsTests */ = {
 			isa = PBXGroup;
 			children = (
+				E6EC9B5F2DD566AB006B38C6 /* TestDouble */,
 				E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */,
+				E6EC9B5D2DD56685006B38C6 /* StreamDataRouterTests.swift */,
 				E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */,
 			);
 			path = NuguAgentsTests;
@@ -2820,6 +2830,15 @@
 				E6FBA02C2A137A9700AF8B05 /* ImageAgentProtocol.swift */,
 			);
 			path = Image;
+			sourceTree = "<group>";
+		};
+		E6EC9B5F2DD566AB006B38C6 /* TestDouble */ = {
+			isa = PBXGroup;
+			children = (
+				E6EC9B602DD566BB006B38C6 /* NuguApiProvider.swift */,
+				E6EC9B622DD566D0006B38C6 /* DirectiveSequencer.swift */,
+			);
+			path = TestDouble;
 			sourceTree = "<group>";
 		};
 		F78CB7CA25FF2E9400DC3103 /* Nudge */ = {
@@ -3308,6 +3327,7 @@
 			);
 			name = NuguAgentsTests;
 			packageProductDependencies = (
+				E6EC9B642DD56700006B38C6 /* RxSwift */,
 			);
 			productName = NuguAgentsTests;
 			productReference = E62BF1182DD2D47B0054322D /* NuguAgentsTests.xctest */;
@@ -4253,7 +4273,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6EC9B5E2DD56685006B38C6 /* StreamDataRouterTests.swift in Sources */,
+				E6EC9B612DD566BB006B38C6 /* NuguApiProvider.swift in Sources */,
 				E6AA8F932DD4664C001C4099 /* NuguAgentsTests.swift in Sources */,
+				E6EC9B632DD566D0006B38C6 /* DirectiveSequencer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5661,6 +5684,11 @@
 			productName = NattyLog;
 		};
 		E69D1DFF2BFAB7D80061C704 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		E6EC9B642DD56700006B38C6 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
