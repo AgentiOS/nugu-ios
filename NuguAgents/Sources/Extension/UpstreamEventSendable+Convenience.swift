@@ -55,6 +55,60 @@ public extension UpstreamDataSendable {
     }
     
     func sendEvent(
+        _ event: AnyPublisher<Eventable, Error>,
+        eventIdentifier: EventIdentifier,
+        context: AnyPublisher<[ContextInfo], Error>,
+        property: CapabilityAgentProperty,
+        completion: ((StreamDataState) -> Void)? = nil
+    ) -> Cancellable {
+        Publishers.Zip(event, context)
+            .map { event, contextPayload -> Upstream.Event in
+                event.makeEventMessage(
+                    property: property,
+                    eventIdentifier: eventIdentifier,
+                    contextPayload: contextPayload
+                )
+            }
+            .sink { receiveCompletion in
+                guard case let .failure(error) = receiveCompletion else { return }
+                completion?(.error(error))
+            } receiveValue: { [weak self] event in
+                guard let self else {
+                    completion?(.error(NuguAgentError.requestCanceled))
+                    return
+                }
+                sendEvent(event, completion: completion)
+            }
+    }
+    
+    func sendEvent(
+        _ event: Eventable,
+        eventIdentifier: EventIdentifier,
+        context: AnyPublisher<[ContextInfo], Error>,
+        property: CapabilityAgentProperty,
+        completion: ((StreamDataState) -> Void)? = nil
+    ) -> Cancellable {
+        context
+            .map { contextPayload -> Upstream.Event in
+                event.makeEventMessage(
+                    property: property,
+                    eventIdentifier: eventIdentifier,
+                    contextPayload: contextPayload
+                )
+            }
+            .sink { receiveCompletion in
+                guard case let .failure(error) = receiveCompletion else { return }
+                completion?(.error(error))
+            } receiveValue: { [weak self] event in
+                guard let self else {
+                    completion?(.error(NuguAgentError.requestCanceled))
+                    return
+                }
+                sendEvent(event, completion: completion)
+            }
+    }
+    
+    func sendEvent(
         _ event: Eventable,
         eventIdentifier: EventIdentifier,
         context: [ContextInfo],
