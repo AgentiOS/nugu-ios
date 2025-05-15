@@ -39,4 +39,6 @@ public protocol StreamDataRoutable: UpstreamDataSendable, TypedNotifyable {
     
     /// Disable connection-oriented feature.
     func stopReceiveServerInitiatedDirective()
+    
+    func configureDeviceGatewayAddress(completion: ((StreamDataState) -> Void)?)
 }

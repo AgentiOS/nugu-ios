@@ -35,6 +35,7 @@ public class StreamDataRouter: StreamDataRoutable {
     private var serverInitiatedDirectiveCompletion: ((StreamDataState) -> Void)?
     private var serverInitiatedDirectiveDisposable: Disposable?
     private var serverInitiatedDirectiveStateDisposable: Disposable?
+    private var directiveReceiveDisposable: Disposable?
     private let disposeBag = DisposeBag()
     
     public init(directiveSequencer: DirectiveSequenceable) {
@@ -119,6 +120,21 @@ public extension StreamDataRouter {
         serverInitiatedDirectiveDisposable?.dispose()
         serverInitiatedDirectiveStateDisposable?.dispose()
         serverInitiatedDirectiveCompletion = nil
+    }
+    
+    func configureDeviceGatewayAddress(completion: ((StreamDataState) -> Void)?) {
+        directiveReceiveDisposable?.dispose()
+        
+        directiveReceiveDisposable = nuguApiProvider.policies
+            .subscribe(
+                onSuccess: { _ in
+                    completion?(.finished)
+                },
+                onFailure: { error in
+                    completion?(.error(error))
+                }
+            )
+        directiveReceiveDisposable?.disposed(by: disposeBag)
     }
 }
 
