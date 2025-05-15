@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public final class ExtensionAgent: ExtensionAgentProtocol {
     // CapabilityAgentable
@@ -41,7 +40,7 @@ public final class ExtensionAgent: ExtensionAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "Action", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleAction)
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     public init(
         upstreamDataSender: UpstreamDataSendable,
@@ -62,15 +61,15 @@ public final class ExtensionAgent: ExtensionAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         let payload: [String: AnyHashable?] = [
-            "version": self.capabilityAgentProperty.version,
-            "data": self.delegate?.extensionAgentRequestContext()
+            "version": capabilityAgentProperty.version,
+            "data": delegate?.extensionAgentRequestContext()
         ]
         
         completion(
-            ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 })
+            ContextInfo(contextType: .capability, name: capabilityAgentProperty.name, payload: payload.compactMapValues { $0 })
         )
     }
 }
@@ -83,7 +82,7 @@ public extension ExtensionAgent {
             typeInfo: .commandIssued(data: data),
             playServiceId: playServiceId,
             referrerDialogRequestId: nil
-        ).rx, completion: completion).dialogRequestId
+        ), completion: completion).dialogRequestId
     }
 }
 
@@ -92,7 +91,7 @@ public extension ExtensionAgent {
 private extension ExtensionAgent {
     func handleAction() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -108,14 +107,14 @@ private extension ExtensionAgent {
                 playServiceId: item.playServiceId,
                 header: directive.header,
                 completion: { [weak self] (isSuccess) in
-                    guard let self = self else { return }
-                    
                     let typeInfo: Event.TypeInfo = isSuccess ? .actionSucceeded : .actionFailed
-                    self.sendCompactContextEvent(Event(
-                        typeInfo: typeInfo,
-                        playServiceId: item.playServiceId,
-                        referrerDialogRequestId: directive.header.dialogRequestId
-                    ).rx)
+                    self?.sendCompactContextEvent(
+                        Event(
+                            typeInfo: typeInfo,
+                            playServiceId: item.playServiceId,
+                            referrerDialogRequestId: directive.header.dialogRequestId
+                        )
+                    )
             })
         }
     }
@@ -125,17 +124,17 @@ private extension ExtensionAgent {
 
 private extension ExtensionAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
