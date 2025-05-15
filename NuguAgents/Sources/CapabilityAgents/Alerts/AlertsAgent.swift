@@ -281,7 +281,6 @@ private extension AlertsAgent {
             property: capabilityAgentProperty,
             completion: completion
         ).store(in: &cancellables)
-        
         return eventIdentifier
     }
 }
