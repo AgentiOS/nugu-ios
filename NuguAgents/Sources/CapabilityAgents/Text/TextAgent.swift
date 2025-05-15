@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public final class TextAgent: TextAgentProtocol {
     // CapabilityAgentable
@@ -61,7 +60,7 @@ public final class TextAgent: TextAgentProtocol {
         )
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     private var expectTyping: TextAgentExpectTyping? {
         didSet {
             guard oldValue?.dialogRequestId != expectTyping?.dialogRequestId else { return }
@@ -104,10 +103,10 @@ public final class TextAgent: TextAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
-        let payload: [String: AnyHashable] = ["version": self.capabilityAgentProperty.version]
-        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload))
+        let payload: [String: AnyHashable] = ["version": capabilityAgentProperty.version]
+        completion(ContextInfo(contextType: .capability, name: capabilityAgentProperty.name, payload: payload))
     }
 }
 
@@ -177,12 +176,12 @@ private extension TextAgent {
             defer { completion(.finished) }
             
             self?.textDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
-                guard self.delegate?.textAgentShouldHandleTextSource(directive: directive) != false else {
-                    self.sendCompactContextEvent(Event(
+                guard let self else { return }
+                guard delegate?.textAgentShouldHandleTextSource(directive: directive) != false else {
+                    sendCompactContextEvent(Event(
                         typeInfo: .textSourceFailed(token: payload.token, playServiceId: payload.playServiceId, errorCode: "NOT_SUPPORTED_STATE"),
                         referrerDialogRequestId: directive.header.dialogRequestId
-                    ).rx)
+                    ))
                     return
                 }
                 
@@ -193,7 +192,7 @@ private extension TextAgent {
                     requestType = .dialog
                 }
                 
-                self.sendFullContextEvent(self.textInput(
+                sendFullContextEvent(textInput(
                     text: payload.text,
                     token: payload.token,
                     requestType: requestType,
@@ -207,7 +206,7 @@ private extension TextAgent {
     func handleTextRedirect() -> HandleDirective {
         return { [weak self] directive, completion in
             self?.textDispatchQueue.async { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     completion(.canceled)
                     return
                 }
@@ -219,35 +218,35 @@ private extension TextAgent {
                 defer { completion(.finished) }
                 
                 if let interactionControl = payload.interactionControl {
-                    self.currentInteractionControl = interactionControl
-                    self.interactionControlManager.start(mode: interactionControl.mode, category: self.capabilityAgentProperty.category)
+                    currentInteractionControl = interactionControl
+                    interactionControlManager.start(mode: interactionControl.mode, category: capabilityAgentProperty.category)
                 }
                 
                 let interactionHandler = { [weak self] (state: StreamDataState) in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     
                     switch state {
                     case .finished, .error:
-                        self.currentInteractionControl = nil
+                        currentInteractionControl = nil
                         
                         if let interactionControl = payload.interactionControl {
-                            self.interactionControlManager.finish(mode: interactionControl.mode, category: self.capabilityAgentProperty.category)
+                            interactionControlManager.finish(mode: interactionControl.mode, category: capabilityAgentProperty.category)
                         }
                     default:
                         break
                     }
                 }
                 
-                guard self.delegate?.textAgentShouldHandleTextRedirect(directive: directive) != false else {
-                    self.sendCompactContextEvent(Event(
+                guard delegate?.textAgentShouldHandleTextRedirect(directive: directive) != false else {
+                    sendCompactContextEvent(Event(
                         typeInfo: .textRedirectFailed(
                             token: payload.token,
                             playServiceId: payload.playServiceId,
                             errorCode: "NOT_SUPPORTED_STATE",
-                            interactionControl: self.currentInteractionControl
+                            interactionControl: currentInteractionControl
                         ),
                         referrerDialogRequestId: directive.header.dialogRequestId
-                    ).rx, completion: interactionHandler)
+                    ), completion: interactionHandler)
                     return
                 }
                 
@@ -258,7 +257,8 @@ private extension TextAgent {
                     requestType = .normal
                 }
                 
-                self.sendFullContextEvent(self.textInput(
+                sendFullContextEvent(
+                    textInput(
                     text: payload.text,
                     token: payload.token,
                     requestType: requestType,
@@ -271,15 +271,20 @@ private extension TextAgent {
     
     func handleExpectTyping() -> HandleDirective {
         return { [weak self] directive, completion in
-            defer { completion(.finished) }
-            self?.expectTyping = nil
+            guard let self else {
+                completion(.canceled)
+                return
+            }
             
-            if self?.delegate?.textAgentShouldTyping(directive: directive) == true {
+            defer { completion(.finished) }
+            expectTyping = nil
+            
+            if delegate?.textAgentShouldTyping(directive: directive) == true {
                 guard let payload = try? JSONDecoder().decode(TextAgentExpectTyping.Payload.self, from: directive.payload) else { return }
                 
-                self?.textDispatchQueue.async { [weak self] in
-                    guard let self = self else { return }
-                    self.expectTyping = TextAgentExpectTyping(
+                textDispatchQueue.async { [weak self] in
+                    guard let self else { return }
+                    expectTyping = TextAgentExpectTyping(
                         messageId: directive.header.messageId,
                         dialogRequestId: directive.header.dialogRequestId,
                         payload: payload
@@ -294,32 +299,32 @@ private extension TextAgent {
 
 private extension TextAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
     
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: AnyPublisher<Eventable, Error>,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
@@ -334,12 +339,9 @@ private extension TextAgent {
         requestType: TextAgentRequestType,
         service: [String: AnyHashable]? = nil,
         referrerDialogRequestId: String? = nil
-    ) -> Single<Eventable> {
-        return Single<[String: AnyHashable]>.create { [weak self] single in
-            let disposable = Disposables.create()
-            guard let self = self else { return disposable }
-            
-            self.textDispatchQueue.async { [weak self] in
+    ) -> AnyPublisher<Eventable, Error> {
+        Future<Eventable, Error> { [weak self] promise in
+            self?.textDispatchQueue.async { [weak self] in
                 var attributes: [String: AnyHashable] {
                     if case let .specific(playServiceId) = requestType {
                         return ["playServiceId": playServiceId]
@@ -369,17 +371,12 @@ private extension TextAgent {
                     return attributes
                 }
                 
-                single(.success(attributes))
+                promise(.success(Event(
+                    typeInfo: .textInput(text: text, token: token, attributes: attributes),
+                    referrerDialogRequestId: referrerDialogRequestId
+                )))
             }
-            
-            return disposable
-        }
-        .flatMap { attributes in
-            Event(
-                typeInfo: .textInput(text: text, token: token, attributes: attributes),
-                referrerDialogRequestId: referrerDialogRequestId
-            ).rx
-        }
+        }.eraseToAnyPublisher()
     }
     
     func textInput(
@@ -389,12 +386,9 @@ private extension TextAgent {
         source: TextInputSource? = nil,
         service: [String: AnyHashable]? = nil,
         referrerDialogRequestId: String? = nil
-    ) -> Single<Eventable> {
-        return Single<[String: AnyHashable]>.create { [weak self] single in
-            let disposable = Disposables.create()
-            guard let self = self else { return disposable }
-            
-            self.textDispatchQueue.async { [weak self] in
+    ) -> AnyPublisher<Eventable, Error> {
+        Future<Eventable, Error> { [weak self] promise in
+            self?.textDispatchQueue.async { [weak self] in
                 var attributes = [String: AnyHashable]()
                 if let expectTypingDialogRequestId = self?.expectTyping?.dialogRequestId,
                    let expectTypingAttribute = self?.dialogAttributeStore.requestAttributes(key: expectTypingDialogRequestId) {
@@ -418,18 +412,15 @@ private extension TextAgent {
                 if let service = service {
                     attributes["service"] = service
                 }
-                    
-                single(.success(attributes))
+                
+                promise(.success(Event(
+                    typeInfo: .textInput(text: text, token: token, attributes: attributes),
+                    referrerDialogRequestId: referrerDialogRequestId
+                )))
+
             }
-            
-            return disposable
         }
-        .flatMap { attributes in
-            Event(
-                typeInfo: .textInput(text: text, token: token, attributes: attributes),
-                referrerDialogRequestId: referrerDialogRequestId
-            ).rx
-        }
+        .eraseToAnyPublisher()
     }
 }
 
