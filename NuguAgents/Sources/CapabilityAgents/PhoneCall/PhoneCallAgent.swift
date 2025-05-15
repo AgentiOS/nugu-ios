@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public class PhoneCallAgent: PhoneCallAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .phoneCall, version: "1.4")
@@ -49,7 +48,7 @@ public class PhoneCallAgent: PhoneCallAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "BlockNumber", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleBlockNumber)
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     public init(
         directiveSequencer: DirectiveSequenceable,
@@ -71,22 +70,22 @@ public class PhoneCallAgent: PhoneCallAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         
-        if let context = self.delegate?.phoneCallAgentRequestContext(),
+        if let context = delegate?.phoneCallAgentRequestContext(),
             let contextData = try? JSONEncoder().encode(context),
             let contextDictionary = try? JSONSerialization.jsonObject(with: contextData, options: []) as? [String: AnyHashable] {
             payload = contextDictionary
         }
         
-        payload["version"] = self.capabilityAgentProperty.version
+        payload["version"] = capabilityAgentProperty.version
         
         completion(
             ContextInfo(
                 contextType: .capability,
-                name: self.capabilityAgentProperty.name,
+                name: capabilityAgentProperty.name,
                 payload: payload.compactMapValues { $0 }
             )
         )
@@ -107,19 +106,19 @@ public extension PhoneCallAgent {
             referrerDialogRequestId: header?.dialogRequestId
         )
         
-        return sendFullContextEvent(event.rx) { [weak self] state in
+        return sendFullContextEvent(event) { [weak self] state in
             completion?(state)
             
             self?.phoneCallDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch state {
                 case .finished, .error:
-                    self.currentInteractionControl = nil
+                    currentInteractionControl = nil
                     
                     if let interactionControl = payload.interactionControl {
-                        self.interactionControlManager.finish(
+                        interactionControlManager.finish(
                             mode: interactionControl.mode,
-                            category: self.capabilityAgentProperty.category
+                            category: capabilityAgentProperty.category
                         )
                     }
                 default:
@@ -136,7 +135,7 @@ private extension PhoneCallAgent {
     func handleSendCandidates() -> HandleDirective {
         return { [weak self] directive, completion in
             self?.phoneCallDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
@@ -147,10 +146,10 @@ private extension PhoneCallAgent {
                 }
                 
                 if let interactionControl = candidatesItem.interactionControl {
-                    self.currentInteractionControl = interactionControl
-                    self.interactionControlManager.start(
+                    currentInteractionControl = interactionControl
+                    interactionControlManager.start(
                         mode: interactionControl.mode,
-                        category: self.capabilityAgentProperty.category
+                        category: capabilityAgentProperty.category
                     )
                 }
                 
@@ -174,18 +173,13 @@ private extension PhoneCallAgent {
     
     func handleMakeCall() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self else {
-                completion(.canceled)
-                return
-            }
-            
-            self.phoneCallDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+            self?.phoneCallDispatchQueue.async { [weak self] in
+                guard let self = self, let delegate else {
                     completion(.canceled)
                     return
                 }
                 
-                guard self.currentMakeCallMessageId == directive.header.messageId else {
+                guard currentMakeCallMessageId == directive.header.messageId else {
                     completion(.canceled)
                     log.info("Message id does not match")
                     return
@@ -208,24 +202,21 @@ private extension PhoneCallAgent {
                     typeInfo = .makeCallSucceeded(recipient: makeCallItem.recipient, service: makeCallItem.service)
                 }
                 
-                self.sendCompactContextEvent(Event(
-                    typeInfo: typeInfo,
-                    playServiceId: makeCallItem.playServiceId,
-                    referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                sendCompactContextEvent(
+                    Event(
+                        typeInfo: typeInfo,
+                        playServiceId: makeCallItem.playServiceId,
+                        referrerDialogRequestId: directive.header.dialogRequestId
+                    )
+                )
             }
         }
     }
     
     func handleBlockNumber() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self else {
-                completion(.canceled)
-                return
-            }
-            
-            self.phoneCallDispatchQueue.async { [weak self] in
-                guard let self = self, let delegate = self.delegate else {
+            self?.phoneCallDispatchQueue.async { [weak self] in
+                guard let self, let delegate else {
                     completion(.canceled)
                     return
                 }
@@ -250,32 +241,32 @@ private extension PhoneCallAgent {
 
 private extension PhoneCallAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
     
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
