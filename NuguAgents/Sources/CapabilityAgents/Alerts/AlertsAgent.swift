@@ -280,8 +280,7 @@ private extension AlertsAgent {
             context: contextManager.contexts(namespace: capabilityAgentProperty.name),
             property: capabilityAgentProperty,
             completion: completion
-        )
-        .store(in: &cancellables)
+        ).store(in: &cancellables)
         
         return eventIdentifier
     }
