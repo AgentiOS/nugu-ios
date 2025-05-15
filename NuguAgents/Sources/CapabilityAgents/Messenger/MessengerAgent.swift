@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public class MessengerAgent: MessengerAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = .init(category: .plugin(name: "Messenger"), version: "1.1")
@@ -47,7 +46,7 @@ public class MessengerAgent: MessengerAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "MessageRedirect", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleMessageRedirect)
     ]
     
-    private lazy var disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     
     public init(
         directiveSequencer: DirectiveSequenceable,
@@ -67,7 +66,7 @@ public class MessengerAgent: MessengerAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] (completion) in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         
@@ -96,7 +95,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .create(playServiceId: playServiceId),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -109,7 +108,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .sync(item: item),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -122,7 +121,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .enter(item: item),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -136,14 +135,14 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .read(roomId: roomId, readMessageId: readMessageId),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
     
     @discardableResult func requestWontRead() -> String {
         return sendCompactContextEvent(
-            Event(typeInfo: .notifyWontRead, referrerDialogRequestId: nil).rx
+            Event(typeInfo: .notifyWontRead, referrerDialogRequestId: nil)
         ).dialogRequestId
     }
     
@@ -155,7 +154,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .message(item: item),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -168,7 +167,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .exit(roomId: roomId),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -181,7 +180,7 @@ public extension MessengerAgent {
             Event(
                 typeInfo: .reaction(item: item),
                 referrerDialogRequestId: nil
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
@@ -192,7 +191,7 @@ public extension MessengerAgent {
 private extension MessengerAgent {
     func handleCreateSucceeded() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -204,7 +203,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -218,7 +217,7 @@ private extension MessengerAgent {
     
     func handleConfigure() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -230,7 +229,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -244,7 +243,7 @@ private extension MessengerAgent {
     
     func handleSendHistory() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -256,7 +255,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -270,7 +269,7 @@ private extension MessengerAgent {
     
     func handleNotifyMessage() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -282,7 +281,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -296,7 +295,7 @@ private extension MessengerAgent {
     
     func handleNotifyStartDialog() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -308,7 +307,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -322,7 +321,7 @@ private extension MessengerAgent {
     
     func handleNotifyStopDialog() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -334,7 +333,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -348,7 +347,7 @@ private extension MessengerAgent {
     
     func handleNotifyRead() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -360,7 +359,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -374,7 +373,7 @@ private extension MessengerAgent {
     
     func handleNotifyReaction() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -386,7 +385,7 @@ private extension MessengerAgent {
             
             defer { completion(.finished) }
             
-            self.sendDirectiveDelivered(
+            sendDirectiveDelivered(
                 dialogRequestId: directive.header.dialogRequestId,
                 roomId: payload.roomId
             )
@@ -400,7 +399,7 @@ private extension MessengerAgent {
     
     func handleMessageRedirect() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -424,17 +423,17 @@ private extension MessengerAgent {
 
 private extension MessengerAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
             property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
     
@@ -447,7 +446,7 @@ private extension MessengerAgent {
             Event(
                 typeInfo: .directiveDelivered(roomId: roomId),
                 referrerDialogRequestId: dialogRequestId
-            ).rx,
+            ),
             completion: completion
         ).dialogRequestId
     }
