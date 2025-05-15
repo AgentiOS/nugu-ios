@@ -19,11 +19,10 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
-
-import RxSwift
 
 public final class SoundAgent: SoundAgentProtocol {
     // CapabilityAgentable
@@ -75,7 +74,7 @@ public final class SoundAgent: SoundAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "Beep", blockingPolicy: BlockingPolicy(blockedBy: .audio, blocking: .audioOnly), preFetch: prefetchBeep, directiveHandler: handleBeep)
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     public init(
         focusManager: FocusManageable,
@@ -100,10 +99,10 @@ public final class SoundAgent: SoundAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
-        let payload: [String: AnyHashable] = ["version": self.capabilityAgentProperty.version]
-        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload))
+        let payload: [String: AnyHashable] = ["version": capabilityAgentProperty.version]
+        completion(ContextInfo(contextType: .capability, name: capabilityAgentProperty.name, payload: payload))
     }
 }
 
@@ -111,27 +110,27 @@ public final class SoundAgent: SoundAgentProtocol {
 
 extension SoundAgent: FocusChannelDelegate {
     public func focusChannelPriority() -> FocusChannelPriority {
-        return .sound
+        .sound
     }
     
     public func focusChannelDidChange(focusState: FocusState) {
         soundDispatchQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            log.info("\(focusState) \(self.soundState)")
-            switch (focusState, self.soundState) {
+            log.info("\(focusState) \(soundState)")
+            switch (focusState, soundState) {
             case (.foreground, let soundState) where [.idle, .stopped, .finished].contains(soundState):
-                self.currentPlayer?.play()
+                currentPlayer?.play()
             // Ignore (Foreground, playing)
             case (.foreground, _):
                 break
             case (.background, .playing):
-                self.stop()
+                stop()
             // Ignore (background, [idle, stopped, finished])
             case (.background, _):
                 break
             case (.nothing, .playing):
-                self.stop()
+                stop()
             // Ignore (prepare, _) and (none, [idle/stopped/finished])
             default:
                 break
@@ -147,21 +146,21 @@ extension SoundAgent: MediaPlayerDelegate {
         log.info("media state: \(state)")
         
         soundDispatchQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             // `SoundState` -> `FocusState`
             switch state {
             case .start, .resume:
-                self.soundState = .playing
+                soundState = .playing
             case .finish:
-                self.soundState = .finished
+                soundState = .finished
             case .pause:
-                self.stop()
+                stop()
             case .stop:
-                self.soundState = .stopped
+                soundState = .stopped
             case .bufferEmpty, .likelyToKeepUp:
                 break
             case .error:
-                self.soundState = .stopped
+                soundState = .stopped
             }
         }
     }
@@ -172,36 +171,40 @@ extension SoundAgent: MediaPlayerDelegate {
 private extension SoundAgent {
     func prefetchBeep() -> PrefetchDirective {
         return { [weak self] directive in
-            guard let self = self else { return }
+            guard let self else { return }
             let payload = try JSONDecoder().decode(SoundMedia.Payload.self, from: directive.payload)
             
-            self.soundDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
-                guard let url = self.dataSource?.soundAgentRequestUrl(beepName: payload.beepName, header: directive.header) else {
-                    self.sendCompactContextEvent(Event(
-                        typeInfo: .beepFailed,
-                        playServiceId: payload.playServiceId,
-                        referrerDialogRequestId: directive.header.dialogRequestId
-                    ).rx)
+            soundDispatchQueue.async { [weak self] in
+                guard let self else { return }
+                guard let url = dataSource?.soundAgentRequestUrl(beepName: payload.beepName, header: directive.header) else {
+                    sendCompactContextEvent(
+                        Event(
+                            typeInfo: .beepFailed,
+                            playServiceId: payload.playServiceId,
+                            referrerDialogRequestId: directive.header.dialogRequestId
+                        )
+                    )
                     return
                 }
-                self.stopSilently()
+                stopSilently()
                 
                 let mediaPlayer = MediaPlayer()
                 mediaPlayer.setSource(url: url)
                 mediaPlayer.delegate = self
-                mediaPlayer.volume = self.volume
+                mediaPlayer.volume = volume
                 
-                self.currentPlayer = mediaPlayer
-                self.currentMedia = SoundMedia(
+                currentPlayer = mediaPlayer
+                currentMedia = SoundMedia(
                     payload: payload,
                     header: directive.header
                 )
-                self.sendCompactContextEvent(Event(
-                    typeInfo: .beepSucceeded,
-                    playServiceId: payload.playServiceId,
-                    referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                sendCompactContextEvent(
+                    Event(
+                        typeInfo: .beepSucceeded,
+                        playServiceId: payload.playServiceId,
+                        referrerDialogRequestId: directive.header.dialogRequestId
+                    )
+                )
             }
         }
     }
@@ -211,13 +214,13 @@ private extension SoundAgent {
             defer { completion(.finished) }
             
             self?.soundDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
-                guard self.currentMedia?.header.messageId == directive.header.messageId else {
+                guard let self else { return }
+                guard currentMedia?.header.messageId == directive.header.messageId else {
                     log.info("Message id does not match")
                     return
                 }
                 
-                self.focusManager.requestFocus(channelDelegate: self)
+                focusManager.requestFocus(channelDelegate: self)
             }
         }
     }
@@ -234,11 +237,11 @@ private extension SoundAgent {
     /// Synchronously stop previously playing beep
     func stopSilently() {
         soundDispatchQueue.precondition(.onQueue)
-        guard let player = currentPlayer else { return }
+        guard let currentPlayer else { return }
         
         // `MediaPlayer` -> `SoundState`
-        player.delegate = nil
-        player.stop()
+        currentPlayer.delegate = nil
+        currentPlayer.stop()
         soundState = .stopped
     }
 }
@@ -247,17 +250,17 @@ private extension SoundAgent {
 
 private extension SoundAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
