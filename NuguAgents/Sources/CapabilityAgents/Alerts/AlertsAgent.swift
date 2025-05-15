@@ -18,10 +18,10 @@
 //  limitations under the License.
 
 import Foundation
+import Combine
 
 import NuguCore
 
-import RxSwift
 
 public class AlertsAgent: AlertsAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = .init(category: .alerts, version: "1.5")
@@ -34,7 +34,7 @@ public class AlertsAgent: AlertsAgentProtocol {
     private let contextManager: ContextManageable
     private let upstreamDataSender: UpstreamDataSendable
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     // Handleable Directive
     private lazy var handleableDirectiveInfos: [DirectiveHandleInfo] = [
@@ -61,7 +61,7 @@ public class AlertsAgent: AlertsAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         
@@ -97,7 +97,7 @@ public extension AlertsAgent {
             referrerDialogRequestId: nil
         )
         
-        return sendCompactContextEvent(event.rx).dialogRequestId
+        return sendCompactContextEvent(event).dialogRequestId
     }
 }
 
@@ -106,7 +106,7 @@ public extension AlertsAgent {
 private extension AlertsAgent {
     func handleSetAlert() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -123,13 +123,13 @@ private extension AlertsAgent {
                 referrerDialogRequestId: directive.header.dialogRequestId
             )
             
-            self.sendCompactContextEvent(event.rx)
+            sendCompactContextEvent(event)
         }
     }
     
     func handleDeleteAlerts() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -146,13 +146,13 @@ private extension AlertsAgent {
                 referrerDialogRequestId: directive.header.dialogRequestId
             )
             
-            self.sendCompactContextEvent(event.rx)
+            sendCompactContextEvent(event)
         }
     }
     
     func handleDeliveryAlertAsset() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -174,7 +174,7 @@ private extension AlertsAgent {
     
     func handleSetSnooze() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -191,13 +191,13 @@ private extension AlertsAgent {
                 referrerDialogRequestId: directive.header.dialogRequestId
             )
             
-            self.sendCompactContextEvent(event.rx)
+            sendCompactContextEvent(event)
         }
     }
     
     func handleSkipNextAlert() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -214,14 +214,14 @@ private extension AlertsAgent {
                     referrerDialogRequestId: directive.header.dialogRequestId
                 )
                 
-                self.sendCompactContextEvent(event.rx)
+                sendCompactContextEvent(event)
             }
         }
     }
     
     func handleSetHookEvents() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -238,13 +238,13 @@ private extension AlertsAgent {
                 referrerDialogRequestId: directive.header.dialogRequestId
             )
             
-            self.sendCompactContextEvent(event.rx)
+            sendCompactContextEvent(event)
         }
     }
     
     func handleDeleteHookEvents() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -261,7 +261,7 @@ private extension AlertsAgent {
                 referrerDialogRequestId: directive.header.dialogRequestId
             )
             
-            self.sendCompactContextEvent(event.rx)
+            sendCompactContextEvent(event)
         }
     }
 }
@@ -270,17 +270,19 @@ private extension AlertsAgent {
 
 private extension AlertsAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        )
+        .store(in: &cancellables)
+        
         return eventIdentifier
     }
 }
