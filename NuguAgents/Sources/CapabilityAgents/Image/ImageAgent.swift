@@ -146,22 +146,3 @@ public extension ImageAgent {
         return image.jpegData(compressionQuality: Const.originalImageQuality)
     }
 }
-
-// MARK: - Private(Event)
-
-private extension ImageAgent {
-    @discardableResult func sendCompactContextEvent(
-        _ event: Eventable,
-        completion: ((StreamDataState) -> Void)? = nil
-    ) -> EventIdentifier {
-        let eventIdentifier = EventIdentifier()
-        upstreamDataSender.sendEvent(
-            event,
-            eventIdentifier: eventIdentifier,
-            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
-            property: capabilityAgentProperty,
-            completion: completion
-        ).store(in: &cancellables)
-        return eventIdentifier
-    }
-}
