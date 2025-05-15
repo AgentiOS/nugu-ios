@@ -19,7 +19,6 @@
 
 import Foundation
 import UIKit
-import Combine
 
 import NuguCore
 
@@ -41,7 +40,6 @@ public class ImageAgent: ImageAgentProtocol {
     private var handleableDirectiveInfos: [DirectiveHandleInfo] = []
     
     private let imageQueue = DispatchQueue(label: "com.sktelecom.romaine.image_agent")
-    private var cancellables: Set<AnyCancellable> = []
     
     public init(
         directiveSequencer: DirectiveSequenceable,
