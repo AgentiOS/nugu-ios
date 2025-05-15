@@ -19,11 +19,10 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
-
-import RxSwift
 
 public final class RoutineAgent: RoutineAgentProtocol {
     // CapabilityAgentable
@@ -57,7 +56,7 @@ public final class RoutineAgent: RoutineAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "Move", blockingPolicy: BlockingPolicy(blockedBy: .audio, blocking: nil), directiveHandler: handleMove)
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     
     public init(
         upstreamDataSender: UpstreamDataSendable,
@@ -129,7 +128,7 @@ public final class RoutineAgent: RoutineAgentProtocol {
             typeInfo: .moveControl(offset: -1),
             playServiceId: routine.payload.playServiceId,
             referrerDialogRequestId: routine.dialogRequestId
-        ).rx)
+        ))
         completion(true)
     }
     
@@ -143,7 +142,7 @@ public final class RoutineAgent: RoutineAgentProtocol {
             typeInfo: .moveControl(offset: 1),
             playServiceId: routine.payload.playServiceId,
             referrerDialogRequestId: routine.dialogRequestId
-        ).rx)
+        ))
         completion(true)
     }
     
@@ -159,7 +158,7 @@ public final class RoutineAgent: RoutineAgentProtocol {
             typeInfo: .stopped,
             playServiceId: routine.payload.playServiceId,
             referrerDialogRequestId: routine.dialogRequestId
-        ).rx)
+        ))
     }
 }
 
@@ -177,7 +176,7 @@ extension RoutineAgent: RoutineExecuterDelegate {
                 typeInfo: .started,
                 playServiceId: routine.payload.playServiceId,
                 referrerDialogRequestId: routine.dialogRequestId
-            ).rx)
+            ))
         case .interrupted:
             break
         case .finished:
@@ -185,13 +184,13 @@ extension RoutineAgent: RoutineExecuterDelegate {
                 typeInfo: .finished,
                 playServiceId: routine.payload.playServiceId,
                 referrerDialogRequestId: routine.dialogRequestId
-            ).rx)
+            ))
         case .stopped:
             sendFullContextEvent(Event(
                 typeInfo: .stopped,
                 playServiceId: routine.payload.playServiceId,
                 referrerDialogRequestId: routine.dialogRequestId
-            ).rx)
+            ))
         default:
             break
         }
@@ -205,7 +204,7 @@ extension RoutineAgent: RoutineExecuterDelegate {
             typeInfo: .actionTimeoutTriggered(token: token),
             playServiceId: routine.payload.playServiceId,
             referrerDialogRequestId: routine.dialogRequestId
-        ).rx)
+        ))
     }
     
     func routineExecuterWillProcessAction(_ action: RoutineItem.Payload.Action) {
@@ -221,7 +220,7 @@ extension RoutineAgent: RoutineExecuterDelegate {
             typeInfo: .actionTriggered(data: action.data),
             playServiceId: action.playServiceId,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx, completion: completion)
+        ), completion: completion)
     }
     
     func routineExecuterDidStopProcessingAction(_ action: RoutineItem.Payload.Action) {
@@ -292,7 +291,7 @@ private extension RoutineAgent {
                     typeInfo: .failed(errorCode: "Invalid request"),
                     playServiceId: playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
                 return
             }
             
@@ -316,7 +315,7 @@ private extension RoutineAgent {
                     typeInfo: .failed(errorCode: "Invalid request"),
                     playServiceId: playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
                 completion(.failed("Invalid request"))
                 return
             }
@@ -330,7 +329,7 @@ private extension RoutineAgent {
                     typeInfo: typeInfo,
                     playServiceId: playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
             }
             
             completion(.finished)
@@ -342,17 +341,17 @@ private extension RoutineAgent {
 
 private extension RoutineAgent {
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: contextManager.rxContexts(),
+            context: contextManager.contexts(),
             property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
