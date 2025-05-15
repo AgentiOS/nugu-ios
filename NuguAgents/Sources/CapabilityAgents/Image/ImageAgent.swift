@@ -19,10 +19,9 @@
 
 import Foundation
 import UIKit
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 private enum Const {
     static let imageSizeThreshHold: CGFloat = 640
@@ -42,7 +41,7 @@ public class ImageAgent: ImageAgentProtocol {
     private var handleableDirectiveInfos: [DirectiveHandleInfo] = []
     
     private let imageQueue = DispatchQueue(label: "com.sktelecom.romaine.image_agent")
-    private let disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     
     public init(
         directiveSequencer: DirectiveSequenceable,
@@ -152,17 +151,17 @@ public extension ImageAgent {
 
 private extension ImageAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
             property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
