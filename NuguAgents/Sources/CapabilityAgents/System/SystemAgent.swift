@@ -19,11 +19,10 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
-
-import RxSwift
 
 public final class SystemAgent: SystemAgentProtocol {
     // CapabilityAgentable
@@ -48,7 +47,7 @@ public final class SystemAgent: SystemAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "RequireUpdate", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleRequireUpdate)
     ]
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     public init(
         contextManager: ContextManageable,
@@ -69,12 +68,12 @@ public final class SystemAgent: SystemAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         let payload: [String: AnyHashable] = [
-            "version": self.capabilityAgentProperty.version
+            "version": capabilityAgentProperty.version
         ]
-        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload))
+        completion(ContextInfo(contextType: .capability, name: capabilityAgentProperty.name, payload: payload))
     }
 }
 
@@ -100,10 +99,12 @@ private extension SystemAgent {
         return { [weak self] directive, completion in
             defer { completion(.finished) }
             
-            self?.sendFullContextEvent(Event(
-                typeInfo: .synchronizeState,
-                referrerDialogRequestId: directive.header.dialogRequestId
-            ).rx)
+            self?.sendFullContextEvent(
+                Event(
+                    typeInfo: .synchronizeState,
+                    referrerDialogRequestId: directive.header.dialogRequestId
+                )
+            )
         }
     }
     
@@ -117,9 +118,9 @@ private extension SystemAgent {
 
             self?.systemDispatchQueue.async { [weak self] in
                 switch exceptionItem.code {
-                case .fail(let code):
+                case let .fail(code):
                     self?.post(NuguAgentNotification.System.Exception(code: code, header: directive.header))
-                case .warning(let code):
+                case let .warning(code):
                     self?.post(NuguAgentNotification.System.ExceptionWarning(code: code, header: directive.header))
                 }
             }
@@ -188,16 +189,16 @@ private extension SystemAgent {
 
 private extension SystemAgent {
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         streamDataRouter.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(),
-            property: self.capabilityAgentProperty, completion: completion
-        ).subscribe().disposed(by: disposeBag)
+            context: contextManager.contexts(),
+            property: capabilityAgentProperty, completion: completion
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
