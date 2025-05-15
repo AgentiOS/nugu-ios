@@ -22,8 +22,6 @@ import UIKit
 
 import NuguCore
 
-import RxSwift
-
 private enum Const {
     static let imageSizeThreshHold: CGFloat = 640
     static let resizedImageQuality: CGFloat = 0.9
@@ -42,7 +40,6 @@ public class ImageAgent: ImageAgentProtocol {
     private var handleableDirectiveInfos: [DirectiveHandleInfo] = []
     
     private let imageQueue = DispatchQueue(label: "com.sktelecom.romaine.image_agent")
-    private let disposeBag = DisposeBag()
     
     public init(
         directiveSequencer: DirectiveSequenceable,
@@ -145,24 +142,5 @@ public extension ImageAgent {
         }
         
         return image.jpegData(compressionQuality: Const.originalImageQuality)
-    }
-}
-
-// MARK: - Private(Event)
-
-private extension ImageAgent {
-    @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
-        completion: ((StreamDataState) -> Void)? = nil
-    ) -> EventIdentifier {
-        let eventIdentifier = EventIdentifier()
-        upstreamDataSender.sendEvent(
-            event,
-            eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: capabilityAgentProperty,
-            completion: completion
-        ).subscribe().disposed(by: disposeBag)
-        return eventIdentifier
     }
 }
