@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
-
-import RxSwift
 
 public final class MediaPlayerAgent: MediaPlayerAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .mediaPlayer, version: "1.1")
@@ -51,7 +50,7 @@ public final class MediaPlayerAgent: MediaPlayerAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "HandleLyrics", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleLyrics)
     ]
     
-    private lazy var disposeBag = DisposeBag()
+    private var cancellables: Set<AnyCancellable> = []
     
     public init(
         directiveSequencer: DirectiveSequenceable,
@@ -71,12 +70,12 @@ public final class MediaPlayerAgent: MediaPlayerAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         var payload = [String: AnyHashable?]()
         payload["version"] = self.capabilityAgentProperty.version
         
-        if let context = self.delegate?.mediaPlayerAgentRequestContext(),
+        if let context = delegate?.mediaPlayerAgentRequestContext(),
             let contextData = try? JSONEncoder().encode(context),
             let contextDictionary = try? JSONSerialization.jsonObject(with: contextData, options: []) as? [String: AnyHashable] {
             payload = contextDictionary
@@ -91,7 +90,7 @@ public final class MediaPlayerAgent: MediaPlayerAgentProtocol {
 private extension MediaPlayerAgent {
     func handlePlay() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -118,7 +117,7 @@ private extension MediaPlayerAgent {
     
     func handleStop() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -145,7 +144,7 @@ private extension MediaPlayerAgent {
     
     func handleSearch() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -172,7 +171,7 @@ private extension MediaPlayerAgent {
     
     func handlePrevious() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -199,7 +198,7 @@ private extension MediaPlayerAgent {
     
     func handleNext() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -226,7 +225,7 @@ private extension MediaPlayerAgent {
     
     func handleMove() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -253,7 +252,7 @@ private extension MediaPlayerAgent {
     
     func handlePause() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -280,7 +279,7 @@ private extension MediaPlayerAgent {
     
     func handleResume() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -307,7 +306,7 @@ private extension MediaPlayerAgent {
     
     func handleRewind() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -334,7 +333,7 @@ private extension MediaPlayerAgent {
     
     func handleToggle() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -361,7 +360,7 @@ private extension MediaPlayerAgent {
     
     func handleGetInfo() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -388,7 +387,7 @@ private extension MediaPlayerAgent {
     
     func handlePlaylist() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -415,7 +414,7 @@ private extension MediaPlayerAgent {
     
     func handleLyrics() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self, let delegate = self.delegate else {
+            guard let self, let delegate else {
                 completion(.canceled)
                 return
             }
@@ -445,17 +444,17 @@ private extension MediaPlayerAgent {
 
 private extension MediaPlayerAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
@@ -470,11 +469,11 @@ private extension MediaPlayerAgent {
     ) {
         let typeInfo: MediaPlayerAgent.Event.TypeInfo
         switch result {
-        case .succeeded(let message):
+        case let .succeeded(message):
             typeInfo = .playSucceeded(message: message)
-        case .suspended(let song, let playlist, let issueCode):
+        case let .suspended(song, playlist, issueCode):
             typeInfo = .playSuspended(song: song, playlist: playlist, issueCode: issueCode, data: payload.data)
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .playFailed(errorCode: errorCode)
         }
         
@@ -483,7 +482,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processStopDirectiveResult(
@@ -504,7 +503,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processSearchDirectiveResult(
@@ -525,7 +524,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processPreviousDirectiveResult(
@@ -548,7 +547,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processNextDirectiveResult(
@@ -558,11 +557,11 @@ private extension MediaPlayerAgent {
     ) {
         let typeInfo: MediaPlayerAgent.Event.TypeInfo
         switch result {
-        case .succeeded(let message):
+        case let .succeeded(message):
             typeInfo = .nextSucceeded(message: message)
-        case .suspended(let song, let playlist, let target):
+        case let .suspended(song, playlist, target):
             typeInfo = .nextSuspended(song: song, playlist: playlist, target: target, data: payload.data)
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .nextFailed(errorCode: errorCode)
         }
         
@@ -571,7 +570,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processMoveDirectiveResult(
@@ -592,7 +591,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processPauseDirectiveResult(
@@ -613,7 +612,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processResumeDirectiveResult(
@@ -634,7 +633,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processRewindDirectiveResult(
@@ -644,9 +643,9 @@ private extension MediaPlayerAgent {
     ) {
         let typeInfo: MediaPlayerAgent.Event.TypeInfo
         switch result {
-        case .succeeded(let messasge):
+        case let .succeeded(messasge):
             typeInfo = .rewindSucceeded(message: messasge)
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .rewindFailed(errorCode: errorCode)
         }
         
@@ -655,7 +654,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processToggleDirectiveResult(
@@ -665,9 +664,9 @@ private extension MediaPlayerAgent {
     ) {
         let typeInfo: MediaPlayerAgent.Event.TypeInfo
         switch result {
-        case .succeeded(let message):
+        case let .succeeded(message):
             typeInfo = .toggleSucceeded(message: message)
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .toggleFailed(errorCode: errorCode)
         }
         
@@ -676,7 +675,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processGetInfoDirectiveResult(
@@ -686,9 +685,9 @@ private extension MediaPlayerAgent {
     ) {
         let typeInfo: MediaPlayerAgent.Event.TypeInfo
         switch result {
-        case .succeeded(let song, let issueDate, let playTime, let playListName):
+        case let .succeeded(song, issueDate, playTime, playListName):
             typeInfo = .getInfoSucceeded(song: song, issueDate: issueDate, playTime: playTime, playListName: playListName)
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .getInfoFailed(errorCode: errorCode)
         }
         
@@ -697,7 +696,7 @@ private extension MediaPlayerAgent {
             playServiceId: payload.playServiceId,
             token: payload.token,
             referrerDialogRequestId: referrerDialogRequestId
-        ).rx)
+        ))
     }
     
     func processHandlePlaylistDirectiveResult(
@@ -709,7 +708,7 @@ private extension MediaPlayerAgent {
         switch result {
         case .succeeded:
             typeInfo = .handlePlaylistSucceeded
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .handlePlaylistFailed(errorCode: errorCode)
         }
         
@@ -719,7 +718,7 @@ private extension MediaPlayerAgent {
                 playServiceId: payload.playServiceId,
                 token: nil,
                 referrerDialogRequestId: referrerDialogRequestId
-            ).rx
+            )
         )
     }
     
@@ -732,7 +731,7 @@ private extension MediaPlayerAgent {
         switch result {
         case .succeeded:
             typeInfo = .handleLyricsSucceeded
-        case .failed(let errorCode):
+        case let .failed(errorCode):
             typeInfo = .handleLyricsFailed(errorCode: errorCode)
         }
         
@@ -742,7 +741,7 @@ private extension MediaPlayerAgent {
                 playServiceId: payload.playServiceId,
                 token: nil,
                 referrerDialogRequestId: referrerDialogRequestId
-            ).rx
+            )
         )
     }
 }
