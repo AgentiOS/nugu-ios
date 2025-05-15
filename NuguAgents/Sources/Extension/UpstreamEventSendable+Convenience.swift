@@ -73,7 +73,7 @@ public extension UpstreamDataSendable {
                 guard case let .failure(error) = receiveCompletion else { return }
                 completion?(.error(error))
             } receiveValue: { [weak self] event in
-                guard let self = self else {
+                guard let self else {
                     completion?(.error(NuguAgentError.requestCanceled))
                     return
                 }
@@ -100,7 +100,7 @@ public extension UpstreamDataSendable {
                 guard case let .failure(error) = receiveCompletion else { return }
                 completion?(.error(error))
             } receiveValue: { [weak self] event in
-                guard let self = self else {
+                guard let self else {
                     completion?(.error(NuguAgentError.requestCanceled))
                     return
                 }
