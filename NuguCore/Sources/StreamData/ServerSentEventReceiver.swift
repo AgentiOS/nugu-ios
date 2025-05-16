@@ -19,21 +19,26 @@
 //
 
 import Foundation
+import Combine
 
 import RxSwift
 
 class ServerSentEventReceiver {
     private let apiProvider: NuguApiProvidable
-    private var pingDisposable: Disposable?
-    private let stateSubject = PublishSubject<ServerSentEventReceiverState>()
+    private var pingDisposable: Disposable? // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
+    private var pingCancellable: AnyCancellable?
+    private let stateSubject = PublishSubject<ServerSentEventReceiverState>() // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
+    private let stateSubject2 = PassthroughSubject<ServerSentEventReceiverState, Never>()
     private let sseStateQueue = DispatchQueue(label: "com.sktelecom.romaine.core.server_sent_event_state")
-    private let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()  // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
+    private var cancellables = Set<AnyCancellable>()
     
     private(set) var state: ServerSentEventReceiverState = .unconnected {
         didSet {
             if oldValue != state {
                 log.debug("server side event receiver state changed from: \(oldValue) to: \(state)")
-                stateSubject.onNext(state)
+                stateSubject.onNext(state)  // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
+                stateSubject2.send(state)
                 state == .connected ? startPing() : stopPing()
             }
         }
@@ -43,6 +48,7 @@ class ServerSentEventReceiver {
         self.apiProvider = apiProvider
     }
 
+    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     var directive: Observable<MultiPartParser.Part> {
         sseStateQueue.async { [weak self] in
             self?.state = .connecting
@@ -74,9 +80,38 @@ class ServerSentEventReceiver {
                 }
             })
     }
+    
+    var directive2: AnyPublisher<MultiPartParser.Part, Error> {
+        return apiProvider.directive2
+            .handleEvents(receiveSubscription: { [weak self] _ in
+                self?.sseStateQueue.async { [weak self] in
+                    self?.state = .connecting
+                }
+            }, receiveOutput: { [weak self] _ in
+                self?.sseStateQueue.async { [weak self] in
+                    guard self?.state != .connected else { return }
+                    self?.state = .connected
+                }
+            }, receiveCompletion: { [weak self] completion in
+                self?.sseStateQueue.async { [weak self] in
+                    guard case let .failure(error) = completion else { return }
+                    self?.state = .disconnected(error: error)
+                }
+            }, receiveCancel: { [weak self] in
+                self?.sseStateQueue.async { [weak self] in
+                    self?.state = .unconnected
+                }
+            })
+            .eraseToAnyPublisher()
+    }
 
+    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     var stateObserver: Observable<ServerSentEventReceiverState> {
-        return stateSubject
+        stateSubject
+    }
+    
+    var stateObserver2: AnyPublisher<ServerSentEventReceiverState, Never> {
+        stateSubject2.eraseToAnyPublisher()
     }
 }
 
@@ -89,6 +124,7 @@ private extension ServerSentEventReceiver {
         static let maxRetryCount = 3
     }
     
+    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     func startPing() {
         log.debug("Try to start ping schedule")
         
@@ -127,6 +163,32 @@ private extension ServerSentEventReceiver {
         }
     }
     
+    func startPing2() {
+        log.debug("Try to start ping schedule")
+        
+        let randomPingTime = Int.random(in: Const.minPingInterval..<Const.maxPingInterval)
+        let pingCancellable = Timer
+            .publish(every: Double(randomPingTime), on: .main, in: .common)
+            .setFailureType(to: Error.self)
+            .flatMap { [weak self] _ -> AnyPublisher<Void, Error> in
+                guard let apiProvider = self?.apiProvider else {
+                    return Fail(error: NetworkError.badRequest).eraseToAnyPublisher()
+                }
+                
+                return apiProvider.ping2.eraseToAnyPublisher()
+            }
+            .retry(3)
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+        
+        sseStateQueue.async { [weak self] in
+            guard let self else { return }
+            self.pingCancellable?.cancel()
+            self.pingCancellable = pingCancellable
+            pingCancellable.store(in: &cancellables)
+            log.debug("Ping schedule for server initiated directive is set. It will be triggered \(randomPingTime) seconds later.")
+        }
+    }
+    
     func stopPing() {
         log.debug("Try to stop ping schedule")
         
@@ -136,5 +198,16 @@ private extension ServerSentEventReceiver {
             pingDisposable = nil
         }
 
+    }
+    
+    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
+    func stopPing2() {
+        log.debug("Try to stop ping schedule")
+        
+        sseStateQueue.async { [weak self] in
+            guard let self else { return }
+            pingCancellable?.cancel()
+            pingCancellable = nil
+        }
     }
 }

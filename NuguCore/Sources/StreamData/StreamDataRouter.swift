@@ -62,7 +62,7 @@ public extension StreamDataRouter {
         serverInitiatedDirectiveCompletion = completion
         
         serverInitiatedDirectiveStateDisposable?.dispose()
-        serverInitiatedDirectiveStateDisposable = serverInitiatedDirectiveReceiver.stateObserver
+        serverInitiatedDirectiveStateDisposable = serverInitiatedDirectiveReceiver.stateObserver // FIXME: ServerSentEventReceiver에서 stateObserver 제거 -> stateObserver2를 stateObserver로 변경
             .subscribe(onNext: { [weak self] state in
                 self?.notificationQueue.async { [weak self] in
                     if state == .connected {
@@ -80,7 +80,7 @@ public extension StreamDataRouter {
         
         log.debug("start receive server initiated directives")
         serverInitiatedDirectiveDisposable?.dispose()
-        serverInitiatedDirectiveDisposable = serverInitiatedDirectiveReceiver.directive
+        serverInitiatedDirectiveDisposable = serverInitiatedDirectiveReceiver.directive // FIXME: ServerSentEventReceiver에서 directive 제거 -> directive2를 directive로 변경
             .subscribe(onNext: { [weak self] in
                 self?.notifyMessage(with: $0, completion: completion)
             }, onError: {
@@ -186,6 +186,7 @@ public extension StreamDataRouter {
                     }
                     
                     // Restart server initiated directive receiver if it was disconnected with error
+                    // FIXME: ServerSentEventReceiver에서 state 제거 -> state2를 state로 변경
                     if case .disconnected = self.serverInitiatedDirectiveReceiver.state {
                         self.startReceiveServerInitiatedDirective(completion: self.serverInitiatedDirectiveCompletion)
                     }
