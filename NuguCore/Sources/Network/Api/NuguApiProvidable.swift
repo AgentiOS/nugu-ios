@@ -19,14 +19,19 @@
 //
 
 import Foundation
+import Combine
 
 import RxSwift
 
 public protocol NuguApiProvidable {
     var policies: Single<Policy> { get }
+    var policies2: AnyPublisher<Policy, Error> { get }
     var directive: Observable<MultiPartParser.Part> { get }
+    var directive2: AnyPublisher<MultiPartParser.Part, Error> { get }
     var ping: Completable { get }
-    
+    var ping2: AnyPublisher<Void, Error> { get }
+
     func setRequestTimeout(_ timeInterval: TimeInterval)
     func events(boundary: String, httpHeaderFields: [String: String]?, inputStream: InputStream) -> Observable<MultiPartParser.Part>
+    func events(boundary: String, httpHeaderFields: [String: String]?, inputStream: InputStream) -> AnyPublisher<MultiPartParser.Part, Error>
 }

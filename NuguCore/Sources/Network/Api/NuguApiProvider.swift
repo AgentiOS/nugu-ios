@@ -19,6 +19,7 @@
 //
 
 import Foundation
+import Combine
 
 import NuguUtils
 
@@ -259,6 +260,11 @@ extension NuguApiProvider {
         }
     }
     
+    public func events(boundary: String, httpHeaderFields: [String: String]?, inputStream: InputStream) -> AnyPublisher<MultiPartParser.Part, Error> {
+        // TODO: NuguApiProvider 작업 시 구현
+        Empty().eraseToAnyPublisher()
+    }
+    
     /**
      Find available device gateway (resource server)
     */
@@ -273,6 +279,11 @@ extension NuguApiProvider {
                     self?.cslbState = .activated
                 }
             }
+    }
+    
+    public var policies2: AnyPublisher<Policy, Error> {
+        // TODO: NuguApiProvider 작업 시 구현
+        Empty().eraseToAnyPublisher()
     }
     
     private func retryDirective(observer: Observable<Error>) -> Observable<Int> {
@@ -328,6 +339,11 @@ extension NuguApiProvider {
             }
     }
     
+    public var directive2: AnyPublisher<MultiPartParser.Part, Error> {
+        // TODO: NuguApiProvider 작업 시 구현
+        Empty().eraseToAnyPublisher()
+    }
+    
     /**
      Send ping data to keep stream of server side event
      */
@@ -348,6 +364,11 @@ extension NuguApiProvider {
         
         return request.rxDataTask(urlSession: session)
             .asCompletable()
+    }
+    
+    public var ping2: AnyPublisher<Void, Error> {
+        // TODO: NuguApiProvider 작업 시 구현
+        Empty().eraseToAnyPublisher()
     }
 }
 
