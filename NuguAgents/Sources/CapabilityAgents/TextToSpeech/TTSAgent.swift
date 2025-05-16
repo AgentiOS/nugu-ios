@@ -19,11 +19,10 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
-
-import RxSwift
 
 public final class TTSAgent: TTSAgentProtocol {
     // CapabilityAgentable
@@ -80,7 +79,7 @@ public final class TTSAgent: TTSAgentProtocol {
     private var ttsState: TTSState = .idle {
         didSet {
             log.info("state changed from: \(oldValue) to: \(ttsState)")
-            guard let player = latestPlayer else {
+            guard let latestPlayer else {
                 log.error("TTSPlayer is nil")
                 return
             }
@@ -88,21 +87,21 @@ public final class TTSAgent: TTSAgentProtocol {
             // `PlaySyncState` -> `TTSAgentDelegate`
             switch ttsState {
             case .playing:
-                if player.payload.playServiceId != nil {
+                if latestPlayer.payload.playServiceId != nil {
                     playSyncManager.startPlay(
                         property: playSyncProperty,
                         info: PlaySyncInfo(
-                            playStackServiceId: player.payload.playStackControl?.playServiceId,
-                            dialogRequestId: player.header.dialogRequestId,
-                            messageId: player.header.messageId,
+                            playStackServiceId: latestPlayer.payload.playStackControl?.playServiceId,
+                            dialogRequestId: latestPlayer.header.dialogRequestId,
+                            messageId: latestPlayer.header.messageId,
                             duration: NuguTimeInterval(seconds: 7)
                         )
                     )
                 }
             case .finished, .stopped:
-                if player.payload.playServiceId != nil {
-                    if player.cancelAssociation {
-                        playSyncManager.stopPlay(dialogRequestId: player.header.dialogRequestId)
+                if latestPlayer.payload.playServiceId != nil {
+                    if latestPlayer.cancelAssociation {
+                        playSyncManager.stopPlay(dialogRequestId: latestPlayer.header.dialogRequestId)
                     } else {
                         playSyncManager.endPlay(property: playSyncProperty)
                     }
@@ -115,13 +114,13 @@ public final class TTSAgent: TTSAgentProtocol {
             if oldValue != ttsState {
                 let state = ttsState
                 ttsNotificationQueue.async { [weak self] in
-                    self?.post(NuguAgentNotification.TTS.State(state: state, header: player.header))
+                    self?.post(NuguAgentNotification.TTS.State(state: state, header: latestPlayer.header))
                 }
             }
         }
     }
     
-    private let ttsResultSubject = PublishSubject<(dialogRequestId: String, result: TTSResult)>()
+    private let ttsResultSubject = PassthroughSubject<(dialogRequestId: String, result: TTSResult), Never>()
     
     // Players
     private var currentPlayer: TTSPlayer? {
@@ -139,7 +138,7 @@ public final class TTSAgent: TTSAgentProtocol {
         prefetchPlayer ?? currentPlayer
     }
 
-    private let disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     // Handleable Directives
     private lazy var handleableDirectiveInfos = [
@@ -191,16 +190,16 @@ public final class TTSAgent: TTSAgentProtocol {
     }
     
     public lazy var contextInfoProvider: ContextInfoProviderType = { [weak self] completion in
-        guard let self = self else { return }
+        guard let self else { return }
         
         let payload: [String: AnyHashable] = [
-            "ttsActivity": self.ttsState.value,
-            "version": self.capabilityAgentProperty.version,
+            "ttsActivity": ttsState.value,
+            "version": capabilityAgentProperty.version,
             "engine": "skt",
-            "token": self.currentPlayer?.payload.token,
-            "allowSpeak": self.delegate?.ttsAgentAllowSpeak() ?? false
+            "token": currentPlayer?.payload.token,
+            "allowSpeak": delegate?.ttsAgentAllowSpeak() ?? false
         ]
-        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
+        completion(ContextInfo(contextType: .capability, name: capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
     }
 }
 
@@ -212,20 +211,22 @@ public extension TTSAgent {
         playServiceId: String?,
         handler: ((_ ttsResult: TTSResult, _ dialogRequestId: String) -> Void)?
     ) -> String {
-        let eventIdentifier = sendCompactContextEvent(Event(
-            typeInfo: .speechPlay(text: text),
-            token: nil,
-            playServiceId: playServiceId,
-            referrerDialogRequestId: nil
-        ).rx)
+        let eventIdentifier = sendCompactContextEvent(
+            Event(
+                typeInfo: .speechPlay(text: text),
+                token: nil,
+                playServiceId: playServiceId,
+                referrerDialogRequestId: nil
+            )
+        )
         
         ttsResultSubject
             .filter { $0.dialogRequestId == eventIdentifier.dialogRequestId }
-            .take(1)
-            .subscribe(onNext: { (dialogRequestId, result) in
+            .prefix(1)
+            .sink { dialogRequestId, result in
                 handler?(result, dialogRequestId)
-            })
-            .disposed(by: self.disposeBag)
+            }
+            .store(in: &cancellables)
         return eventIdentifier.dialogRequestId
     }
     
@@ -248,28 +249,28 @@ public extension TTSAgent {
 
 extension TTSAgent: FocusChannelDelegate {
     public func focusChannelPriority() -> FocusChannelPriority {
-        return .information
+        .information
     }
     
     public func focusChannelDidChange(focusState: FocusState) {
         ttsDispatchQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
-            log.info("\(focusState) \(self.ttsState)")
-            switch (focusState, self.ttsState) {
-            case (.foreground, let ttsState) where [.idle, .stopped, .finished].contains(ttsState):
-                if let player = self.currentPlayer, player.internalPlayer != nil {
-                    player.play()
+            log.info("\(focusState) \(ttsState)")
+            switch (focusState, ttsState) {
+            case let (.foreground, ttsState) where [.idle, .stopped, .finished].contains(ttsState):
+                if let currentPlayer, currentPlayer.internalPlayer != nil {
+                    currentPlayer.play()
                 } else {
                     log.error("currentPlayer is nil")
-                    self.releaseFocusIfNeeded()
+                    releaseFocusIfNeeded()
                 }
             // Ignore (foreground, playing)
             case (.foreground, _):
                 break
             case (.background, _), (.nothing, _):
-                if let player = self.currentPlayer {
-                    self.stop(player: player, cancelAssociation: false)
+                if let currentPlayer {
+                    stop(player: currentPlayer, cancelAssociation: false)
                 }
             // Ignore prepare
             default:
@@ -287,7 +288,7 @@ extension TTSAgent: MediaPlayerDelegate {
         log.info("media \(mediaPlayer) state: \(state)")
         
         ttsDispatchQueue.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
             var ttsResult: (dialogRequestId: String, result: TTSResult)?
             var ttsState: TTSState?
@@ -304,12 +305,12 @@ extension TTSAgent: MediaPlayerDelegate {
                 ttsState = .finished
                 eventTypeInfo = .speechFinished
             case .pause:
-                self.stop(player: player, cancelAssociation: false)
+                stop(player: player, cancelAssociation: false)
             case .stop:
                 ttsResult = (dialogRequestId: player.header.dialogRequestId, result: .stopped(cancelAssociation: player.cancelAssociation))
                 ttsState = .stopped
                 eventTypeInfo = .speechStopped
-            case .error(let error):
+            case let .error(error):
                 ttsResult = (dialogRequestId: player.header.dialogRequestId, result: .error(error))
                 ttsState = .stopped
                 eventTypeInfo = .speechStopped
@@ -319,24 +320,26 @@ extension TTSAgent: MediaPlayerDelegate {
             
             // `TTSResult` -> `TTSState` -> `FocusState` -> Event
             if let ttsResult = ttsResult {
-                self.ttsResultSubject.onNext(ttsResult)
+                ttsResultSubject.send(ttsResult)
             }
-            if let ttsState = ttsState, self.latestPlayer === player {
+            if let ttsState, latestPlayer === player {
                 self.ttsState = ttsState
                 switch ttsState {
                 case .stopped, .finished:
-                    self.releaseFocusIfNeeded()
+                    releaseFocusIfNeeded()
                 default:
                     break
                 }
             }
             if let eventTypeInfo = eventTypeInfo {
-                self.sendCompactContextEvent(Event(
-                    typeInfo: eventTypeInfo,
-                    token: player.payload.token,
-                    playServiceId: player.payload.playServiceId,
-                    referrerDialogRequestId: player.header.dialogRequestId
-                ).rx)
+                sendCompactContextEvent(
+                    Event(
+                        typeInfo: eventTypeInfo,
+                        token: player.payload.token,
+                        playServiceId: player.payload.playServiceId,
+                        referrerDialogRequestId: player.header.dialogRequestId
+                    )
+                )
             }
         }
     }
@@ -363,8 +366,8 @@ private extension TTSAgent {
                 guard let self else { return }
                 
                 log.debug(directive.header.messageId)
-                if prefetchPlayer?.stop(reason: .playAnother) == true ||
-                    currentPlayer?.stop(reason: .playAnother) == true {
+                if prefetchPlayer?.stop(reason: .playAnother) == true
+                    || currentPlayer?.stop(reason: .playAnother) == true {
                     ttsState = .stopped
                 }
                 
@@ -377,51 +380,47 @@ private extension TTSAgent {
     func cancelPlay() -> CancelDirective {
         return { [weak self] directive in
             self?.ttsDispatchQueue.sync { [weak self] in
-                guard let self = self else { return }
-                guard let player = self.prefetchPlayer, player.header.messageId == directive.header.messageId else {
+                guard let self else { return }
+                guard prefetchPlayer?.header.messageId == directive.header.messageId else {
                     log.info("Message id does not match")
                     return
                 }
                 
-                self.prefetchPlayer = nil
-                self.focusManager.cancelFocus(channelDelegate: self)
+                prefetchPlayer = nil
+                focusManager.cancelFocus(channelDelegate: self)
             }
         }
     }
     
     func handlePlay() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self else {
-                completion(.canceled)
-                return
-            }
-            self.ttsDispatchQueue.async { [weak self] in
-                guard let self = self else {
+            self?.ttsDispatchQueue.async { [weak self] in
+                guard let self else {
                     completion(.canceled)
                     return
                 }
-                guard let player = self.prefetchPlayer, player.header.messageId == directive.header.messageId else {
+                guard let prefetchPlayer, prefetchPlayer.header.messageId == directive.header.messageId else {
                     completion(.canceled)
                     log.info("Message id does not match")
                     return
                 }
-                guard player.internalPlayer != nil else {
+                guard prefetchPlayer.internalPlayer != nil else {
                     completion(.canceled)
                     log.info("Internal player is nil")
                     return
                 }
                 
                 log.debug(directive.header.messageId)
-                self.currentPlayer = player
+                currentPlayer = prefetchPlayer
                 
-                self.ttsNotificationQueue.async { [weak self] in
-                    self?.post(NuguAgentNotification.TTS.Result(text: player.payload.text, header: player.header))
+                ttsNotificationQueue.async { [weak self] in
+                    self?.post(NuguAgentNotification.TTS.Result(text: prefetchPlayer.payload.text, header: prefetchPlayer.header))
                 }
                 
-                self.ttsResultSubject
-                    .filter { $0.dialogRequestId == player.header.dialogRequestId }
-                    .take(1)
-                    .subscribe(onNext: { [weak self] (_, result) in
+                ttsResultSubject
+                    .filter { $0.dialogRequestId == prefetchPlayer.header.dialogRequestId }
+                    .prefix(1)
+                    .sink { [weak self] _, result in
                         guard let self = self else {
                             completion(.canceled)
                             return
@@ -433,13 +432,13 @@ private extension TTSAgent {
                             if cancelAssociation {
                                 completion(.stopped(directiveCancelPolicy: .cancelAll))
                             } else {
-                                completion(.stopped(directiveCancelPolicy: self.directiveCancelPolicy))
+                                completion(.stopped(directiveCancelPolicy: directiveCancelPolicy))
                             }
                         case .error(let error):
                             completion(.failed("\(error)"))
                         }
-                    })
-                    .disposed(by: self.disposeBag)
+                    }
+                    .store(in: &cancellables)
             }
         }
     }
@@ -449,16 +448,16 @@ private extension TTSAgent {
             defer { completion(.finished) }
             
             self?.ttsDispatchQueue.async { [weak self] in
-                guard let self = self, let player = self.currentPlayer else { return }
-                guard player.internalPlayer != nil else {
+                guard let self, let currentPlayer else { return }
+                guard currentPlayer.internalPlayer != nil else {
                     // Release synchronized layer after playback finished.
-                    if player.payload.playServiceId != nil {
-                        self.playSyncManager.stopPlay(dialogRequestId: player.header.dialogRequestId)
+                    if currentPlayer.payload.playServiceId != nil {
+                        playSyncManager.stopPlay(dialogRequestId: currentPlayer.header.dialogRequestId)
                     }
                     return
                 }
                 
-                self.stop(player: player, cancelAssociation: true)
+                stop(player: currentPlayer, cancelAssociation: true)
             }
         }
     }
@@ -477,9 +476,9 @@ private extension TTSAgent {
         return { [weak self] attachment in
             self?.ttsDispatchQueue.async { [weak self] in
                 log.info("\(attachment)")
-                guard let self = self else { return }
-                guard self.prefetchPlayer?.handleAttachment(attachment) == true ||
-                        self.currentPlayer?.handleAttachment(attachment) == true else {
+                guard let self else { return }
+                guard prefetchPlayer?.handleAttachment(attachment) == true
+                        || currentPlayer?.handleAttachment(attachment) == true else {
                     log.warning("MediaOpusStreamDataSource not exist or dialogRequesetId not valid")
                     return
                 }
@@ -504,17 +503,17 @@ private extension TTSAgent {
 
 private extension TTSAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: Eventable,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
-            property: self.capabilityAgentProperty,
+            context: contextManager.contexts(namespace: capabilityAgentProperty.name),
+            property: capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
@@ -595,12 +594,12 @@ private extension TTSAgent {
     func addPlaySyncObserver(_ object: PlaySyncManageable) {
         playSyncObserver = object.observe(NuguCoreNotification.PlaySync.ReleasedProperty.self, queue: nil) { [weak self] (notification) in
             self?.ttsDispatchQueue.async { [weak self] in
-                guard let self = self else { return }
-                guard notification.property == self.playSyncProperty,
-                      let player = self.latestPlayer,
-                      player.header.messageId == notification.messageId else { return }
+                guard let self else { return }
+                guard notification.property == playSyncProperty,
+                      let latestPlayer,
+                      latestPlayer.header.messageId == notification.messageId else { return }
                 
-                self.stop(player: player, cancelAssociation: true)
+                stop(player: latestPlayer, cancelAssociation: true)
             }
         }
     }
