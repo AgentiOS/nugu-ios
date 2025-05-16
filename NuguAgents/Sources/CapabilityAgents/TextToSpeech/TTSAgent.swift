@@ -120,7 +120,6 @@ public final class TTSAgent: TTSAgentProtocol {
         }
     }
     
-    //private let ttsResultSubject = PublishSubject<(dialogRequestId: String, result: TTSResult)>()
     private let ttsResultSubject = PassthroughSubject<(dialogRequestId: String, result: TTSResult), Never>()
     
     // Players
