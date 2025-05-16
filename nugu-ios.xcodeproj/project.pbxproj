@@ -469,6 +469,9 @@
 		E6A10AFA2DD3223C00084FBD /* NuguApiProvidable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A10AF92DD3223C00084FBD /* NuguApiProvidable.swift */; };
 		E6AA8F902DD46649001C4099 /* NuguCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */; };
 		E6AA8F932DD4664C001C4099 /* NuguAgentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */; };
+		E6B3D5C42DD6FD67002DDE16 /* NuguApiProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B3D5C32DD6FD67002DDE16 /* NuguApiProvider.swift */; };
+		E6B3D5C62DD6FD8F002DDE16 /* ServerSentEventReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B3D5C52DD6FD8F002DDE16 /* ServerSentEventReceiverTests.swift */; };
+		E6B3D5C82DD6FF8C002DDE16 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E6B3D5C72DD6FF8C002DDE16 /* RxSwift */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
 		E6BE047E2A0BA1BD00AE29E3 /* ImageAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */; };
 		E6BFB95C2C0698CB007AA282 /* Publishers+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */; };
@@ -1194,6 +1197,8 @@
 		E6A10AF92DD3223C00084FBD /* NuguApiProvidable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguApiProvidable.swift; sourceTree = "<group>"; };
 		E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguCoreTests.swift; sourceTree = "<group>"; };
 		E6AA8F912DD4664C001C4099 /* NuguAgentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguAgentsTests.swift; sourceTree = "<group>"; };
+		E6B3D5C32DD6FD67002DDE16 /* NuguApiProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuguApiProvider.swift; sourceTree = "<group>"; };
+		E6B3D5C52DD6FD8F002DDE16 /* ServerSentEventReceiverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSentEventReceiverTests.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
 		E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+Convenience.swift"; sourceTree = "<group>"; };
@@ -1376,6 +1381,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6B3D5C82DD6FF8C002DDE16 /* RxSwift in Frameworks */,
 				E62BF10E2DD2D4690054322D /* NuguCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2805,7 +2811,9 @@
 		E6AA8F8F2DD46649001C4099 /* NuguCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				E6B3D5C22DD6FD53002DDE16 /* TestDouble */,
 				E6AA8F8E2DD46649001C4099 /* NuguCoreTests.swift */,
+				E6B3D5C52DD6FD8F002DDE16 /* ServerSentEventReceiverTests.swift */,
 				E6C3EEDD2DD467CA00519D46 /* NuguCoreTestplan.xctestplan */,
 			);
 			path = NuguCoreTests;
@@ -2820,6 +2828,14 @@
 				E6C3EEDE2DD4681600519D46 /* NuguAgentsTestplan.xctestplan */,
 			);
 			path = NuguAgentsTests;
+			sourceTree = "<group>";
+		};
+		E6B3D5C22DD6FD53002DDE16 /* TestDouble */ = {
+			isa = PBXGroup;
+			children = (
+				E6B3D5C32DD6FD67002DDE16 /* NuguApiProvider.swift */,
+			);
+			path = TestDouble;
 			sourceTree = "<group>";
 		};
 		E6BE047A2A0BA18700AE29E3 /* Image */ = {
@@ -3307,6 +3323,7 @@
 			);
 			name = NuguCoreTests;
 			packageProductDependencies = (
+				E6B3D5C72DD6FF8C002DDE16 /* RxSwift */,
 			);
 			productName = NuguCoreTests;
 			productReference = E62BF10A2DD2D4690054322D /* NuguCoreTests.xctest */;
@@ -4265,6 +4282,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6B3D5C42DD6FD67002DDE16 /* NuguApiProvider.swift in Sources */,
+				E6B3D5C62DD6FD8F002DDE16 /* ServerSentEventReceiverTests.swift in Sources */,
 				E6AA8F902DD46649001C4099 /* NuguCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5684,6 +5703,11 @@
 			productName = NattyLog;
 		};
 		E69D1DFF2BFAB7D80061C704 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		E6B3D5C72DD6FF8C002DDE16 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
