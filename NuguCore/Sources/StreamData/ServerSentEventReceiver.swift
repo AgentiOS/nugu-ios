@@ -21,24 +21,18 @@
 import Foundation
 import Combine
 
-import RxSwift
-
-class ServerSentEventReceiver {
+class ServerSentEventReceiver: ServerSentEventReceivable {
     private let apiProvider: NuguApiProvidable
-    private var pingDisposable: Disposable? // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     private var pingCancellable: AnyCancellable?
-    private let stateSubject = PublishSubject<ServerSentEventReceiverState>() // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
-    private let stateSubject2 = PassthroughSubject<ServerSentEventReceiverState, Never>()
+    private let stateSubject = PassthroughSubject<ServerSentEventReceiverState, Never>()
     private let sseStateQueue = DispatchQueue(label: "com.sktelecom.romaine.core.server_sent_event_state")
-    private let disposeBag = DisposeBag()  // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     private var cancellables = Set<AnyCancellable>()
     
     private(set) var state: ServerSentEventReceiverState = .unconnected {
         didSet {
             if oldValue != state {
                 log.debug("server side event receiver state changed from: \(oldValue) to: \(state)")
-                stateSubject.onNext(state)  // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
-                stateSubject2.send(state)
+                stateSubject.send(state)
                 state == .connected ? startPing() : stopPing()
             }
         }
@@ -47,41 +41,8 @@ class ServerSentEventReceiver {
     init(apiProvider: NuguApiProvidable) {
         self.apiProvider = apiProvider
     }
-
-    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
-    var directive: Observable<MultiPartParser.Part> {
-        sseStateQueue.async { [weak self] in
-            self?.state = .connecting
-        }
-        
-        var error: Error?
-        return apiProvider.directive
-            .enumerated()
-            .map { [weak self] (index: Int, element: MultiPartParser.Part) in
-                self?.sseStateQueue.async { [weak self] in
-                    if index == .zero {
-                        // Change state when the first directive arrived
-                        self?.state = .connected
-                    }
-                }
-                
-                return element
-            }
-            .do(onError: {
-                error = $0
-            }, onDispose: { [weak self] in
-                self?.sseStateQueue.async { [weak self] in
-                    if let error = error {
-                        self?.state = .disconnected(error: error)
-                        return
-                    }
-                    
-                    self?.state = .unconnected
-                }
-            })
-    }
     
-    var directive2: AnyPublisher<MultiPartParser.Part, Error> {
+    var directive: AnyPublisher<MultiPartParser.Part, Error> {
         return apiProvider.directive2
             .handleEvents(receiveSubscription: { [weak self] _ in
                 self?.sseStateQueue.async { [weak self] in
@@ -104,14 +65,9 @@ class ServerSentEventReceiver {
             })
             .eraseToAnyPublisher()
     }
-
-    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
-    var stateObserver: Observable<ServerSentEventReceiverState> {
-        stateSubject
-    }
     
-    var stateObserver2: AnyPublisher<ServerSentEventReceiverState, Never> {
-        stateSubject2.eraseToAnyPublisher()
+    var stateObserver: AnyPublisher<ServerSentEventReceiverState, Never> {
+        stateSubject.eraseToAnyPublisher()
     }
 }
 
@@ -124,46 +80,7 @@ private extension ServerSentEventReceiver {
         static let maxRetryCount = 3
     }
     
-    // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
     func startPing() {
-        log.debug("Try to start ping schedule")
-        
-        let randomPingTime = Int.random(in: Const.minPingInterval..<Const.maxPingInterval)
-        let pingDisposable = Observable<Int>.interval(.seconds(randomPingTime), scheduler: ConcurrentDispatchQueueScheduler(qos: .default))
-            .flatMap { [weak self] _ -> Completable in
-                guard let apiProvider = self?.apiProvider else {
-                    return Completable.error(NetworkError.badRequest)
-                }
-                
-                return apiProvider.ping
-        }
-        .retry {  (error: Observable<Error>) in
-            error
-                .enumerated()
-                .flatMap { (index, error) -> Observable<Int> in
-                    guard index < Const.maxRetryCount else {
-                        return Observable.error(error)
-                    }
-                    
-                    return Observable<Int>.timer(.seconds(0), period: .seconds(Int.random(in: 10..<30)), scheduler: ConcurrentDispatchQueueScheduler(qos: .default)).take(1)
-            }
-        }
-        .subscribe(onError: {
-            log.error("Ping failed: \($0)")
-        }, onDisposed: {
-            log.debug("Ping schedule for server initiated directive is cancelled")
-        })
-        
-        sseStateQueue.async { [weak self] in
-            guard let self else { return }
-            self.pingDisposable?.dispose()
-            self.pingDisposable = pingDisposable
-            pingDisposable.disposed(by: disposeBag)
-            log.debug("Ping schedule for server initiated directive is set. It will be triggered \(randomPingTime) seconds later.")
-        }
-    }
-    
-    func startPing2() {
         log.debug("Try to start ping schedule")
         
         let randomPingTime = Int.random(in: Const.minPingInterval..<Const.maxPingInterval)
@@ -189,19 +106,8 @@ private extension ServerSentEventReceiver {
         }
     }
     
-    func stopPing() {
-        log.debug("Try to stop ping schedule")
-        
-        sseStateQueue.async { [weak self] in
-            guard let self else { return }
-            pingDisposable?.dispose()
-            pingDisposable = nil
-        }
-
-    }
-    
     // TODO: StreamDataRouter에서 Combine 변환 작업 완료 시, 삭제
-    func stopPing2() {
+    func stopPing() {
         log.debug("Try to stop ping schedule")
         
         sseStateQueue.async { [weak self] in
