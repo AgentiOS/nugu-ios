@@ -2,7 +2,7 @@
 //  ServerSentEventReceivable.swift
 //  NuguCore
 //
-//  Created by childc on 2025/05/16.
+//  Created by 신정섭님/AI Assistant iOS팀 on 5/16/25.
 //  Copyright (c) 2025 SK Telecom Co., Ltd. All rights reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
