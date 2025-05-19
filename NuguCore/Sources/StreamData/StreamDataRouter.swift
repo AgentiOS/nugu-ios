@@ -19,10 +19,9 @@
 //
 
 import Foundation
+import Combine
 
 import NuguUtils
-
-import RxSwift
 
 public class StreamDataRouter: StreamDataRoutable {
     private let notificationQueue = DispatchQueue(label: "com.sktelecom.romaine.stream_data_router_notificaiton_queue")
@@ -30,12 +29,12 @@ public class StreamDataRouter: StreamDataRoutable {
     private let nuguApiProvider: NuguApiProvidable
     private let directiveSequencer: DirectiveSequenceable
     @Atomic private var eventSenders = [String: EventSender]()
-    @Atomic private var eventDisposables = [String: Disposable]()
+    @Atomic private var eventCancellables = [String: AnyCancellable]()
     private var serverInitiatedDirectiveReceiver: ServerSentEventReceiver
     private var serverInitiatedDirectiveCompletion: ((StreamDataState) -> Void)?
-    private var serverInitiatedDirectiveDisposable: Disposable?
-    private var serverInitiatedDirectiveStateDisposable: Disposable?
-    private let disposeBag = DisposeBag()
+    private var serverInitiatedDirectiveCancellable: Cancellable?
+    private var serverInitiatedDirectiveStateCancellable: Cancellable?
+    private var cancellables = Set<AnyCancellable>()
     
     public init(directiveSequencer: DirectiveSequenceable, nuguApiProvider: NuguApiProvidable) {
         serverInitiatedDirectiveReceiver = ServerSentEventReceiver(apiProvider: nuguApiProvider)
@@ -61,9 +60,11 @@ public extension StreamDataRouter {
         // Though the resource is changed by handoff command from server.
         serverInitiatedDirectiveCompletion = completion
         
-        serverInitiatedDirectiveStateDisposable?.dispose()
-        serverInitiatedDirectiveStateDisposable = serverInitiatedDirectiveReceiver.stateObserver // FIXME: ServerSentEventReceiver에서 stateObserver 제거 -> stateObserver2를 stateObserver로 변경
-            .subscribe(onNext: { [weak self] state in
+        serverInitiatedDirectiveStateCancellable?.cancel()
+        serverInitiatedDirectiveStateCancellable = serverInitiatedDirectiveReceiver.stateObserver
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.post(ServerSentEventReceiverState.unconnected)
+            }, receiveValue: { [weak self] state in
                 self?.notificationQueue.async { [weak self] in
                     if state == .connected {
                         completion?(.prepared)
@@ -71,26 +72,27 @@ public extension StreamDataRouter {
                     
                     self?.post(state)
                 }
-            }, onError: { [weak self] error in
-                self?.post(ServerSentEventReceiverState.disconnected(error: error))
-            }, onDisposed: { [weak self] in
-                self?.post(ServerSentEventReceiverState.unconnected)
             })
-        serverInitiatedDirectiveStateDisposable?.disposed(by: disposeBag)
+        
+        serverInitiatedDirectiveStateCancellable?.store(in: &cancellables)
         
         log.debug("start receive server initiated directives")
-        serverInitiatedDirectiveDisposable?.dispose()
-        serverInitiatedDirectiveDisposable = serverInitiatedDirectiveReceiver.directive // FIXME: ServerSentEventReceiver에서 directive 제거 -> directive2를 directive로 변경
-            .subscribe(onNext: { [weak self] in
-                self?.notifyMessage(with: $0, completion: completion)
-            }, onError: {
-                log.error("error: \($0)")
-                completion?(.error($0))
-            }, onDisposed: {
-                log.debug("server initiated directive is stopeed")
-                completion?(.finished)
+        serverInitiatedDirectiveCancellable?.cancel()
+        
+        serverInitiatedDirectiveCancellable = serverInitiatedDirectiveReceiver.directive
+            .sink(receiveCompletion: { receiveCompletion in
+                switch receiveCompletion {
+                case let .failure(error):
+                    log.error("error: \(error)")
+                    completion?(.error(error))
+                case .finished:
+                    log.debug("server initiated directive is stopeed")
+                    completion?(.finished)
+                }
+            }, receiveValue: { [weak self] part in
+                self?.notifyMessage(with: part, completion: completion)
             })
-        serverInitiatedDirectiveDisposable?.disposed(by: disposeBag)
+        serverInitiatedDirectiveCancellable?.store(in: &cancellables)
     }
     
     /**
@@ -117,8 +119,8 @@ public extension StreamDataRouter {
      */
     func stopReceiveServerInitiatedDirective() {
         log.debug("stop receive server initiated directives")
-        serverInitiatedDirectiveDisposable?.dispose()
-        serverInitiatedDirectiveStateDisposable?.dispose()
+        serverInitiatedDirectiveStateCancellable?.cancel()
+        serverInitiatedDirectiveCancellable?.cancel()
         serverInitiatedDirectiveCompletion = nil
     }
 }
@@ -165,41 +167,43 @@ public extension StreamDataRouter {
         completion?(.sent)
         
         // request event as multi part stream
-        _eventDisposables.mutate {
+        
+        _eventCancellables.mutate {
             $0[event.header.dialogRequestId] = nuguApiProvider.events(boundary: boundary, httpHeaderFields: event.httpHeaderFields, inputStream: eventSender.inputStream)
-                .subscribe(onNext: { [weak self] (part) in
-                    self?.notifyMessage(with: part, completion: completion)
-                }, onError: { [weak self] (error) in
-                    guard let self = self else { return }
-                    
-                    log.error("\(error.localizedDescription)")
-                    self.notificationQueue.async { [weak self] in
-                        self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: error))
-                    }
-                    
-                    completion?(.error(error))
-                }, onCompleted: { [weak self] in
-                    guard let self = self else { return }
-                    
-                    self.notificationQueue.async { [weak self] in
-                        self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: nil))
-                    }
-                    
-                    // Restart server initiated directive receiver if it was disconnected with error
-                    // FIXME: ServerSentEventReceiver에서 state 제거 -> state2를 state로 변경
-                    if case .disconnected = self.serverInitiatedDirectiveReceiver.state {
-                        self.startReceiveServerInitiatedDirective(completion: self.serverInitiatedDirectiveCompletion)
-                    }
-                    
-                    completion?(.finished)
-                }, onDisposed: { [weak self] in
-                    self?._eventDisposables.mutate {
+                .handleEvents(receiveCancel: { [weak self] in
+                    self?._eventCancellables.mutate {
                         $0[event.header.dialogRequestId] = nil
                     }
                     
                     self?._eventSenders.mutate {
                         $0[event.header.dialogRequestId] = nil
                     }
+                    
+                })
+                .sink(receiveCompletion: { [weak self] receiveCompletion in
+                    guard let self else { return }
+                    switch receiveCompletion {
+                    case let .failure(error):
+                        log.error("\(error.localizedDescription)")
+                        notificationQueue.async { [weak self] in
+                            self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: error))
+                        }
+                        
+                        completion?(.error(error))
+                    case .finished:
+                        notificationQueue.async { [weak self] in
+                            self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: nil))
+                        }
+                        
+                        // Restart server initiated directive receiver if it was disconnected with error
+                        if case .disconnected = serverInitiatedDirectiveReceiver.state {
+                            startReceiveServerInitiatedDirective(completion: serverInitiatedDirectiveCompletion)
+                        }
+                        
+                        completion?(.finished)
+                    }
+                }, receiveValue: { [weak self] part in
+                    self?.notifyMessage(with: part, completion: completion)
                 })
         }
     }
@@ -239,7 +243,7 @@ public extension StreamDataRouter {
      */
     func cancelEvent(dialogRequestId: String) {
         eventSenders[dialogRequestId]?.finish()
-        eventDisposables[dialogRequestId]?.dispose()
+        eventCancellables[dialogRequestId]?.cancel()
     }
 }
 

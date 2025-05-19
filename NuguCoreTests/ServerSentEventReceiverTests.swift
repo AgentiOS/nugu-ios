@@ -19,13 +19,13 @@ struct ServerSentEventReceiverTests {
         let sut = ServerSentEventReceiver(apiProvider: apiProvider)
         
         let result = await withCheckedContinuation { continuation in
-            sut.stateObserver2
+            sut.stateObserver
                 .sink { state in
                     continuation.resume(returning: state)
                 }
                 .store(in: &cancellables)
             
-            sut.directive2
+            sut.directive
                 .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
                 .store(in: &cancellables)
         }
@@ -39,12 +39,12 @@ struct ServerSentEventReceiverTests {
         let apiProvider = NuguApiProvider.Mock()
         let sut = ServerSentEventReceiver(apiProvider: apiProvider)
         
-        sut.directive2
+        sut.directive
             .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
             .store(in: &cancellables)
         
         let result = await withCheckedContinuation { continuation in
-            sut.stateObserver2
+            sut.stateObserver
                 .sink { state in
                     guard state != .connecting else { return }
                     continuation.resume(returning: state)
@@ -64,11 +64,11 @@ struct ServerSentEventReceiverTests {
         let apiProvider = NuguApiProvider.Mock()
         let sut = ServerSentEventReceiver(apiProvider: apiProvider)
         
-        directiveCancellables = sut.directive2
+        directiveCancellables = sut.directive
             .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
         
         let result = await withCheckedContinuation { continuation in
-            sut.stateObserver2
+            sut.stateObserver
                 .sink { state in
                     guard state != .connecting else { return }
                     continuation.resume(returning: state)
@@ -87,12 +87,12 @@ struct ServerSentEventReceiverTests {
         let apiProvider = NuguApiProvider.Mock()
         let sut = ServerSentEventReceiver(apiProvider: apiProvider)
         
-        sut.directive2
+        sut.directive
             .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
             .store(in: &cancellables)
         
         let result = await withCheckedContinuation { continuation in
-            sut.stateObserver2
+            sut.stateObserver
                 .sink { state in
                     guard state != .connecting else { return }
                     continuation.resume(returning: state)
