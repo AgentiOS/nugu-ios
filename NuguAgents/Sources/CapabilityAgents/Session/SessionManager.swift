@@ -19,18 +19,13 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
 
-import RxSwift
-
 final public class SessionManager: SessionManageable {
     private let sessionDispatchQueue = DispatchQueue(label: "com.sktelecom.romaine.session", qos: .userInitiated)
-    private lazy var sessionScheduler = SerialDispatchQueueScheduler(
-        queue: sessionDispatchQueue,
-        internalSerialQueueName: "com.sktelecom.romaine.session"
-    )
     
     /// Active sessions sorted chronologically.
     public var activeSessions = [Session]() {
@@ -42,7 +37,8 @@ final public class SessionManager: SessionManageable {
     }
     
     // private
-    private var activeTimers = [String: Disposable]()
+    private var timeout: TimeInterval = SessionConst.timeout
+    private var activeTimers = [String: Cancellable]()
     private var sessions = [String: Session]() {
         didSet {
             updateActiveSession()
@@ -75,7 +71,7 @@ final public class SessionManager: SessionManageable {
         }
     }
     
-    public func activate(dialogRequestId: String, category: CapabilityAgentCategory) {
+    public func activate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)? = nil) {
         sessionDispatchQueue.async { [weak self] in
             guard let self = self else { return }
             log.debug("activate dialogRequestId: \(dialogRequestId), category: \(category)")
@@ -86,10 +82,11 @@ final public class SessionManager: SessionManageable {
             }
             self.activeList[dialogRequestId]?.insert(category)
             self.addActiveSession(dialogRequestId: dialogRequestId)
+            completion?()
         }
     }
     
-    public func deactivate(dialogRequestId: String, category: CapabilityAgentCategory) {
+    public func deactivate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)? = nil) {
         sessionDispatchQueue.async { [weak self] in
             guard let self = self else { return }
             log.debug("deactivate dialogRequestId: \(dialogRequestId), category: \(category)")
@@ -101,6 +98,7 @@ final public class SessionManager: SessionManageable {
                     self.addTimer(session: session)
                 }
             }
+            completion?()
         }
     }
 }
@@ -108,16 +106,18 @@ final public class SessionManager: SessionManageable {
 private extension SessionManager {
     func addTimer(session: Session) {
         log.debug("Start session remove timer. dialogRequestId: \(session.dialogRequestId)")
-        activeTimers[session.dialogRequestId] = Single<Int>.timer(SessionConst.sessionTimeout, scheduler: sessionScheduler)
-            .subscribe(onSuccess: { [weak self] _ in
+
+        activeTimers[session.dialogRequestId] = Just(())
+            .delay(for: .seconds(timeout), scheduler: sessionDispatchQueue)
+            .sink { [weak self] _ in
                 log.debug("Timer fired. \(session.dialogRequestId)")
                 self?.sessions[session.dialogRequestId] = nil
                 self?.post(NuguAgentNotification.Session.UnSet(session: session))
-            })
+            }
     }
     
     func removeTimer(dialogRequestId: String) {
-        activeTimers[dialogRequestId]?.dispose()
+        activeTimers[dialogRequestId]?.cancel()
         activeTimers[dialogRequestId] = nil
     }
     
@@ -134,6 +134,17 @@ private extension SessionManager {
         }
     }
 }
+
+#if DEBUG
+
+// MARK: - Debug for test
+
+extension SessionManager {
+    func updateTimeout(timeout: TimeInterval) {
+        self.timeout = timeout
+    }
+}
+#endif
 
 // MARK: - Observers
 

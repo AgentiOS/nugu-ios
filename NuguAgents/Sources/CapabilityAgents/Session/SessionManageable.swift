@@ -34,10 +34,20 @@ public protocol SessionManageable: AnyObject, TypedNotifyable {
     /// - Parameters:
     ///   - dialogRequestId: <#dialogRequestId description#>
     ///   - category: <#category description#>
-    func activate(dialogRequestId: String, category: CapabilityAgentCategory)
+    func activate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)?)
     /// <#Description#>
     /// - Parameters:
     ///   - dialogRequestId: <#dialogRequestId description#>
     ///   - category: <#category description#>
-    func deactivate(dialogRequestId: String, category: CapabilityAgentCategory)
+    func deactivate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)?)
+}
+
+public extension SessionManageable {
+    func activate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)? = nil) {
+        activate(dialogRequestId: dialogRequestId, category: category, completion: completion)
+    }
+    
+    func deactivate(dialogRequestId: String, category: CapabilityAgentCategory, completion: (() -> Void)? = nil) {
+        deactivate(dialogRequestId: dialogRequestId, category: category, completion: completion)
+    }
 }
