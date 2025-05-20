@@ -21,5 +21,5 @@
 import Foundation
 
 enum SessionConst {
-    static let sessionTimeout: DispatchTimeInterval = .seconds(60)
+    static let timeout: TimeInterval = 60.0
 }
