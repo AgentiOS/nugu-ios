@@ -38,6 +38,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     
     private let asrAgent: ASRAgentProtocol
     private let keywordDetector: KeywordDetector
+    private let audioSessionManager: AudioSessionManageable?
     
     private let micInputProvider = MicInputProvider()
     private var micInputProviderDelay: DispatchTime = .now()
@@ -61,10 +62,12 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     
     public init(
         keywordDetector: KeywordDetector,
-        asrAgent: ASRAgentProtocol
+        asrAgent: ASRAgentProtocol,
+        audioSessionManager: AudioSessionManageable?
     ) {
         self.keywordDetector = keywordDetector
         self.asrAgent = asrAgent
+        self.audioSessionManager = audioSessionManager
         micInputProvider.delegate = self
         keywordDetector.delegate = self 
         
@@ -233,6 +236,7 @@ public extension SpeechRecognizerAggregator {
                     }
                     
                     do {
+                        audioSessionManager?.updateAudioSession(requestingFocus: requestingFocus)
                         try self.micInputProvider.start()
                         completion(.success)
                     } catch {
