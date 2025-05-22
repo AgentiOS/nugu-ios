@@ -182,7 +182,8 @@ public extension NuguClient {
          */
         public lazy var speechRecognizerAggregator: SpeechRecognizerAggregatable = SpeechRecognizerAggregator(
             keywordDetector: keywordDetector,
-            asrAgent: asrAgent
+            asrAgent: asrAgent,
+            audioSessionManager: audioSessionManager
         )
         
         public init() {
