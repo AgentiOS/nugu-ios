@@ -19,11 +19,10 @@
 //
 
 import Foundation
+import Combine
 
 import NuguCore
 import NuguUtils
-
-import RxSwift
 
 public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     // CapabilityAgentable
@@ -78,7 +77,7 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     private let directiveSequencer: DirectiveSequenceable
     private let upstreamDataSender: UpstreamDataSendable
     private let audioPlayerPauseTimeout: DispatchTimeInterval
-    private let audioPlayerResultSubject = PublishSubject<(dialogRequestId: String, result: AudioPlayerResult)>()
+    private let audioPlayerResultSubject = PassthroughSubject<(dialogRequestId: String, result: AudioPlayerResult), Error>()
     private lazy var audioPlayerDisplayManager: AudioPlayerDisplayManager = AudioPlayerDisplayManager(
         audioPlayerPauseTimeout: audioPlayerPauseTimeout,
         audioPlayerAgent: self,
@@ -94,10 +93,6 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     
     private let audioPlayerNotificationQueue = DispatchQueue(label: "com.sktelecom.romaine.audioplayer_agent_notification_queue")
     private let audioPlayerDispatchQueue = DispatchQueue(label: "com.sktelecom.romaine.audioplayer_agent", qos: .userInitiated)
-    private lazy var audioPlayerScheduler = SerialDispatchQueueScheduler(
-        queue: audioPlayerDispatchQueue,
-        internalSerialQueueName: "com.sktelecom.romaine.audioplayer_agent"
-    )
     
     private var audioPlayerState: AudioPlayerState = .idle {
         didSet {
@@ -155,7 +150,7 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
         prefetchPlayer ?? currentPlayer
     }
     
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     // Handleable Directives
     private lazy var handleableDirectiveInfos = [
@@ -449,7 +444,7 @@ extension AudioPlayerAgent: MediaPlayerDelegate {
             }
             
             if let audioPlayerResult = audioPlayerResult {
-                self.audioPlayerResultSubject.onNext(audioPlayerResult)
+                self.audioPlayerResultSubject.send(audioPlayerResult)
             }
         }
     }
@@ -598,7 +593,7 @@ private extension AudioPlayerAgent {
             self.sendFullContextEvent(RequestPlayEvent(
                 typeInfo: .requestPlayCommandIssued(payload: payloadDictionary),
                 referrerDialogRequestId: directive.header.dialogRequestId
-            ).rx)
+            ))
         }
     }
     
@@ -681,7 +676,7 @@ private extension AudioPlayerAgent {
                     typeInfo: typeInfo,
                     playServiceId: playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
             }
         }
     }
@@ -702,7 +697,7 @@ private extension AudioPlayerAgent {
                     typeInfo: typeInfo,
                     playServiceId: playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
             }
         }
     }
@@ -723,7 +718,7 @@ private extension AudioPlayerAgent {
                     typeInfo: typeInfo,
                     playServiceId: payload.playServiceId,
                     referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx)
+                ))
             }
         }
     }
@@ -745,7 +740,7 @@ private extension AudioPlayerAgent {
                     PlaylistEvent(
                         typeInfo: isSuccess ? .showPlaylistSucceeded : .showPlaylistFailed(error: ["message": "show Playlist Failed"]),
                         playServiceId: playServiceId
-                    ).rx
+                    )
                 )
             }
         }
@@ -775,32 +770,62 @@ private extension AudioPlayerAgent {
 
 private extension AudioPlayerAgent {
     @discardableResult func sendCompactContextEvent(
-        _ event: Single<Eventable>,
+        _ event: AnyPublisher<Eventable, Error>,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(namespace: self.capabilityAgentProperty.name),
+            context: self.contextManager.contexts(namespace: self.capabilityAgentProperty.name),
             property: self.capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
+        return eventIdentifier
+    }
+    
+    @discardableResult func sendCompactContextEvent(
+        _ event: Eventable,
+        completion: ((StreamDataState) -> Void)? = nil
+    ) -> EventIdentifier {
+        let eventIdentifier = EventIdentifier()
+        upstreamDataSender.sendEvent(
+            event,
+            eventIdentifier: eventIdentifier,
+            context: self.contextManager.contexts(namespace: self.capabilityAgentProperty.name),
+            property: self.capabilityAgentProperty,
+            completion: completion
+        ).store(in: &cancellables)
         return eventIdentifier
     }
     
     @discardableResult func sendFullContextEvent(
-        _ event: Single<Eventable>,
+        _ event: AnyPublisher<Eventable, Error>,
         completion: ((StreamDataState) -> Void)? = nil
     ) -> EventIdentifier {
         let eventIdentifier = EventIdentifier()
         upstreamDataSender.sendEvent(
             event,
             eventIdentifier: eventIdentifier,
-            context: self.contextManager.rxContexts(),
+            context: self.contextManager.contexts(),
             property: self.capabilityAgentProperty,
             completion: completion
-        ).subscribe().disposed(by: disposeBag)
+        ).store(in: &cancellables)
+        return eventIdentifier
+    }
+    
+    @discardableResult func sendFullContextEvent(
+        _ event: Eventable,
+        completion: ((StreamDataState) -> Void)? = nil
+    ) -> EventIdentifier {
+        let eventIdentifier = EventIdentifier()
+        upstreamDataSender.sendEvent(
+            event,
+            eventIdentifier: eventIdentifier,
+            context: self.contextManager.contexts(),
+            property: self.capabilityAgentProperty,
+            completion: completion
+        ).store(in: &cancellables)
         return eventIdentifier
     }
 }
@@ -808,12 +833,12 @@ private extension AudioPlayerAgent {
 // MARK: - Private (Eventable)
 
 private extension AudioPlayerAgent {
-    func playEvent(typeInfo: PlayEvent.TypeInfo, player: AudioPlayer) -> Single<Eventable> {
+    func playEvent(typeInfo: PlayEvent.TypeInfo, player: AudioPlayer) -> Eventable {
         return playEvent(typeInfo: typeInfo, player: player, referrerDialogRequestId: player.header.dialogRequestId)
     }
     
-    func playEvent(typeInfo: PlayEvent.TypeInfo, player: AudioPlayer, referrerDialogRequestId: String) -> Single<Eventable> {
-        return PlayEvent(
+    func playEvent(typeInfo: PlayEvent.TypeInfo, player: AudioPlayer, referrerDialogRequestId: String) -> Eventable {
+        PlayEvent(
             typeInfo: typeInfo,
             token: player.payload.audioItem.stream.token,
             // This is a mandatory in Play kit.
@@ -821,53 +846,54 @@ private extension AudioPlayerAgent {
             playServiceId: player.payload.playServiceId,
             referrerDialogRequestId: referrerDialogRequestId,
             service: player.payload.service
-        ).rx
+        )
     }
     
-    func playEvent(typeInfo: PlayEvent.TypeInfo) -> Single<Eventable> {
-        return Single<AudioPlayer>.create { [weak self] (observer) -> Disposable in
-            guard let player = self?.latestPlayer else {
-                observer(.failure(NuguAgentError.invalidState))
-                return Disposables.create()
+    func playEvent(typeInfo: PlayEvent.TypeInfo) -> AnyPublisher<Eventable, Error> {
+        Future<Eventable, Error> { [weak self] promise in
+            guard let self else {
+                promise(.failure(NuguAgentError.requestCanceled))
+                return
             }
             
-            observer(.success(player))
-            return Disposables.create()
-        }.subscribe(on: audioPlayerScheduler)
-        .flatMap { [weak self] in
-            guard let self = self else {
-                return Single.error(NuguAgentError.requestCanceled)
+            guard let player = self.latestPlayer else {
+                promise(.failure(NuguAgentError.invalidState))
+                return
             }
-            
-            return self.playEvent(typeInfo: typeInfo, player: $0)
+
+            promise(.success(playEvent(typeInfo: typeInfo, player: player)))
         }
-    }
-    
-    func requestCommandEvent(typeInfo: PlayEvent.TypeInfo, directive: Downstream.Directive) -> Single<Eventable> {
-        return Single<AudioPlayer?>.create { [weak self] (observer) -> Disposable in
-            observer(.success(self?.latestPlayer))
-            return Disposables.create()
-        }.subscribe(on: audioPlayerScheduler)
-        .flatMap { [weak self] player in
-            guard let self = self else {
-                return Single.error(NuguAgentError.requestCanceled)
-            }
-            if let player = player {
-                return self.playEvent(typeInfo: typeInfo, player: player, referrerDialogRequestId: directive.header.dialogRequestId)
-            } else {
-                return RequestPlayEvent(
-                    typeInfo: .requestCommandFailed(state: self.audioPlayerState, directiveType: directive.header.type),
-                    referrerDialogRequestId: directive.header.dialogRequestId
-                ).rx
-            }
-        }
+        .subscribe(on: audioPlayerDispatchQueue)
+        .eraseToAnyPublisher()
     }
 
-    func settingsEvent(typeInfo: SettingsEvent.TypeInfo) -> Single<Eventable> {
-        return Single.create { [weak self] (observer) -> Disposable in
+    func requestCommandEvent(typeInfo: PlayEvent.TypeInfo, directive: Downstream.Directive) -> AnyPublisher<Eventable, Error> {
+        return Future<Eventable, Error> { [weak self] promise in
+            guard let self else {
+                promise(.failure(NuguAgentError.requestCanceled))
+                return
+            }
+            
+            if let player = self.latestPlayer {
+                promise(.success(playEvent(typeInfo: typeInfo, player: player, referrerDialogRequestId: directive.header.dialogRequestId)))
+            } else {
+                return promise(.success(
+                    RequestPlayEvent(
+                        typeInfo: .requestCommandFailed(state: self.audioPlayerState, directiveType: directive.header.type),
+                        referrerDialogRequestId: directive.header.dialogRequestId
+                    )
+                ))
+            }
+        }
+        .subscribe(on: audioPlayerDispatchQueue)
+        .eraseToAnyPublisher()
+    }
+
+    func settingsEvent(typeInfo: SettingsEvent.TypeInfo) -> AnyPublisher<Eventable, Error> {
+        return Future<Eventable, Error> { [weak self] promise in
             guard let self = self, let player = self.latestPlayer else {
-                observer(.failure(NuguAgentError.invalidState))
-                return Disposables.create()
+                promise(.failure(NuguAgentError.invalidState))
+                return
             }
             
             let settingEvent = SettingsEvent(
@@ -875,44 +901,45 @@ private extension AudioPlayerAgent {
                 playServiceId: player.payload.playServiceId,
                 referrerDialogRequestId: player.header.dialogRequestId
             )
-            observer(.success(settingEvent))
-            return Disposables.create()
-        }.subscribe(on: audioPlayerScheduler)
+            promise(.success(settingEvent))
+        }
+        .subscribe(on: audioPlayerDispatchQueue)
+        .eraseToAnyPublisher()
     }
     
-    func playlistEvent(typeInfo: PlaylistEvent.TypeInfo) -> Single<Eventable> {
-        return Single.create { [weak self] (observer) -> Disposable in
-            guard let self else { 
-                observer(.failure(NuguAgentError.invalidState))
-                return Disposables.create()
+    func playlistEvent(typeInfo: PlaylistEvent.TypeInfo) -> AnyPublisher<Eventable, Error> {
+        return Future<Eventable, Error> { [weak self] promise in
+            guard let self else {
+                promise(.failure(NuguAgentError.invalidState))
+                return
             }
             
             do {
                 let playlistEvent = try self.makePlaylistEvent(typeInfo: typeInfo)
-                observer(.success(playlistEvent))
+                promise(.success(playlistEvent))
             } catch {
-                observer(.failure(NuguAgentError.invalidState))
+                promise(.failure(NuguAgentError.invalidState))
             }
-            
-            return Disposables.create()
-        }.subscribe(on: audioPlayerScheduler)
+        }
+        .subscribe(on: audioPlayerDispatchQueue)
+        .eraseToAnyPublisher()
     }
     
-    func badgeButtonEvent(typeInfo: BadgeButtonEvent.TypeInfo) -> Single<Eventable> {
-        return Single.create { [weak self] (observer) -> Disposable in
+    func badgeButtonEvent(typeInfo: BadgeButtonEvent.TypeInfo) -> AnyPublisher<Eventable, Error> {
+        return Future<Eventable, Error> { [weak self] promise in
             guard let self, let player = self.latestPlayer else {
-                observer(.failure(NuguAgentError.invalidState))
-                return Disposables.create()
+                promise(.failure(NuguAgentError.invalidState))
+                return
             }
             
             let badgeButtonEvent = BadgeButtonEvent(
                 typeInfo: typeInfo,
                 playServiceId: player.payload.playServiceId
             )
-            observer(.success(badgeButtonEvent))
-            
-            return Disposables.create()
-        }.subscribe(on: audioPlayerScheduler)
+            promise(.success(badgeButtonEvent))
+        }
+        .subscribe(on: audioPlayerDispatchQueue)
+        .eraseToAnyPublisher()
     }
     
     private func makePlaylistEvent(typeInfo: PlaylistEvent.TypeInfo) throws -> PlaylistEvent {
