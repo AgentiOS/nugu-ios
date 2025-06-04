@@ -41,6 +41,8 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
                 do {
                     // start audio engine
                     // This Api throws `Error` and raises `NSException` both.
+                    try engine.inputNode.setVoiceProcessingEnabled(true)
+                    engine.inputNode.isVoiceProcessingAGCEnabled = false
                     try engine.start()
                     
                     os_log("audioEngine started", log: .audioEngine, type: .debug)

@@ -45,9 +45,9 @@ public struct ASROptions {
     ///   - timeout: Max duration of waiting for speech.
     ///   - pauseLength: The engine waits this time then consider speech end.
     public init(
-        maxDuration: TimeIntervallic = NuguTimeInterval(seconds: 10),
-        timeout: TimeIntervallic = NuguTimeInterval(seconds: 7),
-        pauseLength: TimeIntervallic = NuguTimeInterval(milliseconds: 700),
+        maxDuration: TimeIntervallic = NuguTimeInterval(seconds: 60),
+        timeout: TimeIntervallic = NuguTimeInterval(seconds: 60),
+        pauseLength: TimeIntervallic = NuguTimeInterval(milliseconds: 1500),
         encoding: Encoding = .partial,
         endPointing: EndPointing,
         requestType: String? = nil
