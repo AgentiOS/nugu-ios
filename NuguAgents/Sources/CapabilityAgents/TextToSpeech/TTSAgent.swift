@@ -61,8 +61,6 @@ public final class TTSAgent: TTSAgentProtocol {
         }
     }
     
-    public var gain: Float = .zero
-    
     // Private
     private let playSyncManager: PlaySyncManageable
     private let contextManager: ContextManageable
@@ -356,7 +354,7 @@ private extension TTSAgent {
     func prefetchPlay() -> PrefetchDirective {
         return { [weak self] directive in
             guard let self else { return }
-            let player = try TTSPlayer(directive: directive, gain: gain)
+            let player = try TTSPlayer(directive: directive)
             player.speed = speed
             
             ttsDispatchQueue.sync { [weak self] in
