@@ -15,6 +15,7 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
     
     private let notificationCenter = NotificationCenter.default
     private var audioEngineConfigurationObserver: Any?
+    private var enableVoiceProcessing = false
     
     var inputNode: AVAudioInputNode {
         audioEngine.inputNode
@@ -41,9 +42,10 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
                 do {
                     // start audio engine
                     // This Api throws `Error` and raises `NSException` both.
+                    try engine.inputNode.setVoiceProcessingEnabled(enableVoiceProcessing)
                     try engine.start()
                     
-                    os_log("audioEngine started", log: .audioEngine, type: .debug)
+                    os_log("audioEngine started, enableVoiceProcessing: %@", log: .audioEngine, type: .debug, "\(engine.inputNode.isVoiceProcessingEnabled)")
                 } catch {
                     return error
                 }
@@ -86,32 +88,7 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
     }
     
     func setVoiceProcessingEnabled(_ enable: Bool) throws {
-        var engineError: Error?
-        _audioEngine.mutate { engine in
-            if engine.isRunning {
-                engine.stop()
-            }
-            
-            if let error = UnifiedErrorCatcher.try({
-                do {
-                    // start audio engine
-                    // This Api throws `Error` and raises `NSException` both.
-                    try engine.inputNode.setVoiceProcessingEnabled(enable)
-                    engine.inputNode.isVoiceProcessingAGCEnabled = enable
-                    try engine.start()
-                } catch {
-                    return error
-                }
-                
-                return nil
-            }) {
-                engineError = error
-            }
-        }
-        
-        if let engineError = engineError {
-            throw engineError
-        }
+        enableVoiceProcessing = enable
     }
 }
 

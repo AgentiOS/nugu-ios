@@ -395,7 +395,10 @@ extension SpeechRecognizerAggregator {
             queue: .main
         ) { [weak self] notification in
             guard let self, activeBargeIn, case .playing = notification.state else { return }
-//            asrAgent.startRecognition(initiator: .tap, service: service, requestType: requestType, completion: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                guard let self else { return }
+                asrAgent.startRecognition(initiator: .tap, service: service, requestType: requestType, completion: nil)
+            }
         }
     }
 }
