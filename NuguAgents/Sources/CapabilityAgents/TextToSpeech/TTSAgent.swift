@@ -106,6 +106,8 @@ public final class TTSAgent: TTSAgentProtocol {
                     } else {
                         playSyncManager.endPlay(property: playSyncProperty)
                     }
+                    
+                    currentPlayer = nil
                 }
             default:
                 break
