@@ -60,6 +60,7 @@ public final class ASRAgent: ASRAgentProtocol {
     private let notificationCenter = NotificationCenter.default
     private var playSyncObserver: Any?
     private var directiveReceiveObserver: Any?
+    private var activeBargeIn = false
     
     public var options: ASROptions = ASROptions(endPointing: .client)
     private(set) public var asrState: ASRState = .idle {
@@ -330,12 +331,19 @@ public extension ASRAgent {
             }
         }
     }
+    
+    func activeBargeInMode(_ active: Bool) {
+        activeBargeIn = active
+    }
 }
 
 // MARK: - FocusChannelDelegate
 
 extension ASRAgent: FocusChannelDelegate {
     public func focusChannelPriority() -> FocusChannelPriority {
+        guard activeBargeIn == false else {
+            return .call
+        }
         switch asrRequest?.initiator {
         case .expectSpeech: return .dmRecognition
         default: return .userRecognition

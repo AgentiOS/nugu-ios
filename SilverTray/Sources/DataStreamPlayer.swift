@@ -413,6 +413,14 @@ public class DataStreamPlayer {
             completion?(.success(()))
         }
     }
+    
+    public static func setVoiceProcessingEnabled(_ enable: Bool) {
+        do {
+            try audioEngineManager.setVoiceProcessingEnabled(enable)
+        } catch {
+            os_log("audioEngineManager setVoiceProcessingEnabled error: %@", log: .player, type: .error, "\(error)")
+        }
+    }
 }
 
 // MARK: append data

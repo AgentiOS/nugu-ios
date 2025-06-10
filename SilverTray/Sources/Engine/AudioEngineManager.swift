@@ -41,8 +41,6 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
                 do {
                     // start audio engine
                     // This Api throws `Error` and raises `NSException` both.
-                    try engine.inputNode.setVoiceProcessingEnabled(true)
-                    engine.inputNode.isVoiceProcessingAGCEnabled = false
                     try engine.start()
                     
                     os_log("audioEngine started", log: .audioEngine, type: .debug)
@@ -84,6 +82,35 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
             return nil
         }) {
             throw error
+        }
+    }
+    
+    func setVoiceProcessingEnabled(_ enable: Bool) throws {
+        var engineError: Error?
+        _audioEngine.mutate { engine in
+            if engine.isRunning {
+                engine.stop()
+            }
+            
+            if let error = UnifiedErrorCatcher.try({
+                do {
+                    // start audio engine
+                    // This Api throws `Error` and raises `NSException` both.
+                    try engine.inputNode.setVoiceProcessingEnabled(enable)
+                    engine.inputNode.isVoiceProcessingAGCEnabled = enable
+                    try engine.start()
+                } catch {
+                    return error
+                }
+                
+                return nil
+            }) {
+                engineError = error
+            }
+        }
+        
+        if let engineError = engineError {
+            throw engineError
         }
     }
 }

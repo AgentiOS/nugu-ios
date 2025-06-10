@@ -22,6 +22,7 @@ import Foundation
 
 import NuguCore
 import NuguUtils
+import SilverTray
 
 import RxSwift
 
@@ -120,6 +121,7 @@ public final class TTSAgent: TTSAgentProtocol {
     }
     
     private let ttsResultSubject = PublishSubject<(dialogRequestId: String, result: TTSResult)>()
+    private var activeBargeIn = false
     
     // Players
     private var currentPlayer: TTSPlayer? {
@@ -240,6 +242,11 @@ public extension TTSAgent {
             latestPlayer?.volume = volume
         }
     }
+    
+    func activeBargeInMode(_ active: Bool) {
+        activeBargeIn = active
+        DataStreamPlayer.setVoiceProcessingEnabled(active)
+    }
 }
 
 // MARK: - FocusChannelDelegate
@@ -266,7 +273,7 @@ extension TTSAgent: FocusChannelDelegate {
             case (.foreground, _):
                 break
             case (.background, _), (.nothing, _):
-                if let player = self.currentPlayer {
+                if let player = self.currentPlayer, activeBargeIn == false {
                     self.stop(player: player, cancelAssociation: false)
                 }
             // Ignore prepare

@@ -577,6 +577,10 @@ public extension NuguClient {
     func enableAudioAssetCaching(_ enable: Bool) {
         audioPlayerAgent.enableAudioAssetCaching(enable)
     }
+    
+    func activeBargeInMode(_ active: Bool) {
+        speechRecognizerAggregator.activeBargeInMode(active)
+    }
 }
 
 // MARK: - AuthorizationStoreDelegate
