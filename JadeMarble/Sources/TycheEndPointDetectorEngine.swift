@@ -153,7 +153,7 @@ public class TycheEndPointDetectorEngine {
                     log.error("Failed to speex encoding, error: \(error)")
                 }
             } else if state == .end {
-                while ringBuffer?.isEmpty() == true {
+                while ringBuffer?.isEmpty() == false {
                     guard let dequeuedInputData = ringBuffer?.dequeue() else { break }
                     do {
                         let speexData = try speexEncoder.encode(data: dequeuedInputData)
