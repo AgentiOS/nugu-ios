@@ -205,8 +205,8 @@ public extension SpeechRecognizerAggregator {
             let sema = DispatchSemaphore(value: .zero)
             if keywordDetector.state == .active {
                 keywordDetector.stop()
-                state = .cancelled
             }
+            state = .cancelled
             
             asrAgent.stopRecognition()
             stopMicInputProvider {
