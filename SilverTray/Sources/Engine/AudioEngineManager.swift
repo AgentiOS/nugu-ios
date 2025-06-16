@@ -41,6 +41,9 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
                 do {
                     // start audio engine
                     // This Api throws `Error` and raises `NSException` both.
+                    if AVAudioSession.sharedInstance().mode == .voiceChat {
+                        try engine.inputNode.setVoiceProcessingEnabled(true)
+                    }
                     try engine.start()
                     
                     os_log("audioEngine started", log: .audioEngine, type: .debug)
