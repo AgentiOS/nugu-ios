@@ -152,10 +152,7 @@ private extension DirectiveSequencer {
     
     func shouldBlocked(blockingPolicy: BlockingPolicy, directive: Downstream.Directive) -> Bool {
         let directives = (handlingDirectives + blockedDirectives)
-            .filter {
-                ($0.directive.header.dialogRequestId == directive.header.dialogRequestId) ||
-                ($0.directive.header.dialogRequestId == directive.asyncKey?.eventDialogRequestId)
-            }
+            .filter { $0.directive.isSameTask(as: directive) }
         let targetDirectiveCount = directives.firstIndex {
             $0.directive.header.messageId == directive.header.messageId
         } ?? directives.count
@@ -257,5 +254,20 @@ public extension NuguCoreNotification {
                 return Complete(directive: directive, result: result)
             }
         }
+    }
+}
+
+private extension Downstream.Directive {
+    func isSameTask(as targetDirective: Downstream.Directive) -> Bool {
+        if self.header.dialogRequestId == targetDirective.header.dialogRequestId {
+            return true
+        }
+        
+        guard let eventDialogRequestId = self.asyncKey?.eventDialogRequestId,
+              let targetEventDialogRequestId = targetDirective.asyncKey?.eventDialogRequestId else {
+            return false
+        }
+        
+        return eventDialogRequestId == targetEventDialogRequestId
     }
 }
