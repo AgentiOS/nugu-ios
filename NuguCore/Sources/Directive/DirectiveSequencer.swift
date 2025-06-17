@@ -152,9 +152,7 @@ private extension DirectiveSequencer {
     
     func shouldBlocked(blockingPolicy: BlockingPolicy, directive: Downstream.Directive) -> Bool {
         let directives = (handlingDirectives + blockedDirectives)
-            .filter {
-                $0.directive.isSameTask(as: directive)
-            }
+            .filter { $0.directive.isSameTask(as: directive) }
         let targetDirectiveCount = directives.firstIndex {
             $0.directive.header.messageId == directive.header.messageId
         } ?? directives.count
