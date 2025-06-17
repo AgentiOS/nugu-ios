@@ -72,10 +72,6 @@ public struct ASROptions {
         /// Server side end point detector does not support yet.
         case server
     }
-    
-    mutating func updateRequestType(_ requestType: String?) {
-        self.requestType = requestType
-    }
 }
 
 // MARK: - ASROptions.EndPointing + server value
