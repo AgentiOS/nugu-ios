@@ -15,7 +15,6 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
     
     private let notificationCenter = NotificationCenter.default
     private var audioEngineConfigurationObserver: Any?
-    private var enableVoiceProcessing = false
     
     var inputNode: AVAudioInputNode {
         audioEngine.inputNode
@@ -87,10 +86,6 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
         }) {
             throw error
         }
-    }
-    
-    func setVoiceProcessingEnabled(_ enable: Bool) throws {
-        enableVoiceProcessing = enable
     }
 }
 

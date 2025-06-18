@@ -247,7 +247,6 @@ public extension TTSAgent {
     
     func activeBargeInMode(_ active: Bool) {
         activeBargeIn = active
-        DataStreamPlayer.setVoiceProcessingEnabled(active)
     }
 }
 

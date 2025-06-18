@@ -342,7 +342,7 @@ public extension ASRAgent {
 extension ASRAgent: FocusChannelDelegate {
     public func focusChannelPriority() -> FocusChannelPriority {
         guard activeBargeIn == false else {
-            return .call
+            return .init(requestPriority: 200, maintainPriority: 300)
         }
         switch asrRequest?.initiator {
         case .expectSpeech: return .dmRecognition
