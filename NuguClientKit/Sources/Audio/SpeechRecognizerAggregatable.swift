@@ -37,7 +37,7 @@ public protocol SpeechRecognizerAggregatable: AnyObject {
     func startListening(
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
-        requestType: String?,
+        options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
     )
     
@@ -62,9 +62,10 @@ public extension SpeechRecognizerAggregatable {
     func startListening(
         initiator: ASRInitiator,
         service: [String: AnyHashable]? = nil,
-        requestType: String? = nil
+        options: ASROptions?,
+        completion: ((StreamDataState) -> Void)? = nil
     ) {
-        startListening(initiator: initiator, service: service, requestType: requestType, completion: nil)
+        startListening(initiator: initiator, service: service, options: options, completion: completion)
     }
     
     func startListeningWithTrigger() {

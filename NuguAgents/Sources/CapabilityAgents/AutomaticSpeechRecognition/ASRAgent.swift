@@ -276,7 +276,7 @@ public extension ASRAgent {
     @discardableResult func startRecognition(
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
-        requestType: String?,
+        options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
     ) -> String {
         log.debug("startRecognition, initiator: \(initiator)")
@@ -294,7 +294,7 @@ public extension ASRAgent {
                 initiator: initiator,
                 eventIdentifier: eventIdentifier,
                 service: service,
-                requestType: requestType,
+                options: options,
                 completion: completion
             )
         }
@@ -539,7 +539,7 @@ private extension ASRAgent {
                     initiator: .expectSpeech,
                     eventIdentifier: EventIdentifier(),
                     service: service,
-                    requestType: options.requestType,
+                    options: options,
                     completion: nil
                 )
             }
@@ -775,27 +775,27 @@ private extension ASRAgent {
         initiator: ASRInitiator,
         eventIdentifier: EventIdentifier,
         service: [String: AnyHashable]?,
-        requestType: String?,
+        options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
     ) {
         let semaphore = DispatchSemaphore(value: 0)
-        var options: ASROptions
-        if let epd = self.expectSpeech?.payload.epd {
-            options = ASROptions(
-                maxDuration: epd.maxDuration ?? self.options.maxDuration,
-                timeout: epd.timeout ?? self.options.timeout,
-                pauseLength: epd.pauseLength ?? self.options.pauseLength,
+        let asrOptions: ASROptions = if let epd = self.expectSpeech?.payload.epd {
+            ASROptions(
+                maxDuration: epd.maxDuration ?? options?.maxDuration ?? self.options.maxDuration,
+                timeout: epd.timeout ?? options?.timeout ?? self.options.maxDuration,
+                pauseLength: epd.pauseLength ?? options?.pauseLength ?? self.options.maxDuration,
                 encoding: self.options.encoding,
                 endPointing: self.options.endPointing
             )
+        } else if let options {
+            options
         } else {
-            options = self.options
+            self.options
         }
-        options.updateRequestType(requestType)
         asrRequest = ASRRequest(
             eventIdentifier: eventIdentifier,
             initiator: initiator,
-            options: options,
+            options: asrOptions,
             referrerDialogRequestId: expectSpeech?.dialogRequestId,
             service: service,
             completion: completion

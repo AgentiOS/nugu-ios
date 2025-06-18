@@ -119,7 +119,7 @@ public extension SpeechRecognizerAggregator {
     func startListening(
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
-        requestType: String?,
+        options: ASROptions?,
         completion: ((StreamDataState) -> Void)? = nil
     ) {
         recognizeQueue.async { [weak self] in
@@ -138,7 +138,7 @@ public extension SpeechRecognizerAggregator {
                 asrAgent.stopRecognition()
             }
             
-            asrAgent.startRecognition(initiator: initiator, service: service, requestType: requestType) { [weak self] state in
+            asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
                 guard case .prepared = state else {
                     completion?(state)
                     return
@@ -219,8 +219,8 @@ public extension SpeechRecognizerAggregator {
             let sema = DispatchSemaphore(value: .zero)
             if keywordDetector.state == .active {
                 keywordDetector.stop()
-                state = .cancelled
             }
+            state = .cancelled
             
             asrAgent.stopRecognition()
             stopMicInputProvider {
@@ -317,7 +317,7 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
         asrAgent.startRecognition(
             initiator: initiator,
             service: service,
-            requestType: requestType,
+            options: .init(endPointing: .client, requestType: requestType),
             completion: nil
         )
     }

@@ -41,7 +41,7 @@ public protocol ASRAgentProtocol: CapabilityAgentable, TypedNotifyable {
     @discardableResult func startRecognition(
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
-        requestType: String?,
+        options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
     ) -> String
     
@@ -69,23 +69,13 @@ public extension ASRAgentProtocol {
     /// - Parameters:
     ///   - options: The options for recognition.
     /// - Returns: The dialogRequestId for request.
-    @discardableResult func startRecognition(initiator: ASRInitiator, requestType: String? = nil) -> String {
-        return startRecognition(initiator: initiator, service: nil, requestType: requestType, completion: nil)
-    }
-    
-    /// This function asks the `ASRAgent` to send a Recognize Event to Server and start streaming from `AudioStream`, which transitions it to the `recognizing` state.
-    ///
-    /// This function can be called in `idle` and `expectingSpeech` state.
-    ///
-    /// - Parameters:
-    ///   - options: The options for recognition.
-    /// - Returns: The dialogRequestId for request.
     @discardableResult func startRecognition(
         initiator: ASRInitiator,
-        requestType: String? = nil,
+        service: [String: AnyHashable]? = nil,
+        options: ASROptions? = nil,
         completion: ((StreamDataState) -> Void)?
     ) -> String {
-        return startRecognition(initiator: initiator, service: nil, requestType: requestType, completion: completion)
+        return startRecognition(initiator: initiator, service: service, options: options, completion: completion)
     }
     
     func activeBargeInMode(_ active: Bool) {}

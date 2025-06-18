@@ -105,6 +105,8 @@ public final class TTSAgent: TTSAgentProtocol {
                     } else {
                         playSyncManager.endPlay(property: playSyncProperty)
                     }
+                    
+                    currentPlayer = nil
                 }
             default:
                 break
@@ -368,8 +370,25 @@ private extension TTSAgent {
                 guard let self else { return }
                 
                 log.debug(directive.header.messageId)
-                if prefetchPlayer?.stop(reason: .playAnother) == true ||
-                    currentPlayer?.stop(reason: .playAnother) == true {
+                
+                let shouldStopTTS: Bool = {
+                    // 1. 재생 중인 player가 없으므로 중지 시키지 않음
+                    guard let currentPlayer else { return false }
+                    
+                    if directive.header.dialogRequestId == currentPlayer.header.dialogRequestId {
+                        return false // 2. dialogRequestId가 일치하면 같은 task이므로 중지 시키지 않음
+                    }
+                    
+                    if directive.asyncKey?.eventDialogRequestId != nil,
+                       currentPlayer.asyncKey?.eventDialogRequestId != nil,
+                       directive.asyncKey?.eventDialogRequestId == currentPlayer.asyncKey?.eventDialogRequestId {
+                        return false // 3. eventDialogRequestId가 일치하면 같은 task이므로 중지 시키지 않음
+                    }
+                    
+                    return true
+                }()
+                
+                if shouldStopTTS, (prefetchPlayer?.stop(reason: .playAnother) == true || currentPlayer?.stop(reason: .playAnother) == true) {
                     ttsState = .stopped
                 }
                 
@@ -421,6 +440,10 @@ private extension TTSAgent {
                 
                 self.ttsNotificationQueue.async { [weak self] in
                     self?.post(NuguAgentNotification.TTS.Result(text: player.payload.text, header: player.header))
+                }
+                
+                if ttsState == .playing {
+                    currentPlayer?.play()
                 }
                 
                 self.ttsResultSubject
