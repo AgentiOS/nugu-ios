@@ -42,28 +42,32 @@ public extension KeyedDecodingContainer {
     }
     
     func decodeIfPresent(_ type: [String: AnyHashable].Type, forKey key: K) throws -> [String: AnyHashable]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
     }
     
     func decodeIfPresent(_ type: [String: Any].Type, forKey key: K) throws -> [String: Any]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
     }
     
     func decodeIfPresent(_ type: [[String: AnyHashable]].Type, forKey key: K) throws -> [[String: AnyHashable]]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
     }
     
     func decodeIfPresent(_ type: [[String: Any]].Type, forKey key: K) throws -> [[String: Any]]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
@@ -80,14 +84,16 @@ public extension KeyedDecodingContainer {
     }
     
     func decodeIfPresent(_ type: [AnyHashable].Type, forKey key: K) throws -> [AnyHashable]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
     }
     
     func decodeIfPresent(_ type: [Any].Type, forKey key: K) throws -> [Any]? {
-        guard contains(key) else {
+        guard contains(key),
+                try decodeNil(forKey: key) == false else {
             return nil
         }
         return try decode(type, forKey: key)
