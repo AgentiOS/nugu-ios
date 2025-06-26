@@ -79,3 +79,7 @@ public enum EndPointDetectorError: Error, LocalizedError {
 enum SpeexError: Error {
     case encodeFailed
 }
+
+public func appendPrefixLog(_ prefix: String) {
+    log.configuration.customPrefix = prefix
+}
