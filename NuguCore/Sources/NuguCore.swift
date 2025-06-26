@@ -52,6 +52,10 @@ public var logLevel: NattyLog.LogLevel {
     }
 }
 
+public func appendPrefixLog(_ prefix: String) {
+    log.configuration.customPrefix = prefix
+}
+
 #if DEPLOY_OTHER_PACKAGE_MANAGER
 public let nuguSDKVersion = (Bundle(for: AuthorizationStore.self).object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0")
 #else

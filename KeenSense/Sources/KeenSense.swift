@@ -163,3 +163,7 @@ public enum Keyword: CustomStringConvertible, CaseIterable {
         #endif
     }
 }
+
+public func appendPrefixLog(_ prefix: String) {
+    log.configuration.customPrefix = prefix
+}

@@ -22,6 +22,9 @@ import Foundation
 
 import NuguCore
 import NuguAgents
+import JadeMarble
+import KeenSense
+import NuguServiceKit
 
 public extension NuguClient {
     class Builder {
@@ -311,6 +314,15 @@ public extension NuguClient {
                 streamDataRouter.setRequestTimeout(timeInterval)
             }
             return self
+        }
+        
+        public func appendPrefixLog(_ prefix: String) {
+            JadeMarble.appendPrefixLog(prefix)
+            KeenSense.appendPrefixLog(prefix)
+            NuguAgents.appendPrefixLog(prefix)
+            NuguClientKit.appendPrefixLog(prefix)
+            NuguCore.appendPrefixLog(prefix)
+            NuguServiceKit.appendPrefixLog(prefix)
         }
         
         /**
