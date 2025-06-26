@@ -29,6 +29,7 @@ public class StreamDataRouter: StreamDataRoutable {
     
     private let nuguApiProvider = NuguApiProvider()
     private let directiveSequencer: DirectiveSequenceable
+    private let directivesPreProcessor: StreamDataPreProcessable
     @Atomic private var eventSenders = [String: EventSender]()
     @Atomic private var eventDisposables = [String: Disposable]()
     private var serverInitiatedDirectiveReceiver: ServerSentEventReceiver
@@ -38,9 +39,10 @@ public class StreamDataRouter: StreamDataRoutable {
     private var directiveReceiveDisposable: Disposable?
     private let disposeBag = DisposeBag()
     
-    public init(directiveSequencer: DirectiveSequenceable) {
+    public init(directiveSequencer: DirectiveSequenceable, directivesPreProcessor: StreamDataPreProcessable) {
         serverInitiatedDirectiveReceiver = ServerSentEventReceiver(apiProvider: nuguApiProvider)
         self.directiveSequencer = directiveSequencer
+        self.directivesPreProcessor = directivesPreProcessor
     }
     
     public func setRequestTimeout(_ timeoutInterval: TimeInterval) {
@@ -275,7 +277,9 @@ extension StreamDataRouter {
                     return
             }
             
-            let directives = directiveArray.compactMap(Downstream.Directive.init)
+            var directives = directiveArray.compactMap(Downstream.Directive.init)
+            directives = directivesPreProcessor.process(directives: directives)
+            
             post(NuguCoreNotification.StreamDataRoute.ReceivedDirectives(directives: directives))
             
             directives.forEach { directive in

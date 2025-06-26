@@ -471,6 +471,8 @@
 		E6D10A9A2B9FD9C20004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9C2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9E2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */; };
+		E6D62D9E2E0D286B00459228 /* StreamDataPreProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */; };
+		E6D62DA02E0D28F900459228 /* DirectivePreProcessable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */; };
 		E6D6F1AB2D9F667900FFD372 /* ControlCenterManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */; };
 		E6D81A8E2C8E812700E813F5 /* AsyncKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626A0372C0FDD94009C4E63 /* AsyncKey.swift */; };
 		E6F3DCBD2B4CB9D800298A20 /* ASRAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */; };
@@ -1172,6 +1174,8 @@
 		E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataPreProcessor.swift; sourceTree = "<group>"; };
+		E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectivePreProcessable.swift; sourceTree = "<group>"; };
 		E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCenterManagerDelegate.swift; sourceTree = "<group>"; };
 		E6EFD4202CCA0A4C0003DD00 /* shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = shared.xcconfig; path = SupportingFiles/shared.xcconfig; sourceTree = "<group>"; };
 		E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASRAgentDelegate.swift; sourceTree = "<group>"; };
@@ -1963,6 +1967,7 @@
 				1FFFF3752375707000C9A177 /* DirectiveSequencer.swift */,
 				7E27375224B553EC00602B57 /* DirectiveHandleResult.swift */,
 				7E1A28C624E4E1F2003A8817 /* DirectiveCancelPolicy.swift */,
+				E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */,
 			);
 			path = Directive;
 			sourceTree = "<group>";
@@ -2488,6 +2493,7 @@
 				7EDCF2A62384FE88006F96B6 /* StreamDataRouter.swift */,
 				735A4CDF241173F4004E7A41 /* EventSender.swift */,
 				735A4CE0241173F4004E7A41 /* EventSenderError.swift */,
+				E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */,
 			);
 			path = StreamData;
 			sourceTree = "<group>";
@@ -3708,6 +3714,7 @@
 				1FFFF3812375707000C9A177 /* MediaPlayer.swift in Sources */,
 				1FFFF3802375707000C9A177 /* MediaAVPlayerItem.swift in Sources */,
 				735A4CC724117339004E7A41 /* MultiPartParser.swift in Sources */,
+				E6D62DA02E0D28F900459228 /* DirectivePreProcessable.swift in Sources */,
 				1FFFF3C32375707100C9A177 /* PlaySyncManager.swift in Sources */,
 				1FFFF3BC2375707100C9A177 /* HTTPConst.swift in Sources */,
 				7373893C24A46E510018DDD2 /* MediaOpusStreamDataSource.swift in Sources */,
@@ -3717,6 +3724,7 @@
 				1FFFF3C72375707100C9A177 /* FocusManager.swift in Sources */,
 				7373893324A46D4D0018DDD2 /* Upstream.swift in Sources */,
 				735A4CBF241172F1004E7A41 /* ServerSentEventProcessor.swift in Sources */,
+				E6D62D9E2E0D286B00459228 /* StreamDataPreProcessor.swift in Sources */,
 				7EDCF2A72384FE88006F96B6 /* StreamDataRouter.swift in Sources */,
 				735A4CE1241173F4004E7A41 /* EventSender.swift in Sources */,
 				7373894B24A46E720018DDD2 /* DirectiveHandleInfo.swift in Sources */,

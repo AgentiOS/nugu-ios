@@ -38,6 +38,7 @@ public extension NuguClient {
         public let sessionManager: SessionManageable
         public let interactionControlManager: InteractionControlManageable
         public let systemAgent: SystemAgentProtocol
+        public let directivesPreProcessor: StreamDataPreProcessable
         
         // Default Agents
         public lazy var asrAgent: ASRAgentProtocol = ASRAgent(
@@ -194,7 +195,8 @@ public extension NuguClient {
             contextManager = ContextManager()
             directiveSequencer = DirectiveSequencer()
             focusManager = FocusManager()
-            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer)
+            directivesPreProcessor = StreamDataPreProcessor()
+            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer, directivesPreProcessor: directivesPreProcessor)
             playSyncManager = PlaySyncManager(contextManager: contextManager)
             dialogAttributeStore = DialogAttributeStore()
             sessionManager = SessionManager()
