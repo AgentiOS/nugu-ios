@@ -23,22 +23,22 @@ import Foundation
 import NuguUtils
 
 public protocol StreamDataPreProcessable {
-    func append(_ processor: DirectivePreProcessable)
-    func process(directives: [Downstream.Directive]) -> [Downstream.Directive]
+    func add(_ processor: DirectivePreProcessable)
+    func preProcess(directives: [Downstream.Directive]) -> [Downstream.Directive]
 }
 
 public final class StreamDataPreProcessor: StreamDataPreProcessable {
     @Atomic private var processors: [DirectivePreProcessable] = []
     public init() {}
     
-    public func append(_ processor: DirectivePreProcessable) {
+    public func add(_ processor: DirectivePreProcessable) {
         _processors.mutate { $0.append(processor) }
     }
     
-    public func process(directives: [Downstream.Directive]) -> [Downstream.Directive] {
+    public func preProcess(directives: [Downstream.Directive]) -> [Downstream.Directive] {
         var directives = directives
         for processor in processors {
-            directives = processor.process(directives: directives)
+            directives = processor.preProcess(directives: directives)
         }
         return directives
     }

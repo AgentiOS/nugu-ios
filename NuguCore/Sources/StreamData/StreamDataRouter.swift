@@ -278,7 +278,7 @@ extension StreamDataRouter {
             }
             
             var directives = directiveArray.compactMap(Downstream.Directive.init)
-            directives = directivesPreProcessor.process(directives: directives)
+            directives = directivesPreProcessor.preProcess(directives: directives)
             
             post(NuguCoreNotification.StreamDataRoute.ReceivedDirectives(directives: directives))
             

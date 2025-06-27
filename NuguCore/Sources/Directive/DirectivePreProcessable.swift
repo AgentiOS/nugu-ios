@@ -9,5 +9,5 @@
 import Foundation
 
 public protocol DirectivePreProcessable {
-    func process(directives: [Downstream.Directive]) -> [Downstream.Directive]
+    func preProcess(directives: [Downstream.Directive]) -> [Downstream.Directive]
 }
