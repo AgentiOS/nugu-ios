@@ -206,6 +206,8 @@ public extension NuguClient {
                 streamDataRouter: streamDataRouter,
                 directiveSequencer: directiveSequencer
             )
+            
+            directivesPreProcessor.add(AudioPlayerDirectivePreProcessor())
         }
 
         /**

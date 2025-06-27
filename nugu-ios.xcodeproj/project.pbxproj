@@ -455,6 +455,7 @@
 		E649868428336C9E001AD733 /* DisplayHistoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868328336C9E001AD733 /* DisplayHistoryControl.swift */; };
 		E649868628336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */; };
 		E649868A28337649001AD733 /* ControlCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868928337649001AD733 /* ControlCenterManager.swift */; };
+		E6921CCD2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */; };
 		E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17312BFAB8BF00AD26F0 /* RxSwift */; };
 		E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFF2BFAB7D80061C704 /* RxSwift */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
@@ -1167,6 +1168,7 @@
 		E649868328336C9E001AD733 /* DisplayHistoryControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayHistoryControl.swift; sourceTree = "<group>"; };
 		E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRedirectTriggerChildPayload.swift; sourceTree = "<group>"; };
 		E649868928337649001AD733 /* ControlCenterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlCenterManager.swift; sourceTree = "<group>"; };
+		E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerDirectivePreProcessor.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
 		E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+Convenience.swift"; sourceTree = "<group>"; };
@@ -1795,6 +1797,7 @@
 				73E7E4C1294670E500361634 /* AudioPlayerResult.swift */,
 				06FE5684253EDB64002FAC9B /* AudioPlayer.swift */,
 				06FE568F253FCC1E002FAC9B /* AudioPlayerAgentError.swift */,
+				E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */,
 			);
 			path = AudioPlayer;
 			sourceTree = "<group>";
@@ -3952,6 +3955,7 @@
 				737388D924A46C3C0018DDD2 /* SoundState.swift in Sources */,
 				737388E124A46C4A0018DDD2 /* ExtensionAgentDelegate.swift in Sources */,
 				73152FCB23E0415B00F843C3 /* DisplayAgent+Event.swift in Sources */,
+				E6921CCD2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift in Sources */,
 				7E284DA124DD482800BF9640 /* InteractionControlConst.swift in Sources */,
 				7E1DDE0D25F894A90038D040 /* Routine+Event.swift in Sources */,
 				73152FA923E0412D00F843C3 /* ExtensionAgent+Event.swift in Sources */,
