@@ -23,6 +23,8 @@ import Foundation
 import NuguCore
 
 public final class AudioPlayerDirectivePreProcessor: DirectivePreProcessable {
+    public init() {}
+    
     public func preProcess(directives: [Downstream.Directive]) -> [Downstream.Directive] {
         guard (directives.contains { $0.header.namespace == CapabilityAgentCategory.display.name }) == false else { return directives }
         
