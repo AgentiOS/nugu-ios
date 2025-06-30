@@ -92,6 +92,8 @@ extension AudioPlayerAgent.PlayEvent: Eventable {
             eventPayload["reason"] = reason
         case .nextCommandIssued, .previousCommandIssued, .playbackFinished, .progressReportIntervalElapsed:
             eventPayload["service"] = service
+        case .progressReportDelayElapsed:
+            eventPayload["service"] = service
         default:
             break
         }

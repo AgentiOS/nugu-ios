@@ -29,9 +29,9 @@ extension AudioPlayerAgent {
         let referrerDialogRequestId: String?
         
         enum TypeInfo {
-            case favoriteCommandIssued(current: Bool)
-            case repeatCommandIssued(currentMode: AudioPlayerDisplayRepeat)
-            case shuffleCommandIssued(current: Bool)
+            case favoriteCommandIssued(current: Bool, service: [String: AnyHashable]?)
+            case repeatCommandIssued(currentMode: AudioPlayerDisplayRepeat, service: [String: AnyHashable]?)
+            case shuffleCommandIssued(current: Bool, service: [String: AnyHashable]?)
         }
     }
 }
@@ -44,12 +44,15 @@ extension AudioPlayerAgent.SettingsEvent: Eventable {
             "playServiceId": playServiceId
         ]
         switch typeInfo {
-        case .favoriteCommandIssued(let current):
+        case let .favoriteCommandIssued(current, service):
             eventPayload["favorite"] = current
-        case .repeatCommandIssued(let currentMode):
+            eventPayload["service"] = service
+        case let .repeatCommandIssued(currentMode, service):
             eventPayload["repeat"] = currentMode.rawValue
-        case .shuffleCommandIssued(let current):
+            eventPayload["service"] = service
+        case let .shuffleCommandIssued(current, service):
             eventPayload["shuffle"] = current
+            eventPayload["service"] = service
         }
         return eventPayload
     }
