@@ -63,7 +63,7 @@ public enum Upstream {
         /// The mime type of attachment.
         public let type: String
         /// The binary data.
-        public let content: Data
+        public let content: Data?
         
         /// Creates an instance of an `Attachment`.
         /// - Parameters:
@@ -72,7 +72,7 @@ public enum Upstream {
         ///   - isEnd: Indicates whether this attachment is the last one.
         ///   - type: The mime type of attachment.
         ///   - content: The binary data.
-        public init(header: Header, seq: Int32, isEnd: Bool, type: String, content: Data) {
+        public init(header: Header, seq: Int32, isEnd: Bool, type: String, content: Data?) {
             self.header = header
             self.seq = seq
             self.isEnd = isEnd
