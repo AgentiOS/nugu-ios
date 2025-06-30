@@ -442,15 +442,9 @@
 		A19ECA1A2578CED3003E53A9 /* NuguUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7314DF47255E3EA2004882BB /* NuguUtils.framework */; };
 		A6637DE92DC2178800BC3C2C /* TTSAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6637DE82DC2178800BC3C2C /* TTSAgentDelegate.swift */; };
 		E604803D2D2B3F29004933F2 /* RingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E604803C2D2B3F29004933F2 /* RingBuffer.swift */; };
-		E62A15F82BFAB5D600C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15F72BFAB5D600C336FA /* NattyLog */; };
-		E62A15FA2BFAB5FA00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15F92BFAB5FA00C336FA /* NattyLog */; };
 		E62A15FD2BFAB62600C336FA /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15FC2BFAB62600C336FA /* RxSwift */; };
 		E62A15FF2BFAB64E00C336FA /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E62A15FE2BFAB64E00C336FA /* RxSwift */; };
-		E62A16012BFAB67100C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16002BFAB67100C336FA /* NattyLog */; };
-		E62A16032BFAB68500C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16022BFAB68500C336FA /* NattyLog */; };
 		E62A16052BFAB68A00C336FA /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16042BFAB68A00C336FA /* RxSwift */; };
-		E62A16072BFAB69E00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16062BFAB69E00C336FA /* NattyLog */; };
-		E62A16092BFAB6AA00C336FA /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E62A16082BFAB6AA00C336FA /* NattyLog */; };
 		E63952A228BEF16700DC158C /* TextInputSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63952A128BEF16700DC158C /* TextInputSource.swift */; };
 		E649867C2833681A001AD733 /* AudioPlayerSettingsTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64986772833681A001AD733 /* AudioPlayerSettingsTemplate.swift */; };
 		E649867D2833681A001AD733 /* AudioPlayerUpdateMetadataPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64986782833681A001AD733 /* AudioPlayerUpdateMetadataPayload.swift */; };
@@ -461,16 +455,25 @@
 		E649868428336C9E001AD733 /* DisplayHistoryControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868328336C9E001AD733 /* DisplayHistoryControl.swift */; };
 		E649868628336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */; };
 		E649868A28337649001AD733 /* ControlCenterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E649868928337649001AD733 /* ControlCenterManager.swift */; };
+		E6921CCD2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */; };
 		E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69C17312BFAB8BF00AD26F0 /* RxSwift */; };
-		E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFD2BFAB7D80061C704 /* NattyLog */; };
 		E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E69D1DFF2BFAB7D80061C704 /* RxSwift */; };
 		E6BE047C2A0BA1A400AE29E3 /* Image+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */; };
 		E6BE047E2A0BA1BD00AE29E3 /* ImageAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */; };
 		E6BFB95C2C0698CB007AA282 /* Publishers+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */; };
+		E6C162842E0D09C00063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C162832E0D09C00063EB8F /* NattyLog */; };
+		E6C162862E0D09C60063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C162852E0D09C60063EB8F /* NattyLog */; };
+		E6C162882E0D09CB0063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C162872E0D09CB0063EB8F /* NattyLog */; };
+		E6C1628A2E0D09CF0063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C162892E0D09CF0063EB8F /* NattyLog */; };
+		E6C1628C2E0D09D50063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C1628B2E0D09D50063EB8F /* NattyLog */; };
+		E6C1628E2E0D09D90063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C1628D2E0D09D90063EB8F /* NattyLog */; };
+		E6C162902E0D0A250063EB8F /* NattyLog in Frameworks */ = {isa = PBXBuildFile; productRef = E6C1628F2E0D0A250063EB8F /* NattyLog */; };
 		E6D10A982B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A972B9FD2FE0004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9A2B9FD9C20004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9C2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */; };
 		E6D10A9E2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */; };
+		E6D62D9E2E0D286B00459228 /* StreamDataPreProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */; };
+		E6D62DA02E0D28F900459228 /* DirectivePreProcessable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */; };
 		E6D6F1AB2D9F667900FFD372 /* ControlCenterManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */; };
 		E6D81A8E2C8E812700E813F5 /* AsyncKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626A0372C0FDD94009C4E63 /* AsyncKey.swift */; };
 		E6F3DCBD2B4CB9D800298A20 /* ASRAgentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */; };
@@ -1165,6 +1168,7 @@
 		E649868328336C9E001AD733 /* DisplayHistoryControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayHistoryControl.swift; sourceTree = "<group>"; };
 		E649868528336CED001AD733 /* DisplayRedirectTriggerChildPayload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayRedirectTriggerChildPayload.swift; sourceTree = "<group>"; };
 		E649868928337649001AD733 /* ControlCenterManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlCenterManager.swift; sourceTree = "<group>"; };
+		E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerDirectivePreProcessor.swift; sourceTree = "<group>"; };
 		E6BE047B2A0BA1A400AE29E3 /* Image+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Event.swift"; sourceTree = "<group>"; };
 		E6BE047D2A0BA1BD00AE29E3 /* ImageAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAgent.swift; sourceTree = "<group>"; };
 		E6BFB95B2C0698CB007AA282 /* Publishers+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+Convenience.swift"; sourceTree = "<group>"; };
@@ -1172,6 +1176,8 @@
 		E6D10A992B9FD9C20004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9B2B9FD9E80004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E6D10A9D2B9FDBB10004DE40 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamDataPreProcessor.swift; sourceTree = "<group>"; };
+		E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectivePreProcessable.swift; sourceTree = "<group>"; };
 		E6D6F1AA2D9F667900FFD372 /* ControlCenterManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlCenterManagerDelegate.swift; sourceTree = "<group>"; };
 		E6EFD4202CCA0A4C0003DD00 /* shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = shared.xcconfig; path = SupportingFiles/shared.xcconfig; sourceTree = "<group>"; };
 		E6F3DCBC2B4CB9D800298A20 /* ASRAgentDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASRAgentDelegate.swift; sourceTree = "<group>"; };
@@ -1202,8 +1208,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				73BF06EC26A0286200112473 /* NuguObjcUtils.framework in Frameworks */,
-				E62A15FA2BFAB5FA00C336FA /* NattyLog in Frameworks */,
 				E69C17322BFAB8BF00AD26F0 /* RxSwift in Frameworks */,
+				E6C162842E0D09C00063EB8F /* NattyLog in Frameworks */,
 				73296856256394580077C3C4 /* NuguUtils.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1213,7 +1219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				731A0D4326A594A700569E47 /* NuguObjcUtils.framework in Frameworks */,
-				E62A16032BFAB68500C336FA /* NattyLog in Frameworks */,
+				E6C162882E0D09CB0063EB8F /* NattyLog in Frameworks */,
 				E62A16052BFAB68A00C336FA /* RxSwift in Frameworks */,
 				0600C2C125709A450071AEF3 /* NuguUtils.framework in Frameworks */,
 				06CDA2A9257DC597009DA31B /* NuguServiceKit.framework in Frameworks */,
@@ -1239,7 +1245,7 @@
 				731B939326A6EC7F00E77A07 /* TycheCommon.xcframework in Frameworks */,
 				731B939426A6EC7F00E77A07 /* TycheEpd.xcframework in Frameworks */,
 				731B939526A6EC7F00E77A07 /* TycheSpeex.xcframework in Frameworks */,
-				E62A15F82BFAB5D600C336FA /* NattyLog in Frameworks */,
+				E6C1628C2E0D09D50063EB8F /* NattyLog in Frameworks */,
 				731A0D0E26A5859F00569E47 /* TycheSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1251,7 +1257,7 @@
 				731B934126A6EB7400E77A07 /* TycheCommon.xcframework in Frameworks */,
 				731A0D1526A58EFB00569E47 /* TycheSDK.framework in Frameworks */,
 				731D3015265D2716003FE737 /* NuguUtils.framework in Frameworks */,
-				E62A16072BFAB69E00C336FA /* NattyLog in Frameworks */,
+				E6C1628E2E0D09D90063EB8F /* NattyLog in Frameworks */,
 				731B933F26A6EB7400E77A07 /* TycheWakeup.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1267,8 +1273,8 @@
 				1F1008F62379247800D90FEE /* NuguCore.framework in Frameworks */,
 				731A0D2A26A5935A00569E47 /* OpusSDK.framework in Frameworks */,
 				7314DF4E255E3EA2004882BB /* NuguUtils.framework in Frameworks */,
-				E69D1DFE2BFAB7D80061C704 /* NattyLog in Frameworks */,
 				73BF06E126A0208700112473 /* NuguObjcUtils.framework in Frameworks */,
+				E6C162902E0D0A250063EB8F /* NattyLog in Frameworks */,
 				73C256362695D5860008FE7F /* SilverTray.framework in Frameworks */,
 				1F1008D02379221700D90FEE /* KeenSense.framework in Frameworks */,
 				E69D1E002BFAB7D80061C704 /* RxSwift in Frameworks */,
@@ -1292,7 +1298,7 @@
 				73C256712695D5DC0008FE7F /* SilverTray.framework in Frameworks */,
 				73152FE923E05D1100F843C3 /* NuguCore.framework in Frameworks */,
 				E62A15FF2BFAB64E00C336FA /* RxSwift in Frameworks */,
-				E62A16012BFAB67100C336FA /* NattyLog in Frameworks */,
+				E6C162862E0D09C60063EB8F /* NattyLog in Frameworks */,
 				73152FD523E042D000F843C3 /* JadeMarble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1333,7 +1339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E62A16092BFAB6AA00C336FA /* NattyLog in Frameworks */,
+				E6C1628A2E0D09CF0063EB8F /* NattyLog in Frameworks */,
 				A19ECA1A2578CED3003E53A9 /* NuguUtils.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1791,6 +1797,7 @@
 				73E7E4C1294670E500361634 /* AudioPlayerResult.swift */,
 				06FE5684253EDB64002FAC9B /* AudioPlayer.swift */,
 				06FE568F253FCC1E002FAC9B /* AudioPlayerAgentError.swift */,
+				E6921CCC2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift */,
 			);
 			path = AudioPlayer;
 			sourceTree = "<group>";
@@ -1963,6 +1970,7 @@
 				1FFFF3752375707000C9A177 /* DirectiveSequencer.swift */,
 				7E27375224B553EC00602B57 /* DirectiveHandleResult.swift */,
 				7E1A28C624E4E1F2003A8817 /* DirectiveCancelPolicy.swift */,
+				E6D62D9F2E0D28F900459228 /* DirectivePreProcessable.swift */,
 			);
 			path = Directive;
 			sourceTree = "<group>";
@@ -2488,6 +2496,7 @@
 				7EDCF2A62384FE88006F96B6 /* StreamDataRouter.swift */,
 				735A4CDF241173F4004E7A41 /* EventSender.swift */,
 				735A4CE0241173F4004E7A41 /* EventSenderError.swift */,
+				E6D62D9D2E0D286B00459228 /* StreamDataPreProcessor.swift */,
 			);
 			path = StreamData;
 			sourceTree = "<group>";
@@ -2917,8 +2926,8 @@
 			);
 			name = NuguCore;
 			packageProductDependencies = (
-				E62A15F92BFAB5FA00C336FA /* NattyLog */,
 				E69C17312BFAB8BF00AD26F0 /* RxSwift */,
+				E6C162832E0D09C00063EB8F /* NattyLog */,
 			);
 			productName = NuguCore;
 			productReference = 1FFFEFFD23753F1800C9A177 /* NuguCore.framework */;
@@ -2947,8 +2956,8 @@
 			);
 			name = NuguClientKit;
 			packageProductDependencies = (
-				E62A16022BFAB68500C336FA /* NattyLog */,
 				E62A16042BFAB68A00C336FA /* RxSwift */,
+				E6C162872E0D09CB0063EB8F /* NattyLog */,
 			);
 			productName = NuguClientKit;
 			productReference = 1FFFF00A23753F3100C9A177 /* NuguClientKit.framework */;
@@ -2991,7 +3000,7 @@
 			);
 			name = JadeMarble;
 			packageProductDependencies = (
-				E62A15F72BFAB5D600C336FA /* NattyLog */,
+				E6C1628B2E0D09D50063EB8F /* NattyLog */,
 			);
 			productName = JadeMarble;
 			productReference = 1FFFF03123753FA200C9A177 /* JadeMarble.framework */;
@@ -3015,7 +3024,7 @@
 			);
 			name = KeenSense;
 			packageProductDependencies = (
-				E62A16062BFAB69E00C336FA /* NattyLog */,
+				E6C1628D2E0D09D90063EB8F /* NattyLog */,
 			);
 			productName = KeenSense;
 			productReference = 1FFFF03E23753FB200C9A177 /* KeenSense.framework */;
@@ -3049,8 +3058,8 @@
 			);
 			name = SampleApp;
 			packageProductDependencies = (
-				E69D1DFD2BFAB7D80061C704 /* NattyLog */,
 				E69D1DFF2BFAB7D80061C704 /* RxSwift */,
+				E6C1628F2E0D0A250063EB8F /* NattyLog */,
 			);
 			productName = SampleApp;
 			productReference = 1FFFF48D237671F500C9A177 /* SampleApp.app */;
@@ -3100,7 +3109,7 @@
 			name = NuguAgents;
 			packageProductDependencies = (
 				E62A15FE2BFAB64E00C336FA /* RxSwift */,
-				E62A16002BFAB67100C336FA /* NattyLog */,
+				E6C162852E0D09C60063EB8F /* NattyLog */,
 			);
 			productName = NuguAgents;
 			productReference = 73152F9A23E0405900F843C3 /* NuguAgents.framework */;
@@ -3201,7 +3210,7 @@
 			);
 			name = NuguServiceKit;
 			packageProductDependencies = (
-				E62A16082BFAB6AA00C336FA /* NattyLog */,
+				E6C162892E0D09CF0063EB8F /* NattyLog */,
 			);
 			productName = NuguServiceKit;
 			productReference = 7525AC84249AFE8E006800A3 /* NuguServiceKit.framework */;
@@ -3270,8 +3279,8 @@
 			);
 			mainGroup = 3D9C428622745894000A6585;
 			packageReferences = (
-				E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */,
 				E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */,
+				E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */,
 			);
 			productRefGroup = 3D9C429122745894000A6585 /* Products */;
 			projectDirPath = "";
@@ -3708,6 +3717,7 @@
 				1FFFF3812375707000C9A177 /* MediaPlayer.swift in Sources */,
 				1FFFF3802375707000C9A177 /* MediaAVPlayerItem.swift in Sources */,
 				735A4CC724117339004E7A41 /* MultiPartParser.swift in Sources */,
+				E6D62DA02E0D28F900459228 /* DirectivePreProcessable.swift in Sources */,
 				1FFFF3C32375707100C9A177 /* PlaySyncManager.swift in Sources */,
 				1FFFF3BC2375707100C9A177 /* HTTPConst.swift in Sources */,
 				7373893C24A46E510018DDD2 /* MediaOpusStreamDataSource.swift in Sources */,
@@ -3717,6 +3727,7 @@
 				1FFFF3C72375707100C9A177 /* FocusManager.swift in Sources */,
 				7373893324A46D4D0018DDD2 /* Upstream.swift in Sources */,
 				735A4CBF241172F1004E7A41 /* ServerSentEventProcessor.swift in Sources */,
+				E6D62D9E2E0D286B00459228 /* StreamDataPreProcessor.swift in Sources */,
 				7EDCF2A72384FE88006F96B6 /* StreamDataRouter.swift in Sources */,
 				735A4CE1241173F4004E7A41 /* EventSender.swift in Sources */,
 				7373894B24A46E720018DDD2 /* DirectiveHandleInfo.swift in Sources */,
@@ -3944,6 +3955,7 @@
 				737388D924A46C3C0018DDD2 /* SoundState.swift in Sources */,
 				737388E124A46C4A0018DDD2 /* ExtensionAgentDelegate.swift in Sources */,
 				73152FCB23E0415B00F843C3 /* DisplayAgent+Event.swift in Sources */,
+				E6921CCD2E0E264500E084B3 /* AudioPlayerDirectivePreProcessor.swift in Sources */,
 				7E284DA124DD482800BF9640 /* InteractionControlConst.swift in Sources */,
 				7E1DDE0D25F894A90038D040 /* Routine+Event.swift in Sources */,
 				73152FA923E0412D00F843C3 /* ExtensionAgent+Event.swift in Sources */,
@@ -5316,14 +5328,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nugu-developers/natty-log-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.3;
-			};
-		};
 		E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift";
@@ -5332,19 +5336,17 @@
 				minimumVersion = 6.7.1;
 			};
 		};
+		E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:AgentiOS/natty-log-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E62A15F72BFAB5D600C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
-		E62A15F92BFAB5FA00C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
 		E62A15FC2BFAB62600C336FA /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
@@ -5355,45 +5357,55 @@
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		E62A16002BFAB67100C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
-		E62A16022BFAB68500C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
 		E62A16042BFAB68A00C336FA /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
-		};
-		E62A16062BFAB69E00C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
-		E62A16082BFAB6AA00C336FA /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
 		};
 		E69C17312BFAB8BF00AD26F0 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
 		};
-		E69D1DFD2BFAB7D80061C704 /* NattyLog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E62A15F62BFAB5D600C336FA /* XCRemoteSwiftPackageReference "natty-log-ios" */;
-			productName = NattyLog;
-		};
 		E69D1DFF2BFAB7D80061C704 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62A15FB2BFAB62600C336FA /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		E6C162832E0D09C00063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C162852E0D09C60063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C162872E0D09CB0063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C162892E0D09CF0063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C1628B2E0D09D50063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C1628D2E0D09D90063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
+		};
+		E6C1628F2E0D0A250063EB8F /* NattyLog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E6C162822E0D09BA0063EB8F /* XCRemoteSwiftPackageReference "natty-log-ios" */;
+			productName = NattyLog;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

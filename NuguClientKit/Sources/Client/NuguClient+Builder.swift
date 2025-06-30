@@ -22,6 +22,9 @@ import Foundation
 
 import NuguCore
 import NuguAgents
+import JadeMarble
+import KeenSense
+import NuguServiceKit
 
 public extension NuguClient {
     class Builder {
@@ -35,6 +38,7 @@ public extension NuguClient {
         public let sessionManager: SessionManageable
         public let interactionControlManager: InteractionControlManageable
         public let systemAgent: SystemAgentProtocol
+        public let directivesPreProcessor: StreamDataPreProcessable
         
         // Default Agents
         public lazy var asrAgent: ASRAgentProtocol = ASRAgent(
@@ -191,7 +195,8 @@ public extension NuguClient {
             contextManager = ContextManager()
             directiveSequencer = DirectiveSequencer()
             focusManager = FocusManager()
-            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer)
+            directivesPreProcessor = StreamDataPreProcessor()
+            streamDataRouter = StreamDataRouter(directiveSequencer: directiveSequencer, directivesPreProcessor: directivesPreProcessor)
             playSyncManager = PlaySyncManager(contextManager: contextManager)
             dialogAttributeStore = DialogAttributeStore()
             sessionManager = SessionManager()
@@ -201,6 +206,8 @@ public extension NuguClient {
                 streamDataRouter: streamDataRouter,
                 directiveSequencer: directiveSequencer
             )
+            
+            directivesPreProcessor.add(AudioPlayerDirectivePreProcessor())
         }
 
         /**
@@ -311,6 +318,15 @@ public extension NuguClient {
                 streamDataRouter.setRequestTimeout(timeInterval)
             }
             return self
+        }
+        
+        public func appendPrefixLog(_ prefix: String) {
+            JadeMarble.appendPrefixLog(prefix)
+            KeenSense.appendPrefixLog(prefix)
+            NuguAgents.appendPrefixLog(prefix)
+            NuguClientKit.appendPrefixLog(prefix)
+            NuguCore.appendPrefixLog(prefix)
+            NuguServiceKit.appendPrefixLog(prefix)
         }
         
         /**

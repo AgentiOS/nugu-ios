@@ -173,7 +173,9 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "ShowLyrics", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleShowLyrics),
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "HideLyrics", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleHideLyrics),
         DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "ControlLyricsPage", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleControlLyricsPage),
-        DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "ShowPlaylist", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleShowPlaylist)
+        DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "ShowPlaylist", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleShowPlaylist),
+        // Custom Directive
+        DirectiveHandleInfo(namespace: capabilityAgentProperty.name, name: "Template", blockingPolicy: BlockingPolicy(blockedBy: .any, blocking: nil), directiveHandler: handleTemplate)
     ]
     
     public init(
@@ -296,15 +298,15 @@ public extension AudioPlayerAgent {
     }
     
     func requestFavoriteCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current)))
+        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current, service: currentPlayer?.payload.service)))
     }
 
     func requestRepeatCommand(currentMode: AudioPlayerDisplayRepeat) {
-        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode)))
+        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode, service: currentPlayer?.payload.service)))
     }
     
     func requestShuffleCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current)))
+        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current, service: currentPlayer?.payload.service)))
     }
     
     func seek(to offset: Int) {
@@ -322,7 +324,7 @@ public extension AudioPlayerAgent {
     }
     
     func requestPlaylistModified(deletedTokens: [String], tokens: [String]) {
-        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens)))
+        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens, service: currentPlayer?.payload.service)))
     }
     
     func requestBadgeButtonSelected(with token: String, postback: [String: AnyHashable]) {
@@ -539,11 +541,6 @@ private extension AudioPlayerAgent {
                 }
                 self.currentPlayer = player
                 
-                self.audioPlayerDisplayManager.display(
-                    payload: player.payload,
-                    header: directive.header
-                )
-                
                 self.focusManager.requestFocus(channelDelegate: self)
                 
                 completion(.finished) // TODO: DirectiveHandleResult.started 추가
@@ -748,6 +745,28 @@ private extension AudioPlayerAgent {
                     ).rx
                 )
             }
+        }
+    }
+    
+    /// handle template directive for displaying audio player
+    func handleTemplate() -> HandleDirective {
+        return { [weak self] directive, completion in
+            guard let self else {
+                completion(.canceled)
+                return
+            }
+            
+            guard let payload = try? JSONDecoder().decode(AudioPlayerPlayPayload.self, from: directive.payload) else {
+                completion(.failed("Invalid payload"))
+                return
+            }
+            
+            audioPlayerDisplayManager.display(
+                payload: payload,
+                header: directive.header
+            )
+            
+            completion(.finished)
         }
     }
     

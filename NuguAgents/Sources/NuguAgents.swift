@@ -51,3 +51,7 @@ public var logLevel: NattyLog.LogLevel {
         log.configuration.minLogLevel = newValue
     }
 }
+
+public func appendPrefixLog(_ prefix: String) {
+    log.configuration.customPrefix = prefix
+}
