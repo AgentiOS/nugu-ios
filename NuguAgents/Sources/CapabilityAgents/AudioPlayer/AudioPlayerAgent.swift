@@ -298,15 +298,15 @@ public extension AudioPlayerAgent {
     }
     
     func requestFavoriteCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current)))
+        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current, service: currentPlayer?.payload.service)))
     }
 
     func requestRepeatCommand(currentMode: AudioPlayerDisplayRepeat) {
-        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode)))
+        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode, service: currentPlayer?.payload.service)))
     }
     
     func requestShuffleCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current)))
+        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current, service: currentPlayer?.payload.service)))
     }
     
     func seek(to offset: Int) {
@@ -324,7 +324,7 @@ public extension AudioPlayerAgent {
     }
     
     func requestPlaylistModified(deletedTokens: [String], tokens: [String]) {
-        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens)))
+        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens, service: currentPlayer?.payload.service)))
     }
     
     func requestBadgeButtonSelected(with token: String, postback: [String: AnyHashable]) {
