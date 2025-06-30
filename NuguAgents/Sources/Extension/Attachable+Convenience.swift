@@ -30,7 +30,7 @@ extension Attachable {
         referrerDialogRequestId: String?,
         attachmentSeq: Int32,
         isEnd: Bool,
-        speechData: Data
+        speechData: Data? = nil
     ) -> Upstream.Attachment {
         let header = Upstream.Header(
             namespace: property.name,

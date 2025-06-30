@@ -140,9 +140,11 @@ private extension EventSender {
         var partData = Data()
         partData.append(headerLines.joined(separator: (HTTPConst.crlf)).data(using: .utf8)!)
         partData.append(HTTPConst.crlfData)
-        partData.append(HTTPConst.crlfData)
-        partData.append(attachment.content)
-        partData.append(HTTPConst.crlfData)
+        if let content = attachment.content {
+            partData.append(HTTPConst.crlfData)
+            partData.append(content)
+            partData.append(HTTPConst.crlfData)
+        }
         partData.append("--\(boundary)".data(using: .utf8)!)
         partData.append(HTTPConst.crlfData)
 
