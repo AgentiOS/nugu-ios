@@ -39,12 +39,12 @@ class OpusPlayer: MediaPlayable {
     private let player: DataStreamPlayer
     weak var delegate: MediaPlayerDelegate?
     
-    init(gain: Float = .zero) throws {
+    init() throws {
         /*
          There's no 22050hz in opus world.
          So decode it as 24khz and play it slower.
          */
-        try player = DataStreamPlayer(decoder: OpusDecoder(sampleRate: 24000.0, channels: 1), gain: gain)
+        try player = DataStreamPlayer(decoder: OpusDecoder(sampleRate: 24000.0, channels: 1))
         player.speed = Const.defaultSpeed
         player.delegate = self
     }

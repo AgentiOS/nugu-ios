@@ -57,6 +57,7 @@ public protocol ASRAgentProtocol: CapabilityAgentable, TypedNotifyable {
     ///
     /// This function can only be called in the LISTENING and RECOGNIZING state.
     func stopSpeech()
+    func setVoiceProcessingEnabled(_ active: Bool)
 }
 
 // MARK: - Default
@@ -76,4 +77,6 @@ public extension ASRAgentProtocol {
     ) -> String {
         return startRecognition(initiator: initiator, service: service, options: options, completion: completion)
     }
+    
+    func setVoiceProcessingEnabled(_ active: Bool) {}
 }

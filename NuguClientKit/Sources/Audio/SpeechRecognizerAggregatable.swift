@@ -50,6 +50,7 @@ public protocol SpeechRecognizerAggregatable: AnyObject {
     func startMicInputProvider(requestingFocus: Bool, completion: @escaping (EndedUp<Error>) -> Void)
     
     func stopMicInputProvider(completion: (() -> Void)?)
+    func setVoiceProcessingEnabled(_ active: Bool)
 }
 
 public extension SpeechRecognizerAggregatable {

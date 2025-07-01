@@ -61,8 +61,6 @@ public final class TTSAgent: TTSAgentProtocol {
         }
     }
     
-    public var gain: Float = .zero
-    
     // Private
     private let playSyncManager: PlaySyncManageable
     private let contextManager: ContextManageable
@@ -124,6 +122,7 @@ public final class TTSAgent: TTSAgentProtocol {
     }
     
     private let ttsResultSubject = PublishSubject<(dialogRequestId: String, result: TTSResult)>()
+    private var isVoiceProcessingEnabled = false
     
     // Players
     private var currentPlayer: TTSPlayer? {
@@ -244,6 +243,10 @@ public extension TTSAgent {
             latestPlayer?.volume = volume
         }
     }
+    
+    func setVoiceProcessingEnabled(_ active: Bool) {
+        isVoiceProcessingEnabled = active
+    }
 }
 
 // MARK: - FocusChannelDelegate
@@ -270,7 +273,7 @@ extension TTSAgent: FocusChannelDelegate {
             case (.foreground, _):
                 break
             case (.background, _), (.nothing, _):
-                if let player = self.currentPlayer {
+                if let player = self.currentPlayer, isVoiceProcessingEnabled == false {
                     self.stop(player: player, cancelAssociation: false)
                 }
             // Ignore prepare
@@ -358,7 +361,7 @@ private extension TTSAgent {
     func prefetchPlay() -> PrefetchDirective {
         return { [weak self] directive in
             guard let self else { return }
-            let player = try TTSPlayer(directive: directive, gain: gain)
+            let player = try TTSPlayer(directive: directive)
             player.speed = speed
             
             ttsDispatchQueue.sync { [weak self] in
