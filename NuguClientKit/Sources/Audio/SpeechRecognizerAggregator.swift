@@ -50,10 +50,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private let recognizeQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.recognize")
     
     public var useKeywordDetector = true
-    
-    private var service: [String: AnyHashable]?
-    private var requestType: String?
-    private var activeBargeIn = false
+    private var isVoiceProcessingEnabled = false
     
     // State
     private(set) public var state: SpeechRecognizerAggregatorState = .idle {
@@ -119,8 +116,6 @@ public extension SpeechRecognizerAggregator {
     ) {
         recognizeQueue.async { [weak self] in
             guard let self else { return }
-            self.service = service
-            self.requestType = requestType
             
             switch state {
             case .cancelled,
@@ -267,8 +262,8 @@ public extension SpeechRecognizerAggregator {
     
     func setVoiceProcessingEnabled(_ active: Bool) {
         ttsAgent.setVoiceProcessingEnabled(active)
-        asrAgent.activeBargeInMode(active)
-        activeBargeIn = active
+        asrAgent.setVoiceProcessingEnabled(active)
+        isVoiceProcessingEnabled = active
     }
 }
 
@@ -349,14 +344,14 @@ extension SpeechRecognizerAggregator {
                 if useKeywordDetector {
                     // if not restart here, keyword detector will be inactivated during tts speaking
                     keywordDetector.start()
-                } else if activeBargeIn == false {
+                } else if isVoiceProcessingEnabled == false {
                     stopMicInputProvider()
                 }
             case .listening:
                 if useKeywordDetector {
                     keywordDetector.stop()
                 }
-            case .recognizing where activeBargeIn:
+            case .recognizing where isVoiceProcessingEnabled:
                 ttsAgent.stopTTS(cancelAssociation: true)
             case .expectingSpeech:
                 startMicInputProvider(requestingFocus: true) { [weak self] endedUp in

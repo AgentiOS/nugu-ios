@@ -46,7 +46,7 @@ class AudioEngineManager<Observer: AudioEngineObservable> {
                     }
                     try engine.start()
                     
-                    os_log("audioEngine started, enableVoiceProcessing: %@", log: .audioEngine, type: .debug, "\(engine.inputNode.isVoiceProcessingEnabled)")
+                    os_log("audioEngine started, isVoiceProcessingEnabled: %@", log: .audioEngine, type: .debug, "\(engine.inputNode.isVoiceProcessingEnabled)")
                 } catch {
                     return error
                 }

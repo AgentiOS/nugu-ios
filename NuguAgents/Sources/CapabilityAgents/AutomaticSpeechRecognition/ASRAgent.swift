@@ -60,7 +60,7 @@ public final class ASRAgent: ASRAgentProtocol {
     private let notificationCenter = NotificationCenter.default
     private var playSyncObserver: Any?
     private var directiveReceiveObserver: Any?
-    private var enableVoiceProcessing = false
+    private var isVoiceProcessingEnabled = false
     
     public var options: ASROptions = ASROptions(endPointing: .client)
     private(set) public var asrState: ASRState = .idle {
@@ -333,7 +333,7 @@ public extension ASRAgent {
     }
     
     func setVoiceProcessingEnabled(_ active: Bool) {
-        enableVoiceProcessing = active
+        isVoiceProcessingEnabled = active
     }
 }
 
@@ -341,7 +341,7 @@ public extension ASRAgent {
 
 extension ASRAgent: FocusChannelDelegate {
     public func focusChannelPriority() -> FocusChannelPriority {
-        guard enableVoiceProcessing == false else {
+        guard isVoiceProcessingEnabled == false else {
             return .init(requestPriority: 200, maintainPriority: 300)
         }
         switch asrRequest?.initiator {

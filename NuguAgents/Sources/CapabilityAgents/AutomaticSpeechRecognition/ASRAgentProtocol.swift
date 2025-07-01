@@ -78,5 +78,5 @@ public extension ASRAgentProtocol {
         return startRecognition(initiator: initiator, service: service, options: options, completion: completion)
     }
     
-    func activeBargeInMode(_ active: Bool) {}
+    func setVoiceProcessingEnabled(_ active: Bool) {}
 }
