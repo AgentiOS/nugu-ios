@@ -35,7 +35,6 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private var asrResultObserver: Any?
     private var becomeActiveObserver: Any?
     private var audioSessionInterruptionObserver: Any?
-    private var ttsStateObserver: Any?
     
     private let asrAgent: ASRAgentProtocol
     private let keywordDetector: KeywordDetector
@@ -93,7 +92,6 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
         
         addAsrStateObserver()
         addAsrResultObserver()
-        addTTSStateObserver()
     }
     
     deinit {
@@ -105,9 +103,6 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
         }
         if let becomeActiveObserver {
             notificationCenter.removeObserver(becomeActiveObserver)
-        }
-        if let ttsStateObserver {
-            notificationCenter.removeObserver(ttsStateObserver)
         }
         removeAudioSessionObservers()
     }
@@ -385,19 +380,6 @@ extension SpeechRecognizerAggregator {
             guard let self = self else { return }
             if let state = SpeechRecognizerAggregatorState(notification.result) {
                 self.state = state
-            }
-        }
-    }
-    
-    func addTTSStateObserver() {
-        ttsStateObserver = ttsAgent.observe(
-            NuguAgentNotification.TTS.State.self,
-            queue: .main
-        ) { [weak self] notification in
-            guard let self, activeBargeIn, case .playing = notification.state else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self else { return }
-                asrAgent.startRecognition(initiator: .tap, service: service, options: nil, completion: nil)
             }
         }
     }
