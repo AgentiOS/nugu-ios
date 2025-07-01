@@ -46,8 +46,6 @@ public protocol TTSAgentProtocol: CapabilityAgentable, TypedNotifyable {
     /// This function retrieves the speed of the current `OpusPlayer`
     var speed: Float { get set }
     
-    var gain: Float { get set }
-    
     /// The cancellation policy when playback is implicitly stopped.
     var directiveCancelPolicy: DirectiveCancelPolicy { get set }
     
@@ -73,6 +71,7 @@ public protocol TTSAgentProtocol: CapabilityAgentable, TypedNotifyable {
      - Parameter volume: 플레이어의 볼륨(0.0 ~ 1.0)
      */
     func updateLatestPlayerVolume(_ volume: Float)
+    func setVoiceProcessingEnabled(_ active: Bool)
 }
 
 // MARK: - Default
@@ -94,4 +93,6 @@ public extension TTSAgentProtocol {
     func stopTTS() {
         stopTTS(cancelAssociation: true)
     }
+    
+    func setVoiceProcessingEnabled(_ active: Bool) {}
 }

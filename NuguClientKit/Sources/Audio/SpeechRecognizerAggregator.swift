@@ -39,6 +39,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private let asrAgent: ASRAgentProtocol
     private let keywordDetector: KeywordDetector
     private let audioSessionManager: AudioSessionManageable?
+    private let ttsAgent: TTSAgentProtocol
     
     private let micInputProvider = MicInputProvider()
     private var micInputProviderDelay: DispatchTime = .now()
@@ -49,6 +50,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private let recognizeQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.recognize")
     
     public var useKeywordDetector = true
+    private var isVoiceProcessingEnabled = false
     
     // State
     private(set) public var state: SpeechRecognizerAggregatorState = .idle {
@@ -63,11 +65,13 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     public init(
         keywordDetector: KeywordDetector,
         asrAgent: ASRAgentProtocol,
-        audioSessionManager: AudioSessionManageable?
+        audioSessionManager: AudioSessionManageable?,
+        ttsAgent: TTSAgentProtocol
     ) {
         self.keywordDetector = keywordDetector
         self.asrAgent = asrAgent
         self.audioSessionManager = audioSessionManager
+        self.ttsAgent = ttsAgent
         micInputProvider.delegate = self
         keywordDetector.delegate = self 
         
@@ -88,13 +92,13 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     }
     
     deinit {
-        if let asrStateObserver = asrStateObserver {
+        if let asrStateObserver {
             notificationCenter.removeObserver(asrStateObserver)
         }
-        if let asrResultObserver = asrResultObserver {
+        if let asrResultObserver {
             notificationCenter.removeObserver(asrResultObserver)
         }
-        if let becomeActiveObserver = becomeActiveObserver {
+        if let becomeActiveObserver {
             notificationCenter.removeObserver(becomeActiveObserver)
         }
         removeAudioSessionObservers()
@@ -255,6 +259,12 @@ public extension SpeechRecognizerAggregator {
             completion?()
         }
     }
+    
+    func setVoiceProcessingEnabled(_ active: Bool) {
+        ttsAgent.setVoiceProcessingEnabled(active)
+        asrAgent.setVoiceProcessingEnabled(active)
+        isVoiceProcessingEnabled = active
+    }
 }
 
 // MARK: - MicInputProviderDelegate
@@ -322,8 +332,8 @@ extension SpeechRecognizerAggregator {
         }
         
         // For use asr infinitely
-        asrStateObserver = asrAgent.observe(NuguAgentNotification.ASR.State.self, queue: nil) { [weak self] (notification) in
-            guard let self = self else { return }
+        asrStateObserver = asrAgent.observe(NuguAgentNotification.ASR.State.self, queue: nil) { [weak self] notification in
+            guard let self else { return }
             
             if let state = SpeechRecognizerAggregatorState(notification.state) {
                 self.state = state
@@ -331,18 +341,20 @@ extension SpeechRecognizerAggregator {
             
             switch notification.state {
             case .idle:
-                if self.useKeywordDetector {
+                if useKeywordDetector {
                     // if not restart here, keyword detector will be inactivated during tts speaking
-                    self.keywordDetector.start()
-                } else {
-                    self.stopMicInputProvider()
+                    keywordDetector.start()
+                } else if isVoiceProcessingEnabled == false {
+                    stopMicInputProvider()
                 }
             case .listening:
-                if self.useKeywordDetector {
-                    self.keywordDetector.stop()
+                if useKeywordDetector {
+                    keywordDetector.stop()
                 }
+            case .recognizing where isVoiceProcessingEnabled:
+                ttsAgent.stopTTS(cancelAssociation: true)
             case .expectingSpeech:
-                self.startMicInputProvider(requestingFocus: true) { [weak self] (endedUp) in
+                startMicInputProvider(requestingFocus: true) { [weak self] endedUp in
                     if case let .failure(error) = endedUp {
                         log.debug("startMicInputProvider failed: \(error)")
                         self?.asrAgent.stopRecognition()
