@@ -71,7 +71,7 @@ public protocol TTSAgentProtocol: CapabilityAgentable, TypedNotifyable {
      - Parameter volume: 플레이어의 볼륨(0.0 ~ 1.0)
      */
     func updateLatestPlayerVolume(_ volume: Float)
-    func activeBargeInMode(_ active: Bool)
+    func setVoiceProcessingEnabled(_ active: Bool)
 }
 
 // MARK: - Default
@@ -94,5 +94,5 @@ public extension TTSAgentProtocol {
         stopTTS(cancelAssociation: true)
     }
     
-    func activeBargeInMode(_ active: Bool) {}
+    func setVoiceProcessingEnabled(_ active: Bool) {}
 }

@@ -270,8 +270,8 @@ public extension SpeechRecognizerAggregator {
         }
     }
     
-    func activeBargeInMode(_ active: Bool) {
-        ttsAgent.activeBargeInMode(active)
+    func setVoiceProcessingEnabled(_ active: Bool) {
+        ttsAgent.setVoiceProcessingEnabled(active)
         asrAgent.activeBargeInMode(active)
         activeBargeIn = active
     }
