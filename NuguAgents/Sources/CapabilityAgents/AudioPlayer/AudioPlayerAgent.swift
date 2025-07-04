@@ -240,6 +240,10 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
             payload["playlistVisible"] = self.currentPlaylist != nil
         }
         
+        if let service = self.currentPlayer?.payload.service {
+            payload["service"] = service
+        }
+        
         completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
     }
 }
