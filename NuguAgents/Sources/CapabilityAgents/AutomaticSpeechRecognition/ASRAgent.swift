@@ -116,7 +116,8 @@ public final class ASRAgent: ASRAgentProtocol {
             case .partial:
                 break
             case .complete:
-                expectSpeech = nil
+                // Complete result는 asr state가 Idle로 변경된 이후에 처리되기 때문에 handleNotify에서 직접 처리
+                return
             case .cancel:
                 asrState = .idle
                 upstreamDataSender.cancelEvent(dialogRequestId: asrRequest.eventIdentifier.dialogRequestId)
@@ -570,7 +571,10 @@ private extension ASRAgent {
                 case .partial:
                     self.asrResult = .partial(text: item.result ?? "", header: directive.header)
                 case .complete:
-                    self.asrResult = .complete(text: item.result ?? "", header: directive.header, requestType: item.requestType)
+                    let asrResult: ASRResult = .complete(text: item.result ?? "", header: directive.header, requestType: item.requestType)
+                    self.asrResult = asrResult
+                    expectSpeech = nil
+                    post(NuguAgentNotification.ASR.Result(result: asrResult, dialogRequestId: directive.header.dialogRequestId))
                 case .none where item.asrErrorCode != nil:
                     self.asrResult = .error(ASRError.recognizeFailed, header: directive.header)
                 case .none:
