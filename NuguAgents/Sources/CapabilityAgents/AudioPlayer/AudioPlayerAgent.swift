@@ -19,6 +19,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 import NuguCore
 import NuguUtils
@@ -348,6 +349,21 @@ public extension AudioPlayerAgent {
     func enableAudioAssetCaching(_ enable: Bool) {
         enableAssetCaching = enable
     }
+    
+    func updateAudioSessionIfNeeded() {
+        guard AVAudioSession.sharedInstance().mode == .voiceChat else { return }
+        do {
+            try AVAudioSession.sharedInstance().setActive(false)
+            try AVAudioSession.sharedInstance().setCategory(
+                .playAndRecord,
+                mode: .default,
+                options: [.defaultToSpeaker, .allowBluetoothA2DP]
+            )
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            log.error(error)
+        }
+    }
 }
 
 // MARK: - FocusChannelDelegate
@@ -365,6 +381,7 @@ extension AudioPlayerAgent: FocusChannelDelegate {
             switch (focusState, self.audioPlayerState) {
             // Directive 에 의한 Pause 인경우 재생하지 않음.
             case (.foreground, .paused):
+                updateAudioSessionIfNeeded()
                 if self.currentPlayer?.pauseReason != .user {
                     self.currentPlayer?.resume()
                 }
