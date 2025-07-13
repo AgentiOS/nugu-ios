@@ -257,6 +257,11 @@ public class DataStreamPlayer {
 
             // To control volume, Last of chain must me mixer node.
             Self.audioEngineManager.connect(pitchController, to: Self.audioEngineManager.mainMixerNode, format: audioFormat)
+            
+            Self.audioEngineManager.mainMixerNode.removeTap(onBus: 0)
+            Self.audioEngineManager.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: Self.audioEngineManager.mainMixerNode.outputFormat(forBus: 0)) { [weak self] buffer, _ in
+                self?.analyzeBuffer(buffer)
+            }
             #endif
             
             return nil
@@ -649,6 +654,15 @@ private extension DataStreamPlayer {
                "\(id)", "\(AVAudioSession.sharedInstance().category)", "\(AVAudioSession.sharedInstance().categoryOptions)", "\(AVAudioSession.sharedInstance().sampleRate)")
         #endif
     }
+    
+    func analyzeBuffer(_ buffer: AVAudioPCMBuffer) {
+        guard let channelData = buffer.floatChannelData?[0] else { return }
+
+        let channelDataValueArray = Array(UnsafeBufferPointer(start: channelData, count: Int(buffer.frameLength)))
+        let amplitude = sqrt(channelDataValueArray.map { $0 * $0 }.reduce(0, +) / Float(buffer.frameLength))
+        
+        notificationCenter.post(name: .audioAmplitudeChange, object: nil, userInfo: ["amplitude": amplitude])
+    }
 }
 
 // MARK: - Hashable
@@ -708,16 +722,20 @@ private extension Array where Element == Float {
 
 private extension Notification.Name {
     static let audioBufferChange = Notification.Name(rawValue: "com.sktelecom.silver_tray.audio_buffer")
+    static let audioAmplitudeChange = Notification.Name(rawValue: "com.sktelecom.silver_tray.audio_amplitude")
 }
 
-private extension AVAudioUnitEQ {
-    convenience init(gain: Float = .zero) {
-        self.init(numberOfBands: 1)
-        let band = self.bands[0]
-        band.filterType = .parametric
-        band.frequency = 1000 // 중심 주파수 (Hz)
-        band.bandwidth = 2.0 // 옥타브 단위로 넓게 설정
-        band.gain = gain
-        band.bypass = false
+public extension SilverTrayNotification {
+    enum DataStreamPlayer {
+        public struct AudioAmplitudeChange: TypedNotification {
+            public static var name: Notification.Name = .audioAmplitudeChange
+            public let amplitude: Float
+
+            public static func make(from: [String: Any]) -> AudioAmplitudeChange? {
+                guard let amplitude = from["amplitude"] as? Float else { return nil }
+
+                return AudioAmplitudeChange(amplitude: amplitude)
+            }
+        }
     }
 }
