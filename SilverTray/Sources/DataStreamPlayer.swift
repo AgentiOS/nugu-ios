@@ -258,6 +258,7 @@ public class DataStreamPlayer {
             // To control volume, Last of chain must me mixer node.
             Self.audioEngineManager.connect(pitchController, to: Self.audioEngineManager.mainMixerNode, format: audioFormat)
             
+            Self.audioEngineManager.mainMixerNode.removeTap(onBus: 0)
             Self.audioEngineManager.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: Self.audioEngineManager.mainMixerNode.outputFormat(forBus: 0)) { [weak self] buffer, _ in
                 self?.analyzeBuffer(buffer)
             }
