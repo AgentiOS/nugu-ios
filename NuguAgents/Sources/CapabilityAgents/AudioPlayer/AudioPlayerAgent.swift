@@ -387,6 +387,7 @@ extension AudioPlayerAgent: FocusChannelDelegate {
                 }
             case (.foreground, _):
                 if let player = self.currentPlayer, player.internalPlayer != nil {
+                    updateAudioSessionIfNeeded()
                     player.play()
                 } else {
                     log.error("currentPlayer is nil")
