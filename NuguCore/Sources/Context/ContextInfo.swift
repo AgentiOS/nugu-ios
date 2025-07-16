@@ -31,14 +31,17 @@ public struct ContextInfo {
     /// The state of the ProvideContextDelegate.
     public let payload: AnyHashable
     
+    public let compactPayloadKeys: [String]
+    
     /// <#Description#>
     /// - Parameters:
     ///   - contextType: <#contextType description#>
     ///   - name: <#name description#>
     ///   - payload: <#payload description#>
-    public init(contextType: ContextType, name: String, payload: AnyHashable) {
+    public init(contextType: ContextType, name: String, payload: AnyHashable, compactPayloadKeys: [String] = ["version"]) {
         self.contextType = contextType
         self.name = name
         self.payload = payload
+        self.compactPayloadKeys = compactPayloadKeys
     }
 }

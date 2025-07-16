@@ -30,6 +30,7 @@ public final class TTSAgent: TTSAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .textToSpeech, version: "1.4")
     public weak var delegate: TTSAgentDelegate?
     private let playSyncProperty = PlaySyncProperty(layerType: .info, contextType: .sound)
+    private let compactPayloadKeys = ["version", "allowSpeak"]
     
     // TTSAgentProtocol
     public var directiveCancelPolicy: DirectiveCancelPolicy = .cancelNone
@@ -202,7 +203,7 @@ public final class TTSAgent: TTSAgentProtocol {
             "token": self.currentPlayer?.payload.token,
             "allowSpeak": self.allowSpeak
         ]
-        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
+        completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }, compactPayloadKeys: compactPayloadKeys))
     }
 }
 
