@@ -52,8 +52,8 @@ extension ContextManager {
                 } else {
                     // FIXME: 추후 서버에서 각 capability interface 정보를 저장하게 되면 제거해야 함.
                     if let payload = contextInfo.payload as? [String: AnyHashable] {
-                        let versionPayload = payload.filter { $0.key == "version" }
-                        return ContextInfo(contextType: contextInfo.contextType, name: contextInfo.name, payload: versionPayload)
+                        let compactPayload = payload.filter { contextInfo.compactPayloadKeys.contains($0.key) }
+                        return ContextInfo(contextType: contextInfo.contextType, name: contextInfo.name, payload: compactPayload)
                     } else {
                         return contextInfo
                     }
