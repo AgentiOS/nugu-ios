@@ -72,6 +72,7 @@ public protocol TTSAgentProtocol: CapabilityAgentable, TypedNotifyable {
      */
     func updateLatestPlayerVolume(_ volume: Float)
     func setVoiceProcessingEnabled(_ active: Bool)
+    func allowSpeak(_ allow: Bool)
 }
 
 // MARK: - Default

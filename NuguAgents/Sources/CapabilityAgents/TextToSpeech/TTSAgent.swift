@@ -123,6 +123,7 @@ public final class TTSAgent: TTSAgentProtocol {
     
     private let ttsResultSubject = PublishSubject<(dialogRequestId: String, result: TTSResult)>()
     private var isVoiceProcessingEnabled = false
+    private var allowSpeak = true
     
     // Players
     private var currentPlayer: TTSPlayer? {
@@ -199,7 +200,7 @@ public final class TTSAgent: TTSAgentProtocol {
             "version": self.capabilityAgentProperty.version,
             "engine": "skt",
             "token": self.currentPlayer?.payload.token,
-            "allowSpeak": self.delegate?.ttsAgentAllowSpeak() ?? false
+            "allowSpeak": self.allowSpeak
         ]
         completion(ContextInfo(contextType: .capability, name: self.capabilityAgentProperty.name, payload: payload.compactMapValues { $0 }))
     }
@@ -246,6 +247,15 @@ public extension TTSAgent {
     
     func setVoiceProcessingEnabled(_ active: Bool) {
         isVoiceProcessingEnabled = active
+    }
+    
+    func allowSpeak(_ allow: Bool) {
+        ttsDispatchQueue.sync {
+            allowSpeak = allow
+            if allowSpeak == false {
+                stopTTS()
+            }
+        }
     }
 }
 
@@ -365,7 +375,7 @@ private extension TTSAgent {
             player.speed = speed
             
             ttsDispatchQueue.sync { [weak self] in
-                guard let self else { return }
+                guard let self, allowSpeak else { return }
                 
                 log.debug(directive.header.messageId)
                 
@@ -413,20 +423,24 @@ private extension TTSAgent {
     
     func handlePlay() -> HandleDirective {
         return { [weak self] directive, completion in
-            guard let self = self else {
-                completion(.canceled)
-                return
-            }
-            self.ttsDispatchQueue.async { [weak self] in
-                guard let self = self else {
+            self?.ttsDispatchQueue.async { [weak self] in
+                guard let self else {
                     completion(.canceled)
                     return
                 }
-                guard let player = self.prefetchPlayer, player.header.messageId == directive.header.messageId else {
+                
+                guard allowSpeak else {
+                    log.info("disallow speak tts")
+                    completion(.finished)
+                    return
+                }
+                
+                guard let player = prefetchPlayer, player.header.messageId == directive.header.messageId else {
                     completion(.canceled)
                     log.info("Message id does not match")
                     return
                 }
+                
                 guard player.internalPlayer != nil else {
                     completion(.canceled)
                     log.info("Internal player is nil")
@@ -434,9 +448,9 @@ private extension TTSAgent {
                 }
                 
                 log.debug(directive.header.messageId)
-                self.currentPlayer = player
+                currentPlayer = player
                 
-                self.ttsNotificationQueue.async { [weak self] in
+                ttsNotificationQueue.async { [weak self] in
                     self?.post(NuguAgentNotification.TTS.Result(text: player.payload.text, header: player.header))
                 }
                 
@@ -444,7 +458,7 @@ private extension TTSAgent {
                     currentPlayer?.play()
                 }
                 
-                self.ttsResultSubject
+                ttsResultSubject
                     .filter { $0.dialogRequestId == player.header.dialogRequestId }
                     .take(1)
                     .subscribe(onNext: { [weak self] (_, result) in
@@ -465,7 +479,7 @@ private extension TTSAgent {
                             completion(.failed("\(error)"))
                         }
                     })
-                    .disposed(by: self.disposeBag)
+                    .disposed(by: disposeBag)
             }
         }
     }
