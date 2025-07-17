@@ -25,11 +25,12 @@ extension AudioPlayerAgent {
     struct PlaylistEvent {
         let typeInfo: TypeInfo
         let playServiceId: String?
+        let service: [String: AnyHashable]?
         
         enum TypeInfo {
             case playlistItemSelected(token: String, postback: [String: AnyHashable])
             case playlistFavoriteSelected(token: String, postback: [String: AnyHashable])
-            case modifyPlaylist(deletedTokens: [String], tokens: [String], service: [String: AnyHashable]?)
+            case modifyPlaylist(deletedTokens: [String], tokens: [String])
             
             case showPlaylistSucceeded
             case showPlaylistFailed(error: [String: String])
@@ -44,6 +45,11 @@ extension AudioPlayerAgent.PlaylistEvent: Eventable {
         var eventPayload: [String: AnyHashable] = [
             "playServiceId": playServiceId
         ]
+        
+        if let service {
+            eventPayload["service"] = service
+        }
+        
         switch typeInfo {
         case .playlistFavoriteSelected(token: let playlistItemToken, postback: let postback):
             eventPayload["token"] = playlistItemToken
@@ -55,7 +61,7 @@ extension AudioPlayerAgent.PlaylistEvent: Eventable {
         case .playlistItemSelected(token: let playlistItemToken, postback: let postback):
             eventPayload["token"] = playlistItemToken
             eventPayload["postback"] = postback
-        case let .modifyPlaylist(deletedTokens, tokens, service):
+        case let .modifyPlaylist(deletedTokens, tokens):
             eventPayload["deletedTokens"] = deletedTokens
             eventPayload["tokens"] = tokens
             eventPayload["service"] = service
