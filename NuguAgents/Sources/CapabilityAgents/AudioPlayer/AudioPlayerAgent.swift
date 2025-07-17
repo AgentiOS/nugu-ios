@@ -329,7 +329,7 @@ public extension AudioPlayerAgent {
     }
     
     func requestPlaylistModified(deletedTokens: [String], tokens: [String]) {
-        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens, service: currentPlayer?.payload.service)))
+        sendFullContextEvent(playlistEvent(typeInfo: .modifyPlaylist(deletedTokens: deletedTokens, tokens: tokens)))
     }
     
     func requestBadgeButtonSelected(with token: String, postback: [String: AnyHashable]) {
@@ -763,7 +763,8 @@ private extension AudioPlayerAgent {
                 self.sendCompactContextEvent(
                     PlaylistEvent(
                         typeInfo: isSuccess ? .showPlaylistSucceeded : .showPlaylistFailed(error: ["message": "show Playlist Failed"]),
-                        playServiceId: playServiceId
+                        playServiceId: playServiceId,
+                        service: currentPlayer?.payload.service
                     ).rx
                 )
             }
@@ -960,7 +961,8 @@ private extension AudioPlayerAgent {
         if ignoreLatestPlayer == true {
             return PlaylistEvent(
                 typeInfo: typeInfo,
-                playServiceId: latestPlayer?.payload.playServiceId
+                playServiceId: latestPlayer?.payload.playServiceId,
+                service: currentPlayer?.payload.service
             )
         } else {
             guard let player = self.latestPlayer else {
@@ -969,7 +971,8 @@ private extension AudioPlayerAgent {
             
             return PlaylistEvent(
                 typeInfo: typeInfo,
-                playServiceId: player.payload.playServiceId
+                playServiceId: player.payload.playServiceId,
+                service: currentPlayer?.payload.service
             )
         }
     }
