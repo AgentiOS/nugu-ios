@@ -949,7 +949,8 @@ private extension AudioPlayerAgent {
             
             let badgeButtonEvent = BadgeButtonEvent(
                 typeInfo: typeInfo,
-                playServiceId: player.payload.playServiceId
+                playServiceId: player.payload.playServiceId,
+                service: currentPlayer?.payload.service
             )
             observer(.success(badgeButtonEvent))
             
