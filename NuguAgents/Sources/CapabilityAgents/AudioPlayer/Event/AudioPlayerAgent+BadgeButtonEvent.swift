@@ -25,6 +25,7 @@ extension AudioPlayerAgent {
     struct BadgeButtonEvent {
         let typeInfo: TypeInfo
         let playServiceId: String?
+        let service: [String: AnyHashable]?
         
         enum TypeInfo {
             case badgeButtonSelected(token: String, postback: [String: AnyHashable])
@@ -39,6 +40,10 @@ extension AudioPlayerAgent.BadgeButtonEvent: Eventable {
         var eventPayload: [String: AnyHashable] = [
             "playServiceId": playServiceId
         ]
+        
+        if let service {
+            eventPayload["service"] = service
+        }
         
         switch typeInfo {
         case .badgeButtonSelected(token: let playlistItemToken, postback: let postback):
