@@ -26,6 +26,7 @@ extension AudioPlayerAgent {
     struct RequestPlayEvent {
         let typeInfo: TypeInfo
         let referrerDialogRequestId: String?
+        let service: [String: AnyHashable]?
         
         enum TypeInfo {
             case requestPlayCommandIssued(payload: [String: AnyHashable])
@@ -38,17 +39,21 @@ extension AudioPlayerAgent {
 
 extension AudioPlayerAgent.RequestPlayEvent: Eventable {
     var payload: [String: AnyHashable] {
+        var eventPayload: [String: AnyHashable] = [:]
+        if let service {
+            eventPayload["service"] = service
+        }
+        
         switch typeInfo {
-        case .requestPlayCommandIssued(let payload):
-            return payload
-        case .requestCommandFailed(let state, let directiveType):
-            return [
-                "error": [
-                    "type": "INVALID_COMMAND",
-                    "message": "\(state.playerActivity) 상태에서는 \(directiveType) 를 처리할 수 없음"
-                ]
+        case let .requestPlayCommandIssued(payload):
+            eventPayload.merge(payload)
+        case let .requestCommandFailed(state, directiveType):
+            eventPayload["error"] = [
+                "type": "INVALID_COMMAND",
+                "message": "\(state.playerActivity) 상태에서는 \(directiveType) 를 처리할 수 없음"
             ]
         }
+        return eventPayload
     }
     
     var name: String {

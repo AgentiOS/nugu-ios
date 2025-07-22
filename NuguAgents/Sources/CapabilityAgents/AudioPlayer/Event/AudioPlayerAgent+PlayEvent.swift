@@ -67,6 +67,10 @@ extension AudioPlayerAgent.PlayEvent: Eventable {
             "playServiceId": playServiceId
         ]
         
+        if let service {
+            eventPayload["service"] = service
+        }
+        
         switch typeInfo {
         case .playbackFailed(let error):
             let type: String
@@ -90,10 +94,6 @@ extension AudioPlayerAgent.PlayEvent: Eventable {
             ]
         case .playbackStopped(let reason):
             eventPayload["reason"] = reason
-        case .nextCommandIssued, .previousCommandIssued, .playbackFinished, .progressReportIntervalElapsed:
-            eventPayload["service"] = service
-        case .progressReportDelayElapsed:
-            eventPayload["service"] = service
         default:
             break
         }

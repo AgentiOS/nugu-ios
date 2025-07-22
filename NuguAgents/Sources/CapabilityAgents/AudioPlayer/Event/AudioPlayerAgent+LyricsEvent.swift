@@ -27,6 +27,7 @@ extension AudioPlayerAgent {
         let typeInfo: TypeInfo
         let playServiceId: String
         let referrerDialogRequestId: String?
+        let service: [String: AnyHashable]?
         
         enum TypeInfo {
             case showLyricsSucceeded
@@ -46,6 +47,11 @@ extension AudioPlayerAgent.LyricsEvent: Eventable {
         var eventPayload: [String: AnyHashable] = [
             "playServiceId": playServiceId
         ]
+        
+        if let service {
+            eventPayload["service"] = service
+        }
+        
         switch typeInfo {
         case .controlLyricsPageSucceeded(let direction):
             eventPayload["direction"] = direction.rawValue
