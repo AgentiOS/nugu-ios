@@ -303,15 +303,15 @@ public extension AudioPlayerAgent {
     }
     
     func requestFavoriteCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current, service: currentPlayer?.payload.service)))
+        sendFullContextEvent(settingsEvent(typeInfo: .favoriteCommandIssued(current: current)))
     }
 
     func requestRepeatCommand(currentMode: AudioPlayerDisplayRepeat) {
-        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode, service: currentPlayer?.payload.service)))
+        sendFullContextEvent(settingsEvent(typeInfo: .repeatCommandIssued(currentMode: currentMode)))
     }
     
     func requestShuffleCommand(current: Bool) {
-        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current, service: currentPlayer?.payload.service)))
+        sendFullContextEvent(settingsEvent(typeInfo: .shuffleCommandIssued(current: current)))
     }
     
     func seek(to offset: Int) {
@@ -616,7 +616,8 @@ private extension AudioPlayerAgent {
             
             self.sendFullContextEvent(RequestPlayEvent(
                 typeInfo: .requestPlayCommandIssued(payload: payloadDictionary),
-                referrerDialogRequestId: directive.header.dialogRequestId
+                referrerDialogRequestId: directive.header.dialogRequestId,
+                service: currentPlayer?.payload.service
             ).rx)
         }
     }
@@ -699,7 +700,8 @@ private extension AudioPlayerAgent {
                 self.sendCompactContextEvent(LyricsEvent(
                     typeInfo: typeInfo,
                     playServiceId: playServiceId,
-                    referrerDialogRequestId: directive.header.dialogRequestId
+                    referrerDialogRequestId: directive.header.dialogRequestId,
+                    service: currentPlayer?.payload.service
                 ).rx)
             }
         }
@@ -720,7 +722,8 @@ private extension AudioPlayerAgent {
                 self.sendCompactContextEvent(LyricsEvent(
                     typeInfo: typeInfo,
                     playServiceId: playServiceId,
-                    referrerDialogRequestId: directive.header.dialogRequestId
+                    referrerDialogRequestId: directive.header.dialogRequestId,
+                    service: currentPlayer?.payload.service
                 ).rx)
             }
         }
@@ -741,7 +744,8 @@ private extension AudioPlayerAgent {
                 self.sendCompactContextEvent(LyricsEvent(
                     typeInfo: typeInfo,
                     playServiceId: payload.playServiceId,
-                    referrerDialogRequestId: directive.header.dialogRequestId
+                    referrerDialogRequestId: directive.header.dialogRequestId,
+                    service: currentPlayer?.payload.service
                 ).rx)
             }
         }
@@ -899,7 +903,8 @@ private extension AudioPlayerAgent {
             } else {
                 return RequestPlayEvent(
                     typeInfo: .requestCommandFailed(state: self.audioPlayerState, directiveType: directive.header.type),
-                    referrerDialogRequestId: directive.header.dialogRequestId
+                    referrerDialogRequestId: directive.header.dialogRequestId,
+                    service: player?.payload.service
                 ).rx
             }
         }
@@ -915,7 +920,8 @@ private extension AudioPlayerAgent {
             let settingEvent = SettingsEvent(
                 typeInfo: typeInfo,
                 playServiceId: player.payload.playServiceId,
-                referrerDialogRequestId: player.header.dialogRequestId
+                referrerDialogRequestId: player.header.dialogRequestId,
+                service: player.payload.service
             )
             observer(.success(settingEvent))
             return Disposables.create()
