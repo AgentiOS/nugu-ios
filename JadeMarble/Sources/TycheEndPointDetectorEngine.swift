@@ -33,6 +33,10 @@ public class TycheEndPointDetectorEngine {
     private var ringBuffer: RingBuffer<Data>?
     private var startOffset: Int32?
     
+    private var timeout: Int?
+    private var maxDuration: Int?
+    private var pauseLength: Int?
+    
     #if DEBUG
     private var inputData = Data()
     private var outputData = Data()
@@ -208,6 +212,15 @@ public class TycheEndPointDetectorEngine {
         }
     }
     
+    public func postponeTimeout(_ duration: Int) -> Bool {
+        guard engineHandle != nil, let timeout, let maxDuration, let pauseLength else { return false }
+        let updatedTimeout = timeout + duration
+        print("@@@@@@ \(updatedTimeout)")
+        let result = setMaxSpeechDur(engineHandle, myint(maxDuration), myint(updatedTimeout), myint(pauseLength))
+        self.timeout = updatedTimeout
+        return result == .zero
+    }
+    
     private func releaseEPDIfNeeeded() {
         guard engineHandle != nil else { return }
         epdClientChannelRELEASE(engineHandle)
@@ -222,6 +235,9 @@ public class TycheEndPointDetectorEngine {
         state = .idle
         ringBuffer = nil
         startOffset = nil
+        timeout = nil
+        maxDuration = nil
+        pauseLength = nil
     }
     
     private func initDetectorEngine(
@@ -257,5 +273,8 @@ public class TycheEndPointDetectorEngine {
         }
         
         self.engineHandle = epdHandle
+        self.timeout = timeout
+        self.maxDuration = maxDuration
+        self.pauseLength = pauseLength
     }
 }
