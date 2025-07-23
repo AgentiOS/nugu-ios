@@ -73,6 +73,10 @@ class ClientEndPointDetector: EndPointDetectable {
     func handleNotifyResult(_ state: ASRNotifyResult.State) {
         // do nothing
     }
+    
+    func postponeTimeout() -> Bool {
+        engine.postponeTimeout(asrOptions.timeout.truncatedSeconds)
+    }
 }
 
 extension ClientEndPointDetector: EndPointDetectorEngineDelegate {
