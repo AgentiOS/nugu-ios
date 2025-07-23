@@ -338,6 +338,11 @@ public extension ASRAgent {
     func setVoiceProcessingEnabled(_ active: Bool) {
         isVoiceProcessingEnabled = active
     }
+    
+    func postponeSilenceTimeout() -> Bool {
+        guard let endPointDetector else { return false }
+        return endPointDetector.postponeTimeout()
+    }
 }
 
 // MARK: - FocusChannelDelegate

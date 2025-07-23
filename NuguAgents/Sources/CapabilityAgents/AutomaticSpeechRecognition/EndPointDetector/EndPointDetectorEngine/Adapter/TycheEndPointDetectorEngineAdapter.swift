@@ -61,6 +61,10 @@ public class TycheEndPointDetectorEngineAdapter: EndPointDetectorEngineProtocol 
         engine.stop()
     }
     
+    public func postponeTimeout(_ duration: Int) -> Bool {
+        engine.postponeTimeout(duration)
+    }
+    
     private func engineState(from tycheState: TycheEndPointDetectorEngine.State) -> EndPointDetectorEngineState {
         switch tycheState {
         case .idle:
