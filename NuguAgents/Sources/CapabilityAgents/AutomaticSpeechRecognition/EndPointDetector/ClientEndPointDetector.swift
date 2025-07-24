@@ -74,8 +74,8 @@ class ClientEndPointDetector: EndPointDetectable {
         // do nothing
     }
     
-    func postponeTimeout() -> Bool {
-        engine.postponeTimeout(asrOptions.timeout.truncatedSeconds)
+    func resetEPDTimeout() -> Bool {
+        engine.resetEPDTimeout()
     }
 }
 

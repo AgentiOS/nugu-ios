@@ -28,5 +28,5 @@ public protocol EndPointDetectorEngineProtocol: AnyObject {
     func start(sampleRate: Double, timeout: Int, maxDuration: Int, pauseLength: Int)
     func putAudioBuffer(buffer: AVAudioPCMBuffer)
     func stop()
-    func postponeTimeout(_ duration: Int) -> Bool
+    func resetEPDTimeout() -> Bool
 }

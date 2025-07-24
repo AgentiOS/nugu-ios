@@ -33,9 +33,8 @@ public class TycheEndPointDetectorEngine {
     private var ringBuffer: RingBuffer<Data>?
     private var startOffset: Int32?
     
-    private var timeout: Int?
-    private var maxDuration: Int?
-    private var pauseLength: Int?
+    private var option: TycheEngineOption?
+    private var latestDate: Date?
     
     #if DEBUG
     private var inputData = Data()
@@ -212,13 +211,16 @@ public class TycheEndPointDetectorEngine {
         }
     }
     
-    public func postponeTimeout(_ duration: Int) -> Bool {
-        guard engineHandle != nil, let timeout, let maxDuration, let pauseLength else { return false }
-        let updatedTimeout = timeout + duration
-        print("@@@@@@ \(updatedTimeout)")
-        let result = setMaxSpeechDur(engineHandle, myint(maxDuration), myint(updatedTimeout), myint(pauseLength))
-        self.timeout = updatedTimeout
-        return result == .zero
+    public func resetEPDTimeout() -> Bool {
+        epdQueue.sync { [weak self] in
+            guard let self, engineHandle != nil, let option, let latestDate else {
+                return false
+            }
+            let postponeTimeout = Int(Date().timeIntervalSince(latestDate).rounded()) + option.timeout
+            log.info("postpone EPD Timeout. timeout: \(postponeTimeout)")
+            let result = setMaxSpeechDur(engineHandle, myint(option.maxDuration), myint(postponeTimeout), myint(option.pauseLength))
+            return result == .zero
+        }
     }
     
     private func releaseEPDIfNeeeded() {
@@ -235,9 +237,8 @@ public class TycheEndPointDetectorEngine {
         state = .idle
         ringBuffer = nil
         startOffset = nil
-        timeout = nil
-        maxDuration = nil
-        pauseLength = nil
+        option = nil
+        latestDate = nil
     }
     
     private func initDetectorEngine(
@@ -273,8 +274,13 @@ public class TycheEndPointDetectorEngine {
         }
         
         self.engineHandle = epdHandle
-        self.timeout = timeout
-        self.maxDuration = maxDuration
-        self.pauseLength = pauseLength
+        self.option = .init(maxDuration: maxDuration, timeout: timeout, pauseLength: pauseLength)
+        self.latestDate = Date()
     }
+}
+
+private struct TycheEngineOption {
+    let maxDuration: Int
+    let timeout: Int
+    let pauseLength: Int
 }

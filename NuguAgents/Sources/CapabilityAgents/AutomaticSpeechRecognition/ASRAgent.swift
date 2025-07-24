@@ -128,7 +128,7 @@ public final class ASRAgent: ASRAgentProtocol {
                     dialogAttributes: expectSpeech?.messageId == nil ? nil : dialogAttributeStore.getAttributes(key: expectSpeech!.messageId),
                     referrerDialogRequestId: asrRequest.eventIdentifier.dialogRequestId
                 ).rx)
-                expectSpeech = nil
+                clearExpectSpeechIfNeeded(asrRequest: asrRequest)
             case .cancelExpectSpeech:
                 asrState = .idle
                 directiveSequencer.cancelDirective(dialogRequestId: asrRequest.eventIdentifier.dialogRequestId)
@@ -341,7 +341,7 @@ public extension ASRAgent {
     
     func postponeSilenceTimeout() -> Bool {
         guard let endPointDetector else { return false }
-        return endPointDetector.postponeTimeout()
+        return endPointDetector.resetEPDTimeout()
     }
 }
 
@@ -662,6 +662,20 @@ private extension ASRAgent {
         }
         
         focusManager.releaseFocus(channelDelegate: self)
+    }
+    
+    func clearExpectSpeechIfNeeded(asrRequest: ASRRequest) {
+        guard let expectSpeechDialogRequestId = expectSpeech?.dialogRequestId else { return }
+        guard let asrRequestDialogRequestId = asrRequest.referrerDialogRequestId else {
+            expectSpeech = nil
+            return
+        }
+        
+        guard expectSpeechDialogRequestId == asrRequestDialogRequestId else {
+            log.info("new expectSpeechDirective received, dialogRequestId: \(expectSpeechDialogRequestId)")
+            return
+        }
+        expectSpeech = nil
     }
 }
 
