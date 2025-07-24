@@ -30,5 +30,5 @@ protocol EndPointDetectable: AnyObject {
     func putAudioBuffer(buffer: AVAudioPCMBuffer)
     func stop()
     func handleNotifyResult(_ state: ASRNotifyResult.State)
-    func postponeTimeout() -> Bool
+    func resetEPDTimeout() -> Bool
 }

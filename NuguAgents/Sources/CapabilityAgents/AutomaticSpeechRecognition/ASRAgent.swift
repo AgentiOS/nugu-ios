@@ -341,7 +341,7 @@ public extension ASRAgent {
     
     func postponeSilenceTimeout() -> Bool {
         guard let endPointDetector else { return false }
-        return endPointDetector.postponeTimeout()
+        return endPointDetector.resetEPDTimeout()
     }
 }
 
