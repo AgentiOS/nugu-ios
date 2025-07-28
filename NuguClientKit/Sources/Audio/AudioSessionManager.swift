@@ -20,11 +20,8 @@
 
 import AVFoundation
 
-import NuguAgents
-
 final public class AudioSessionManager: AudioSessionManageable {
     public weak var delegate: AudioSessionManagerDelegate?
-    private let audioPlayerAgent: AudioPlayerAgentProtocol
     private let defaultCategoryOptions = AVAudioSession.CategoryOptions(arrayLiteral: [.defaultToSpeaker, .allowBluetoothA2DP])
     
     // observers
@@ -36,11 +33,8 @@ final public class AudioSessionManager: AudioSessionManageable {
     /// Initialize
     /// - Parameters:
     ///   - nuguClient: NuguClient instance which should be passed for delegation.
-    public init(audioPlayerAgent: AudioPlayerAgentProtocol) {
-        self.audioPlayerAgent = audioPlayerAgent
-        
+    public init() {
         // observers
-        addAudioPlayerAgentObserver(audioPlayerAgent)
         addAudioSessionObservers()
         
         // When no other audio is playing, audio session can not detect car play connectivity status even if car play has been already connected.
@@ -51,19 +45,8 @@ final public class AudioSessionManager: AudioSessionManageable {
     }
     
     deinit {
-        disable()
-    }
-    
-    public func enable() {
-        addAudioPlayerAgentObserver(audioPlayerAgent)
-        addAudioSessionObservers()
-    }
-    
-    public func disable() {
-        removeAudioPlayerAgentObserver()
         removeAudioSessionObservers()
     }
-    
 }
 
 // MARK: - Public
@@ -214,10 +197,6 @@ private extension AudioSessionManager {
                 if self?.isCarplayConnected() == true {
                     self?.updateAudioSession()
                 }
-                
-                if self?.audioPlayerAgent.isPlaying == true {
-                    self?.updateAudioSessionToPlaybackIfNeeded()
-                }
             case .categoryChange, .routeConfigurationChange:
                 self?.delegate?.audioSessionRouteChanged(reason: .categoryChange)
             default: break
@@ -235,28 +214,6 @@ private extension AudioSessionManager {
             NotificationCenter.default.removeObserver(audioRouteObserver)
             self.audioSessionRouteObserver = nil
         }
-    }
-}
-
-// MARK: - Private (audioPlayerStateObserver)
-
-private extension AudioSessionManager {
-    func addAudioPlayerAgentObserver(_ object: AudioPlayerAgentProtocol) {
-        audioPlayerStateObserver = object.observe(NuguAgentNotification.AudioPlayer.State.self, queue: .main) { [weak self] (notification) in
-            guard let self = self else { return }
-            
-            if notification.state == .playing && self.isCarplayConnected() == true {
-                self.updateAudioSessionToPlaybackIfNeeded()
-            }
-        }
-    }
-    
-    func removeAudioPlayerAgentObserver() {
-        if let audioPlayerStateObserver = audioPlayerStateObserver {
-            notificationCenter.removeObserver(audioPlayerStateObserver)
-        }
-        
-        audioPlayerStateObserver = nil
     }
 }
 
