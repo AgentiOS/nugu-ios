@@ -29,9 +29,6 @@ public protocol AudioSessionManageable: AnyObject {
     @discardableResult func updateAudioSessionWhenCarplayConnected(requestingFocus: Bool) -> Bool
     @discardableResult func updateAudioSession(requestingFocus: Bool) -> Bool
     func notifyAudioSessionDeactivation()
-    
-    func enable()
-    func disable()
 }
 
 public extension AudioSessionManageable {

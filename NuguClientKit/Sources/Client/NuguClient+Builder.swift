@@ -170,7 +170,7 @@ public extension NuguClient {
          - note: If you want to control AVAudioSession yourself, Set this property to nil.
          Then NuguClientDelegate method will be called when the AVAudioSession is required.
          */
-        public lazy var audioSessionManager: AudioSessionManageable? = AudioSessionManager(audioPlayerAgent: audioPlayerAgent)
+        public lazy var audioSessionManager: AudioSessionManageable? = AudioSessionManager()
         
         /**
          Keyword Detector.

@@ -37,6 +37,7 @@ public class NuguClient {
     private var streamDataAttachmentDidSent: Any?
     private var dialogStateObserver: Any?
     private var serverInitiatedDirectiveReceiverStateObserver: Any?
+    private var audioPlayerStateObserver: Any?
     
     // Core
     /**
@@ -413,11 +414,13 @@ public class NuguClient {
         setupAudioSessionRequester()
         setupDialogStateAggregator(dialogStateAggregator)
         setupStreamDataRouter(streamDataRouter)
+        addAudioPlayerAgentObserver(audioPlayerAgent)
     }
     
     deinit {
         removeStreamDataRouterObservers()
         removeDialogStateObserver()
+        removeAudioPlayerAgentObserver()
     }
 }
 
@@ -729,6 +732,21 @@ extension NuguClient {
             notificationCenter.removeObserver(dialogStateObserver)
         }
     }
+    
+    func addAudioPlayerAgentObserver(_ object: AudioPlayerAgentProtocol) {
+        audioPlayerStateObserver = object.observe(NuguAgentNotification.AudioPlayer.State.self, queue: .main) { [weak self] notification in
+            guard let self, notification.state == .playing, audioSessionManager?.isCarplayConnected() == true else {
+                return
+            }
+            audioSessionManager?.updateAudioSessionToPlaybackIfNeeded()
+        }
+    }
+    
+    func removeAudioPlayerAgentObserver() {
+        if let audioPlayerStateObserver {
+            notificationCenter.removeObserver(audioPlayerStateObserver)
+        }
+    }
 }
 
 // MARK: - AudioSessionManagerDelegate
@@ -771,7 +789,7 @@ extension NuguClient: AudioSessionManagerDelegate {
     
     public func audioSessionRouteChanged(reason: AudioSessionManager.AudioSessionRouteChangeReason) {
         switch reason {
-        case .oldDeviceUnavailable(let previousRoute):
+        case let .oldDeviceUnavailable(previousRoute):
             log.debug("Route changed due to oldDeviceUnavailable")
             if audioPlayerAgent.isPlaying == true {
                 audioPlayerAgent.pause()
@@ -780,7 +798,16 @@ extension NuguClient: AudioSessionManagerDelegate {
             if previousRoute?.outputs.first?.portType == .carAudio {
                 speechRecognizerAggregator.startListeningWithTrigger()
             }
-        case .newDeviceAvailable, .categoryChange:
+            
+        case .newDeviceAvailable:
+            if audioSessionManager?.isCarplayConnected() == true {
+                speechRecognizerAggregator.stopListening()
+            }
+            
+            if audioPlayerAgent.isPlaying {
+                audioSessionManager?.updateAudioSessionToPlaybackIfNeeded()
+            }
+        case .categoryChange:
             if audioSessionManager?.isCarplayConnected() == true {
                 speechRecognizerAggregator.stopListening()
             }
