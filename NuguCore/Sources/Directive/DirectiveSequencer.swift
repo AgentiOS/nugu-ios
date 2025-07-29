@@ -184,9 +184,9 @@ private extension DirectiveSequencer {
     func isCancelledDirective(_ directive: Downstream.Directive) -> Bool {
         directiveCancelPolicies.contains {
             let (dialogRequestId, policy) = $0
-            guard directive.header.dialogRequestId == dialogRequestId else { return false }
-            guard directive.asyncKey?.eventDialogRequestId == dialogRequestId else { return false }
-
+            guard directive.header.dialogRequestId == dialogRequestId ||
+                    directive.asyncKey?.eventDialogRequestId == dialogRequestId else { return false }
+            
             return policy.cancelAll || policy.cancelTargets.contains { $0 == directive.header.type }
         }
     }
