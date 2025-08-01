@@ -137,42 +137,39 @@ public class TycheEndPointDetectorEngine {
                 return
             }
             
-            do {
-                let speexData = try speexEncoder.encode(data: inputData)
-                self.delegate?.tycheEndPointDetectorEngineDidExtract(speechData: speexData)
-#if DEBUG
-                self.outputData.append(speexData)
-#endif
-            } catch {
-                log.error("Failed to speex encoding, error: \(error)")
+            ringBuffer?.enqueue(inputData)
+            if startOffset == nil {
+                let startPoint = epdClientGetSpeechStartPoint(engineHandle, .zero) / 100
+                if startPoint != -1, self.startOffset != startPoint {
+                    self.startOffset = startPoint
+                    ringBuffer?.moveHead(to: Int(startPoint))
+                }
             }
-            // TODO: refactoring
-//
-//            ringBuffer?.enqueue(inputData)
-//            
-//            if startOffset == nil {
-//                let startPoint = epdClientGetSpeechStartPoint(engineHandle, .zero) / 100
-//                if startPoint != -1, self.startOffset != startPoint {
-//                    self.startOffset = startPoint
-//                    ringBuffer?.moveHead(to: Int(startPoint))
-//                }
-//            }
-//            
-//            if state == .start, let dequeuedInputData = ringBuffer?.dequeue() {
-//            } else if state == .end {
-//                while ringBuffer?.isEmpty() == false {
-//                    guard let dequeuedInputData = ringBuffer?.dequeue() else { break }
-//                    do {
-//                        let speexData = try speexEncoder.encode(data: dequeuedInputData)
-//                        self.delegate?.tycheEndPointDetectorEngineDidExtract(speechData: speexData)
-//                        #if DEBUG
-//                        self.outputData.append(speexData)
-//                        #endif
-//                    } catch {
-//                        log.error("Failed to speex encoding, error: \(error)")
-//                    }
-//                }
-//            }
+            
+            if state == .start, startOffset != nil {
+                while ringBuffer?.isEmpty() == false {
+                    guard let dequeuedInputData = ringBuffer?.dequeue() else { break }
+                    do {
+                        let speexData = try speexEncoder.encode(data: dequeuedInputData)
+                        self.delegate?.tycheEndPointDetectorEngineDidExtract(speechData: speexData)
+                        #if DEBUG
+                        self.outputData.append(speexData)
+                        #endif
+                    } catch {
+                        log.error("Failed to speex encoding, error: \(error)")
+                    }
+                }
+            } else if state == .start {
+                do {
+                    let speexData = try speexEncoder.encode(data: inputData)
+                    self.delegate?.tycheEndPointDetectorEngineDidExtract(speechData: speexData)
+    #if DEBUG
+                    self.outputData.append(speexData)
+    #endif
+                } catch {
+                    log.error("Failed to speex encoding, error: \(error)")
+                }
+            }
             
             self.state = state
             
