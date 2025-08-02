@@ -30,7 +30,6 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
     // CapabilityAgentable
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .audioPlayer, version: "1.11")
     private let playSyncProperty = PlaySyncProperty(layerType: .media, contextType: .sound)
-    private var playSyncInfo: PlaySyncInfo?
     
     // AudioPlayerAgentProtocol
     public weak var displayDelegate: AudioPlayerDisplayDelegate? {
@@ -119,10 +118,9 @@ public final class AudioPlayerAgent: AudioPlayerAgentProtocol {
             case .stopped, .finished:
                 if player.cancelAssociation {
                     playSyncManager.stopPlay(dialogRequestId: player.header.dialogRequestId)
-                } else if let playSyncInfo {
-                    playSyncManager.endPlay(property: playSyncProperty, info: playSyncInfo)
+                } else {
+                    playSyncManager.endPlay(property: playSyncProperty)
                 }
-                self.playSyncInfo = nil
             case .paused:
                 playSyncManager.startTimer(property: playSyncProperty, duration: audioPlayerPauseTimeout)
             default:
@@ -523,14 +521,15 @@ private extension AudioPlayerAgent {
                 
                 self.prefetchPlayer = player
                 
-                let playSyncInfo = PlaySyncInfo(
-                    playStackServiceId: player.payload.playStackControl?.playServiceId,
-                    dialogRequestId: player.header.dialogRequestId,
-                    messageId: player.header.messageId,
-                    duration: NuguTimeInterval(seconds: 7)
+                self.playSyncManager.startPlay(
+                    property: self.playSyncProperty,
+                    info: PlaySyncInfo(
+                        playStackServiceId: player.payload.playStackControl?.playServiceId,
+                        dialogRequestId: player.header.dialogRequestId,
+                        messageId: player.header.messageId,
+                        duration: NuguTimeInterval(seconds: 7)
+                    )
                 )
-                self.playSyncManager.startPlay(property: self.playSyncProperty, info: playSyncInfo)
-                self.playSyncInfo = playSyncInfo
             }
         }
     }

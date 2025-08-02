@@ -30,7 +30,6 @@ public final class DisplayAgent: DisplayAgentProtocol {
     
     public weak var delegate: DisplayAgentDelegate?
     public var defaultDisplayTempalteDuration: DisplayTemplateDuration = .short
-    private var playSyncInfo: PlaySyncInfo?
     
     // Private
     private let playSyncManager: PlaySyncManageable
@@ -179,18 +178,19 @@ public extension DisplayAgent {
             if templateList.count != 0 {
                 guard let restartItem = templateList.first else { return }
                 let displayHistoryControl = try? JSONDecoder().decode(DisplayHistoryControl.self, from: restartItem.payload)
-                let playSyncInfo = PlaySyncInfo(
-                    playStackServiceId: restartItem.template.playStackControl?.playServiceId,
-                    dialogRequestId: restartItem.dialogRequestId,
-                    messageId: restartItem.templateId,
-                    duration: restartItem.template.duration?.time ?? self.defaultDisplayTempalteDuration.time,
-                    displayHistoryControl: displayHistoryControl != nil ?
-                    ["parent": displayHistoryControl?.historyControl.parent ?? false,
-                     "child": displayHistoryControl?.historyControl.child ?? false,
-                     "parentToken": displayHistoryControl?.historyControl.parentToken ?? ""] : nil
+                self.playSyncManager.startPlay(
+                    property: restartItem.template.playSyncProperty,
+                    info: PlaySyncInfo(
+                        playStackServiceId: restartItem.template.playStackControl?.playServiceId,
+                        dialogRequestId: restartItem.dialogRequestId,
+                        messageId: restartItem.templateId,
+                        duration: restartItem.template.duration?.time ?? self.defaultDisplayTempalteDuration.time,
+                        displayHistoryControl: displayHistoryControl != nil ?
+                        ["parent": displayHistoryControl?.historyControl.parent ?? false,
+                         "child": displayHistoryControl?.historyControl.child ?? false,
+                         "parentToken": displayHistoryControl?.historyControl.parentToken ?? ""] : nil
+                    )
                 )
-                self.playSyncManager.startPlay(property: restartItem.template.playSyncProperty, info: playSyncInfo)
-                self.playSyncInfo = playSyncInfo
             }
         }
     }
@@ -416,28 +416,28 @@ private extension DisplayAgent {
                 let displayHistoryControl = try? JSONDecoder().decode(DisplayHistoryControl.self, from: directive.payload)
                 
                 self.sessionManager.activate(dialogRequestId: item.dialogRequestId, category: .display)
-                let playSyncInfo = PlaySyncInfo(
-                    playStackServiceId: item.template.playStackControl?.playServiceId,
-                    dialogRequestId: item.dialogRequestId,
-                    messageId: item.templateId,
-                    duration: item.template.duration?.time ?? self.defaultDisplayTempalteDuration.time,
-                    displayHistoryControl: displayHistoryControl != nil ?
-                    ["parent": displayHistoryControl?.historyControl.parent ?? false,
-                     "child": displayHistoryControl?.historyControl.child ?? false,
-                     "parentToken": displayHistoryControl?.historyControl.parentToken ?? ""] : nil
+                self.playSyncManager.startPlay(
+                    property: item.template.playSyncProperty,
+                    info: PlaySyncInfo(
+                        playStackServiceId: item.template.playStackControl?.playServiceId,
+                        dialogRequestId: item.dialogRequestId,
+                        messageId: item.templateId,
+                        duration: item.template.duration?.time ?? self.defaultDisplayTempalteDuration.time,
+                        displayHistoryControl: displayHistoryControl != nil ?
+                        ["parent": displayHistoryControl?.historyControl.parent ?? false,
+                         "child": displayHistoryControl?.historyControl.child ?? false,
+                         "parentToken": displayHistoryControl?.historyControl.parentToken ?? ""] : nil
+                    )
                 )
-                self.playSyncManager.startPlay(property: item.template.playSyncProperty, info: playSyncInfo)
-                self.playSyncInfo = playSyncInfo
                 
                 let semaphore = DispatchSemaphore(value: 0)
                 delegate.displayAgentShouldRender(template: item, historyControl: displayHistoryControl?.historyControl) { [weak self] in
                     defer { semaphore.signal() }
                     guard let self = self else { return }
-                    guard let displayObject = $0, let playSyncInfo = self.playSyncInfo else {
+                    guard let displayObject = $0 else {
                         self.sessionManager.deactivate(dialogRequestId: item.dialogRequestId, category: .display)
-                        self.playSyncManager.endPlay(property: item.template.playSyncProperty, info: playSyncInfo)
+                        self.playSyncManager.endPlay(property: item.template.playSyncProperty)
                         self.removeRenderedTemplate(item: item)
-                        self.playSyncInfo = nil
                         return
                     }
                     

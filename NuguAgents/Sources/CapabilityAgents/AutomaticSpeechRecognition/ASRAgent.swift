@@ -32,7 +32,6 @@ public final class ASRAgent: ASRAgentProtocol {
     // CapabilityAgentable
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .automaticSpeechRecognition, version: "1.9")
     private let playSyncProperty = PlaySyncProperty(layerType: .asr, contextType: .sound)
-    private var playSyncInfo: PlaySyncInfo?
     
     public weak var delegate: ASRAgentDelegate?
     
@@ -187,8 +186,8 @@ public final class ASRAgent: ASRAgentProtocol {
             if let dialogRequestId = expectSpeech?.dialogRequestId {
                 sessionManager.activate(dialogRequestId: dialogRequestId, category: .automaticSpeechRecognition)
                 interactionControlManager.start(mode: .multiTurn, category: capabilityAgentProperty.category)
-            } else if let messageId = oldValue?.messageId, let playSyncInfo {
-                playSyncManager.endPlay(property: playSyncProperty, info: playSyncInfo)
+            } else if let messageId = oldValue?.messageId {
+                playSyncManager.endPlay(property: playSyncProperty)
                 dialogAttributeStore.removeAttributes(key: messageId)
                 interactionControlManager.finish(mode: .multiTurn, category: capabilityAgentProperty.category)
             }
@@ -499,14 +498,15 @@ private extension ASRAgent {
             self?.asrDispatchQueue.async { [weak self] in
                 guard let self = self else { return }
                 if let playServiceId = payload.playServiceId {
-                    let playSyncInfo = PlaySyncInfo(
-                        playStackServiceId: playServiceId,
-                        dialogRequestId: directive.header.dialogRequestId,
-                        messageId: directive.header.messageId,
-                        duration: NuguTimeInterval(seconds: 0)
+                    self.playSyncManager.startPlay(
+                        property: self.playSyncProperty,
+                        info: PlaySyncInfo(
+                            playStackServiceId: playServiceId,
+                            dialogRequestId: directive.header.dialogRequestId,
+                            messageId: directive.header.messageId,
+                            duration: NuguTimeInterval(seconds: 0)
+                        )
                     )
-                    self.playSyncManager.startPlay(property: self.playSyncProperty, info: playSyncInfo)
-                    self.playSyncInfo = playSyncInfo
                 }
                 self.expectSpeech = ASRExpectSpeech(messageId: directive.header.messageId, dialogRequestId: directive.header.dialogRequestId, payload: payload)
                 let attributes: [String: AnyHashable?] = [

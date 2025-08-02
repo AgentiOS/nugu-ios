@@ -28,7 +28,7 @@ public protocol PlaySyncManageable: ContextInfoProvidable, TypedNotifyable {
     
     /// <#Description#>
     /// - Parameter property: <#property description#>
-    func endPlay(property: PlaySyncProperty, info: PlaySyncInfo)
+    func endPlay(property: PlaySyncProperty)
     
     /// <#Description#>
     /// - Parameter dialogRequestId: <#dialogRequestId description#>
