@@ -24,10 +24,7 @@ import NuguUtils
 
 /// <#Description#>
 public protocol PlaySyncManageable: ContextInfoProvidable, TypedNotifyable {
-    func startPlay(
-        property: PlaySyncProperty,
-        info: PlaySyncInfo
-    )
+    func startPlay(property: PlaySyncProperty, info: PlaySyncInfo)
     
     /// <#Description#>
     /// - Parameter property: <#property description#>
