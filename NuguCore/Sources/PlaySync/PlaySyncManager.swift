@@ -98,7 +98,7 @@ public extension PlaySyncManager {
         }
     }
     
-    func endPlay(property: PlaySyncProperty) {
+    func endPlay(property: PlaySyncProperty, info: PlaySyncInfo) {
         playSyncDispatchQueue.async { [weak self] in
             log.debug("endPlay property: \(property)")
             guard let self = self else { return }

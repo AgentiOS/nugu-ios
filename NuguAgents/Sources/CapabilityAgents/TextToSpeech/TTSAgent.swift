@@ -30,6 +30,7 @@ public final class TTSAgent: TTSAgentProtocol {
     public var capabilityAgentProperty: CapabilityAgentProperty = CapabilityAgentProperty(category: .textToSpeech, version: "1.4")
     public weak var delegate: TTSAgentDelegate?
     private let playSyncProperty = PlaySyncProperty(layerType: .info, contextType: .sound)
+    private var playSyncInfo: PlaySyncInfo?
     private let compactPayloadKeys = ["version", "allowSpeak"]
     
     // TTSAgentProtocol
@@ -88,25 +89,25 @@ public final class TTSAgent: TTSAgentProtocol {
             switch ttsState {
             case .playing:
                 if player.payload.playServiceId != nil {
-                    playSyncManager.startPlay(
-                        property: playSyncProperty,
-                        info: PlaySyncInfo(
-                            playStackServiceId: player.payload.playStackControl?.playServiceId,
-                            dialogRequestId: player.header.dialogRequestId,
-                            messageId: player.header.messageId,
-                            duration: NuguTimeInterval(seconds: 7)
-                        )
+                    let playSyncInfo = PlaySyncInfo(
+                        playStackServiceId: player.payload.playStackControl?.playServiceId,
+                        dialogRequestId: player.header.dialogRequestId,
+                        messageId: player.header.messageId,
+                        duration: NuguTimeInterval(seconds: 7)
                     )
+                    playSyncManager.startPlay(property: playSyncProperty, info: playSyncInfo)
+                    self.playSyncInfo = playSyncInfo
                 }
             case .finished, .stopped:
                 if player.payload.playServiceId != nil {
                     if player.cancelAssociation {
                         playSyncManager.stopPlay(dialogRequestId: player.header.dialogRequestId)
-                    } else {
-                        playSyncManager.endPlay(property: playSyncProperty)
+                    } else if let playSyncInfo {
+                        playSyncManager.endPlay(property: playSyncProperty, info: playSyncInfo)
                     }
                     
                     currentPlayer = nil
+                    self.playSyncInfo = nil
                 }
             default:
                 break
