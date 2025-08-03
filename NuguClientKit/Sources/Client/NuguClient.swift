@@ -716,7 +716,7 @@ extension NuguClient {
             switch notification.state {
             case .idle:
                 self.playSyncManager.resumeTimer(property: PlaySyncProperty(layerType: .info, contextType: .display))
-            case .listening:
+            case .listening, .speaking:
                 self.playSyncManager.pauseTimer(property: PlaySyncProperty(layerType: .info, contextType: .display))
             default:
                 break
