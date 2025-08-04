@@ -34,7 +34,7 @@ public class DialogStateAggregator: TypedNotifyable {
     private let shortTimeout: DispatchTimeInterval = .milliseconds(200)
     private var multiturnSpeakingToListeningTimer: DispatchWorkItem?
     
-    private var currentChips: (dialogRequestId: String, item: ChipsAgentItem)?
+    private var currentChips: (dialogRequestId: String, items: [ChipsAgentItem])?
 
     private var dialogState: DialogState = .idle {
         didSet {
@@ -50,27 +50,31 @@ public class DialogStateAggregator: TypedNotifyable {
             if case .listening(let initiator) = asrState,
                initiator != .expectSpeech,
                let currentChips = currentChips,
-               currentChips.item.chips.filter({ $0.type == .nudge }).count != 0 {
+               (currentChips.items.flatMap { $0.chips }).filter({ $0.type == .nudge }).count != 0 {
                 isMultiturn = false
                 self.currentChips = nil
             }
             
             var chipsItem: ChipsAgentItem?
-            switch currentChips?.item.target {
-            case .dialog where sessionManager.activeSessions.last?.dialogRequestId == currentChips?.dialogRequestId:
-                chipsItem = currentChips?.item
-            case .listen where isMultiturn:
-                if dialogState == .listening {
-                    chipsItem = currentChips?.item
+            currentChips?.items.forEach { chip in
+                switch chip.target {
+                case .dialog where sessionManager.activeSessions.last?.dialogRequestId == currentChips?.dialogRequestId:
+                    chipsItem = chip
+                case .listen where isMultiturn:
+                    if dialogState == .listening {
+                        chipsItem = chip
+                        currentChips?.items.removeAll { $0.target == .listen }
+                    }
+                case .speaking:
+                    if dialogState == .speaking {
+                        chipsItem = chip
+                        currentChips?.items.removeAll { $0.target == .speaking }
+                    }
+                default:
+                    // Delete the chips if it is not for the most recently active session.
+                    currentChips = nil
+                    log.debug("current chips are cleared")
                 }
-            case .speaking:
-                if dialogState == .speaking {
-                    chipsItem = currentChips?.item
-                }
-            default:
-                // Delete the chips if it is not for the most recently active session.
-                currentChips = nil
-                log.debug("current chips are cleared")
             }
             
             let typedNotification = NuguClientNotification.DialogState.State(state: dialogState, multiTurn: isMultiturn, item: chipsItem, sessionActivated: sessionActivated)
@@ -207,7 +211,11 @@ private extension DialogStateAggregator {
     func addChipsAgentObserver(_ object: ChipsAgentProtocol) {
         chipsAgentObserver = object.observe(NuguAgentNotification.Chips.Receive.self, queue: nil) { [weak self] (notification) in
             self?.dialogStateDispatchQueue.async { [weak self] in
-                self?.currentChips = (dialogRequestId: notification.header.dialogRequestId, item: notification.item)
+                if self?.currentChips?.dialogRequestId == notification.header.dialogRequestId {
+                    self?.currentChips?.items.append(notification.item)
+                } else {
+                    self?.currentChips = (dialogRequestId: notification.header.dialogRequestId, items: [notification.item])
+                }
             }
         }
     }
