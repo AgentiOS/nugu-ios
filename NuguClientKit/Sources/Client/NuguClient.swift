@@ -713,6 +713,7 @@ extension NuguClient {
         dialogStateObserver = object.observe(NuguClientNotification.DialogState.State.self, queue: nil) { [weak self] (notification) in
             guard let self = self else { return }
             
+            log.info("change dialog state: \(notification.state)")
             switch notification.state {
             case .idle:
                 self.playSyncManager.resumeTimer(property: PlaySyncProperty(layerType: .info, contextType: .display))
