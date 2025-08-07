@@ -146,7 +146,9 @@ public extension SpeechRecognizerAggregator {
                             
                             return SpeechRecognizerAggregatorError.cannotOpenMicInputForRecognition
                         }
-                        self?.state = .error(recognizerError)
+                        self?.recognizeQueue.async { [weak self] in
+                            self?.state = .error(recognizerError)
+                        }
                         completion?(.error(recognizerError))
                         
                         return
@@ -177,7 +179,9 @@ public extension SpeechRecognizerAggregator {
                             
                             return SpeechRecognizerAggregatorError.cannotOpenMicInputForWakeup
                         }
-                        self?.state = .error(recognizerError)
+                        self?.recognizeQueue.async { [weak self] in
+                            self?.state = .error(recognizerError)
+                        }
                         completion?(.failure(recognizerError))
                         
                         return
@@ -289,37 +293,44 @@ extension SpeechRecognizerAggregator: MicInputProviderDelegate {
 
 extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
     public func keywordDetectorDidDetect(keyword: String?, data: Data, start: Int, end: Int, detection: Int) {
-        state = .wakeup(initiator: .wakeUpWord(keyword: keyword, data: data, start: start, end: end, detection: detection))
-        
-        var service: [String: AnyHashable]?
-        var requestType: String?
-        if let context = delegate?.speechRecognizerRequestRecognitionContext() {
-            service = context["service"] as? [String: AnyHashable]
-            requestType = context["requestType"] as? String
+        recognizeQueue.async { [weak self] in
+            guard let self else { return }
+            state = .wakeup(initiator: .wakeUpWord(keyword: keyword, data: data, start: start, end: end, detection: detection))
+            
+            var service: [String: AnyHashable]?
+            var requestType: String?
+            if let context = delegate?.speechRecognizerRequestRecognitionContext() {
+                service = context["service"] as? [String: AnyHashable]
+                requestType = context["requestType"] as? String
+            }
+            let initiator: ASRInitiator = .wakeUpWord(
+                keyword: keyword,
+                data: data,
+                start: start,
+                end: end,
+                detection: detection
+            )
+            asrAgent.startRecognition(
+                initiator: initiator,
+                service: service,
+                options: .init(endPointing: .client, requestType: requestType),
+                completion: nil
+            )
         }
-        let initiator: ASRInitiator = .wakeUpWord(
-            keyword: keyword,
-            data: data,
-            start: start,
-            end: end,
-            detection: detection
-        )
-        asrAgent.startRecognition(
-            initiator: initiator,
-            service: service,
-            options: .init(endPointing: .client, requestType: requestType),
-            completion: nil
-        )
     }
     
     public func keywordDetectorStateDidChange(_ state: KeywordDetectorState) {
-        if let state = SpeechRecognizerAggregatorState(state) {
-            self.state = state
+        recognizeQueue.async { [weak self] in
+            if let state = SpeechRecognizerAggregatorState(state) {
+                self?.state = state
+            }
         }
     }
     
     public func keywordDetectorDidError(_ error: Error) {
-        state = .error(error)
+        recognizeQueue.async { [weak self] in
+            self?.state = .error(error)
+        }
     }
 }
 
@@ -333,35 +344,37 @@ extension SpeechRecognizerAggregator {
         
         // For use asr infinitely
         asrStateObserver = asrAgent.observe(NuguAgentNotification.ASR.State.self, queue: nil) { [weak self] notification in
-            guard let self else { return }
-            
-            if let state = SpeechRecognizerAggregatorState(notification.state) {
-                self.state = state
-            }
-            
-            switch notification.state {
-            case .idle:
-                if useKeywordDetector {
-                    // if not restart here, keyword detector will be inactivated during tts speaking
-                    keywordDetector.start()
-                } else if isVoiceProcessingEnabled == false {
-                    stopMicInputProvider()
+            self?.recognizeQueue.async { [weak self] in
+                guard let self else { return }
+                
+                if let state = SpeechRecognizerAggregatorState(notification.state) {
+                    self.state = state
                 }
-            case .listening:
-                if useKeywordDetector {
-                    keywordDetector.stop()
-                }
-            case .recognizing where isVoiceProcessingEnabled:
-                ttsAgent.stopTTS(cancelAssociation: true)
-            case .expectingSpeech:
-                startMicInputProvider(requestingFocus: true) { [weak self] endedUp in
-                    if case let .failure(error) = endedUp {
-                        log.debug("startMicInputProvider failed: \(error)")
-                        self?.asrAgent.stopRecognition()
+                
+                switch notification.state {
+                case .idle:
+                    if useKeywordDetector {
+                        // if not restart here, keyword detector will be inactivated during tts speaking
+                        keywordDetector.start()
+                    } else if isVoiceProcessingEnabled == false {
+                        stopMicInputProvider()
                     }
+                case .listening:
+                    if useKeywordDetector {
+                        keywordDetector.stop()
+                    }
+                case .recognizing where isVoiceProcessingEnabled:
+                    ttsAgent.stopTTS(cancelAssociation: true)
+                case .expectingSpeech:
+                    startMicInputProvider(requestingFocus: true) { [weak self] endedUp in
+                        if case let .failure(error) = endedUp {
+                            log.debug("startMicInputProvider failed: \(error)")
+                            self?.asrAgent.stopRecognition()
+                        }
+                    }
+                default:
+                    break
                 }
-            default:
-                break
             }
         }
     }
@@ -372,9 +385,10 @@ extension SpeechRecognizerAggregator {
         }
         
         asrResultObserver = asrAgent.observe(NuguAgentNotification.ASR.Result.self, queue: nil) { [weak self] (notification) in
-            guard let self = self else { return }
-            if let state = SpeechRecognizerAggregatorState(notification.result) {
-                self.state = state
+            self?.recognizeQueue.async { [weak self] in
+                if let state = SpeechRecognizerAggregatorState(notification.result) {
+                    self?.state = state
+                }
             }
         }
     }
