@@ -334,7 +334,16 @@ public extension Downstream.Directive {
                 return nil
         }
         
-        self.init(header: header, payload: payload)
+        var asyncKey: AsyncKey? = {
+            guard let asyncKeyDictionary = payloadDictionary["asyncKey"] as? [String: AnyHashable],
+                  let asyncKeyData = try? JSONSerialization.data(withJSONObject: asyncKeyDictionary, options: []),
+                  let asyncKey = try? JSONDecoder().decode(AsyncKey.self, from: asyncKeyData) else {
+                      return nil
+                  }
+            return asyncKey
+        }()
+        
+        self.init(header: header, payload: payload, asyncKey: asyncKey)
     }
 }
 

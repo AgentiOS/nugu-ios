@@ -29,13 +29,20 @@ public enum Downstream {
         /// A JSON object that contains payload for the directive.
         public let payload: Data
         
+        public let asyncKey: AsyncKey?
+        
         /// Creates an instance of an `Directive`.
         /// - Parameters:
         ///   - header: A structure that contains header fields for the directive.
         ///   - payload: A JSON object that contains payload for the directive.
-        public init(header: Header, payload: Data) {
+        public init(
+            header: Header,
+            payload: Data,
+            asyncKey: AsyncKey?
+        ) {
             self.header = header
             self.payload = payload
+            self.asyncKey = asyncKey
         }
     }
     
@@ -147,16 +154,5 @@ extension Downstream.Directive {
     /// A dictionary that contains payload for the directive.
     public var payloadDictionary: [String: AnyHashable]? {
         try? JSONSerialization.jsonObject(with: payload, options: []) as? [String: AnyHashable]
-    }
-    
-    public var asyncKey: AsyncKey? {
-        guard let asyncKeyDictionary = payloadDictionary?["asyncKey"] as? [String: AnyHashable],
-              let eventDialogRequestId = asyncKeyDictionary["eventDialogRequestId"] as? String,
-              let stateRawValue = asyncKeyDictionary["state"] as? String,
-              let state = AsyncKey.State(rawValue: stateRawValue),
-              let routing = asyncKeyDictionary["routing"] as? String else {
-            return nil
-        }
-        return .init(eventDialogRequestId: eventDialogRequestId, state: state, routing: routing)
     }
 }

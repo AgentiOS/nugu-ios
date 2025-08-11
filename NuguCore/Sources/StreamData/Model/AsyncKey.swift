@@ -20,12 +20,12 @@
 
 import Foundation
 
-public struct AsyncKey: Decodable {
+public struct AsyncKey: Codable {
     public let eventDialogRequestId: String
     public let state: State
     public let routing: String
     
-    public enum State: String, Decodable {
+    public enum State: String, Codable {
         case start = "START"
         case ongoing = "ONGOING"
         case end = "END"
