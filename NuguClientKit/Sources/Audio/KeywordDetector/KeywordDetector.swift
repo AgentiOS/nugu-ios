@@ -37,6 +37,7 @@ public class KeywordDetector: ContextInfoProvidable {
     /// Keyword detector state
     private(set) public var state: KeywordDetectorState = .inactive {
         didSet {
+            log.info("keyword state: \(state)")
             delegate?.keywordDetectorStateDidChange(state)
         }
     }
