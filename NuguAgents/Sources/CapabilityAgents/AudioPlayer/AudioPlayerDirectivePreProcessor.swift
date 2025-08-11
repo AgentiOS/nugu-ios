@@ -36,7 +36,7 @@ public final class AudioPlayerDirectivePreProcessor: DirectivePreProcessable {
             messageId: playDirective.header.messageId,
             version: playDirective.header.version
         )
-        let templateDirective = Downstream.Directive.init(header: templateHeaer, payload: playDirective.payload)
+        let templateDirective = Downstream.Directive.init(header: templateHeaer, payload: playDirective.payload, asyncKey: playDirective.asyncKey)
         
         return [templateDirective] + directives
     }
