@@ -145,12 +145,15 @@ final class AudioPlayer {
     }
     
     func shouldResume(player: AudioPlayer) -> Bool {
-        guard payload.audioItem.stream.token == player.payload.audioItem.stream.token,
-                payload.playServiceId == player.payload.playServiceId,
+        guard payload.playServiceId == player.payload.playServiceId,
                 player.internalPlayer != nil else {
             return false
         }
-        return true
+        switch (payload.sourceType, player.payload.sourceType) {
+        case (.url, .url): return payload.audioItem.stream.url == player.payload.audioItem.stream.url
+        case (.attachment, .attachment): return payload.audioItem.stream.token == player.payload.audioItem.stream.token
+        default: return false
+        }
     }
 
     func replacePlayer(_ player: AudioPlayer) {
@@ -164,7 +167,7 @@ final class AudioPlayer {
         player.stopProgressReport()
         lastDataAppended = player.lastDataAppended
         
-        seek(to: NuguTimeInterval(seconds: payload.audioItem.stream.offset))
+        seek(to: NuguTimeInterval(seconds: lastReportedOffset))
         
         self.internalPlayer?.delegate = self
     }
@@ -251,7 +254,6 @@ private extension AudioPlayer {
         stopProgressReport()
         let delayReportTime = payload.audioItem.stream.delayReportTime ?? -1
         let intervalReportTime = payload.audioItem.stream.intervalReportTime ?? -1
-        guard delayReportTime > 0 || intervalReportTime > 0 else { return }
         
         log.debug("delayReportTime: \(delayReportTime) intervalReportTime: \(intervalReportTime)")
         intervalReporter = Observable<Int>
