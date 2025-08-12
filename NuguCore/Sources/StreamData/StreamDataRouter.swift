@@ -189,7 +189,7 @@ public extension StreamDataRouter {
                 }, onError: { [weak self] (error) in
                     guard let self = self else { return }
                     
-                    log.error("\(error.localizedDescription)")
+                    log.error("\(event.header.type) \(error.localizedDescription)")
                     self.notificationQueue.async { [weak self] in
                         self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: error))
                     }
