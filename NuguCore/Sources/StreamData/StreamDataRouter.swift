@@ -189,7 +189,7 @@ public extension StreamDataRouter {
                 }, onError: { [weak self] (error) in
                     guard let self = self else { return }
                     
-                    log.error("\(error.localizedDescription)")
+                    log.error("\(event.header.type) \(error.localizedDescription)")
                     self.notificationQueue.async { [weak self] in
                         self?.post(NuguCoreNotification.StreamDataRoute.SentEvent(event: event, error: error))
                     }
@@ -334,7 +334,16 @@ public extension Downstream.Directive {
                 return nil
         }
         
-        self.init(header: header, payload: payload)
+        var asyncKey: AsyncKey? = {
+            guard let asyncKeyDictionary = payloadDictionary["asyncKey"] as? [String: AnyHashable],
+                  let asyncKeyData = try? JSONSerialization.data(withJSONObject: asyncKeyDictionary, options: []),
+                  let asyncKey = try? JSONDecoder().decode(AsyncKey.self, from: asyncKeyData) else {
+                      return nil
+                  }
+            return asyncKey
+        }()
+        
+        self.init(header: header, payload: payload, asyncKey: asyncKey)
     }
 }
 
