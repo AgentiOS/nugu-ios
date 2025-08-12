@@ -584,10 +584,12 @@ private extension ASRAgent {
                     post(NuguAgentNotification.ASR.Result(result: asrResult, dialogRequestId: directive.header.dialogRequestId))
                 case .none where item.asrErrorCode != nil:
                     self.asrResult = .error(ASRError.recognizeFailed, header: directive.header)
+                    post(NuguAgentNotification.ASR.Result(result: .error(ASRError.recognizeFailed, header: directive.header), dialogRequestId: directive.header.dialogRequestId))
                 case .none:
                     self.asrResult = .none(header: directive.header)
                 case .error:
                     self.asrResult = .error(ASRError.recognizeFailed, header: directive.header)
+                    post(NuguAgentNotification.ASR.Result(result: .error(ASRError.recognizeFailed, header: directive.header), dialogRequestId: directive.header.dialogRequestId))
                 default:
                     // TODO: after server preparation.
                     break
