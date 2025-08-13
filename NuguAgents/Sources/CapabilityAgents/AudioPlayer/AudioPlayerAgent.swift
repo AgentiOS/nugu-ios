@@ -362,6 +362,23 @@ public extension AudioPlayerAgent {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             log.error(error)
+            retry()
+        }
+        
+        /// setActive(false) 에러가 발생했을 경우 retry
+        func retry() {
+            Thread.sleep(forTimeInterval: 0.3)
+            do {
+                try AVAudioSession.sharedInstance().setActive(false)
+                try AVAudioSession.sharedInstance().setCategory(
+                    .playAndRecord,
+                    mode: .default,
+                    options: [.defaultToSpeaker, .allowBluetoothA2DP]
+                )
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                log.error(error)
+            }
         }
     }
 }
