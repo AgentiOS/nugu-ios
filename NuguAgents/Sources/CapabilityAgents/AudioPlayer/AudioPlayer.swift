@@ -166,11 +166,9 @@ final class AudioPlayer {
         player.stopProgressReport()
         lastDataAppended = player.lastDataAppended
         
-        // android os 에서는 seek 기능이 없어서 replace 시 seek 하지않고 resume만 하고 있음. 동작을 맞추기 위해 attachment 일 때 lastReportedOffset 으로 가도록 변경
+        // android 와 동작을 일치시키기 위해 sourceType이 url 일 때에만 seek, attachment일 때에는 resume만 처리
         if player.payload.sourceType == .url {
             seek(to: NuguTimeInterval(seconds: payload.audioItem.stream.offset))
-        } else {
-            seek(to: NuguTimeInterval(seconds: lastReportedOffset))
         }
         
         self.internalPlayer?.delegate = self
