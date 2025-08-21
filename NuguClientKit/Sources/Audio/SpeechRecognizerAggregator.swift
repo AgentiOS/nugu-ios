@@ -244,7 +244,6 @@ public extension SpeechRecognizerAggregator {
                     }
                     
                     do {
-                        audioSessionManager?.updateAudioSession(requestingFocus: requestingFocus)
                         try self.micInputProvider.start()
                         completion(.success)
                     } catch {
