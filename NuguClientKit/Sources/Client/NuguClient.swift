@@ -793,6 +793,9 @@ extension NuguClient: AudioSessionManagerDelegate {
     }
     
     public func audioSessionDidDeactivate() {
+        if speechRecognizerAggregator.useKeywordDetector {
+            audioSessionManager?.updateAudioSession(requestingFocus: false)
+        }
         speechRecognizerAggregator.startListeningWithTrigger()
     }
 }
