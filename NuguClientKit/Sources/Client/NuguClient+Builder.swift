@@ -188,7 +188,8 @@ public extension NuguClient {
             keywordDetector: keywordDetector,
             asrAgent: asrAgent,
             audioSessionManager: audioSessionManager,
-            ttsAgent: ttsAgent
+            ttsAgent: ttsAgent,
+            directiveSequencer: directiveSequencer
         )
         
         public init() {

@@ -40,6 +40,7 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     private let keywordDetector: KeywordDetector
     private let audioSessionManager: AudioSessionManageable?
     private let ttsAgent: TTSAgentProtocol
+    private let directiveSequencer: DirectiveSequenceable
     
     private let micInputProvider = MicInputProvider()
     private var micInputProviderDelay: DispatchTime = .now()
@@ -51,6 +52,8 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     
     public var useKeywordDetector = true
     private var isVoiceProcessingEnabled = false
+    
+    private var lastRecognizeDialogRequestId: String?
     
     // State
     private(set) public var state: SpeechRecognizerAggregatorState = .idle {
@@ -66,12 +69,14 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
         keywordDetector: KeywordDetector,
         asrAgent: ASRAgentProtocol,
         audioSessionManager: AudioSessionManageable?,
-        ttsAgent: TTSAgentProtocol
+        ttsAgent: TTSAgentProtocol,
+        directiveSequencer: DirectiveSequenceable
     ) {
         self.keywordDetector = keywordDetector
         self.asrAgent = asrAgent
         self.audioSessionManager = audioSessionManager
         self.ttsAgent = ttsAgent
+        self.directiveSequencer = directiveSequencer
         micInputProvider.delegate = self
         keywordDetector.delegate = self 
         
@@ -128,7 +133,11 @@ public extension SpeechRecognizerAggregator {
                 asrAgent.stopRecognition()
             }
             
-            asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
+            if let lastRecognizeDialogRequestId {
+                directiveSequencer.cancelDirective(dialogRequestId: lastRecognizeDialogRequestId)
+            }
+            
+            lastRecognizeDialogRequestId = asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
                 guard case .prepared = state else {
                     completion?(state)
                     return
@@ -215,7 +224,9 @@ public extension SpeechRecognizerAggregator {
                 keywordDetector.stop()
             }
             state = .cancelled
-            
+            if let lastRecognizeDialogRequestId {
+                directiveSequencer.cancelDirective(dialogRequestId: lastRecognizeDialogRequestId)
+            }
             asrAgent.stopRecognition()
             stopMicInputProvider {
                 sema.signal()
@@ -309,7 +320,7 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
                 end: end,
                 detection: detection
             )
-            asrAgent.startRecognition(
+            lastRecognizeDialogRequestId = asrAgent.startRecognition(
                 initiator: initiator,
                 service: service,
                 options: .init(endPointing: .client, requestType: requestType),
