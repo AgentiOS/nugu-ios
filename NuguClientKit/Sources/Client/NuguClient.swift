@@ -283,6 +283,7 @@ public class NuguClient {
     private var pausedByInterruption = false
     private let backgroundFocusHolder: BackgroundFocusHolder
     private var audioDeactivateWorkItem: DispatchWorkItem?
+    private var audioDeactivateDelay = NuguClientConst.audioSessionDeactivationDelay
     private let directiveConnectionQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.directive_connection")
     private let audioFocusQueue = DispatchQueue(label: "com.sktelecom.romaine.NuguClientKit.audio_focus")
     
@@ -581,6 +582,10 @@ public extension NuguClient {
     func setVoiceProcessingEnabled(_ active: Bool) {
         speechRecognizerAggregator.setVoiceProcessingEnabled(active)
     }
+    
+    func audioDeactivateDelay(_ delay: TimeInterval) {
+        self.audioDeactivateDelay = delay
+    }
 }
 
 // MARK: - AuthorizationStoreDelegate
@@ -641,7 +646,7 @@ extension NuguClient: FocusDelegate {
                 self?.audioDeactivateWorkItem = nil
             }
             
-            audioFocusQueue.asyncAfter(deadline: .now() + NuguClientConst.audioSessionDeactivationDelay, execute: audioDeactivateWorkItem)
+            audioFocusQueue.asyncAfter(deadline: .now() + audioDeactivateDelay, execute: audioDeactivateWorkItem)
             self.audioDeactivateWorkItem = audioDeactivateWorkItem
         }
 
