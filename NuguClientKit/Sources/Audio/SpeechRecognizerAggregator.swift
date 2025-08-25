@@ -53,8 +53,6 @@ public class SpeechRecognizerAggregator: SpeechRecognizerAggregatable {
     public var useKeywordDetector = true
     private var isVoiceProcessingEnabled = false
     
-    private var lastRecognizeDialogRequestId: String?
-    
     // State
     private(set) public var state: SpeechRecognizerAggregatorState = .idle {
         didSet {
@@ -133,11 +131,7 @@ public extension SpeechRecognizerAggregator {
                 asrAgent.stopRecognition()
             }
             
-            if let lastRecognizeDialogRequestId {
-                directiveSequencer.cancelDirective(dialogRequestId: lastRecognizeDialogRequestId)
-            }
-            
-            lastRecognizeDialogRequestId = asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
+            asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
                 guard case .prepared = state else {
                     completion?(state)
                     return
@@ -224,9 +218,6 @@ public extension SpeechRecognizerAggregator {
                 keywordDetector.stop()
             }
             state = .cancelled
-            if let lastRecognizeDialogRequestId {
-                directiveSequencer.cancelDirective(dialogRequestId: lastRecognizeDialogRequestId)
-            }
             asrAgent.stopRecognition()
             stopMicInputProvider {
                 sema.signal()
@@ -320,7 +311,7 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
                 end: end,
                 detection: detection
             )
-            lastRecognizeDialogRequestId = asrAgent.startRecognition(
+            asrAgent.startRecognition(
                 initiator: initiator,
                 service: service,
                 options: .init(endPointing: .client, requestType: requestType),

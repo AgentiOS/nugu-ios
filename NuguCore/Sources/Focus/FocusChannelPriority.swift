@@ -40,7 +40,7 @@ public struct FocusChannelPriority {
     /// A priority of `call` channel.
     public static let call = FocusChannelPriority(requestPriority: 300, maintainPriority: 300)
     /// A priority of `userRecognition` channel.
-    public static let userRecognition = FocusChannelPriority(requestPriority: 300, maintainPriority: 250)
+    public static let userRecognition = FocusChannelPriority(requestPriority: 300, maintainPriority: 251)
     /// A priority of `dmRecognition` channel.
     public static let dmRecognition = FocusChannelPriority(requestPriority: 150, maintainPriority: 200)
     /// A priority of `alerts` channel.
