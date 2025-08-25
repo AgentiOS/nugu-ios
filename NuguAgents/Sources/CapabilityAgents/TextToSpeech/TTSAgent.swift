@@ -507,6 +507,7 @@ private extension TTSAgent {
     func stop(player: TTSPlayer, cancelAssociation: Bool) {
         player.cancelAssociation = cancelAssociation
         player.stop()
+        guard cancelAssociation else { return }
         directiveSequencer.cancelDirective(dialogRequestId: player.header.dialogRequestId)
     }
     
