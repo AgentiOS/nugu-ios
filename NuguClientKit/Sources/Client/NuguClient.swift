@@ -795,6 +795,9 @@ extension NuguClient: AudioSessionManagerDelegate {
     
     public func audioSessionWillDeactivate() {
         speechRecognizerAggregator.stopListening()
+        if delegate?.nuguClientAllowsAcitveAudioSession() == false {
+            delegate?.nuguClientNeedsAudioSessionDeactive()
+        }
     }
     
     public func audioSessionDidDeactivate() {

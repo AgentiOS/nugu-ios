@@ -85,6 +85,9 @@ public protocol NuguClientDelegate: AnyObject {
     
     func nuguClientRequestRecognitionWithTriggerContext() -> [String: AnyHashable]
     func nuguClientRequestPersonaId() -> String?
+    
+    // Temp
+    func nuguClientNeedsAudioSessionDeactive()
 }
 
 // MARK: - Optional
