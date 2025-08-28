@@ -802,6 +802,7 @@ extension NuguClient: AudioSessionManagerDelegate {
             audioSessionManager?.updateAudioSession(requestingFocus: false)
         }
         speechRecognizerAggregator.startListeningWithTrigger()
+        delegate?.nuguClientAudioSessionDidDeactivate()
     }
 }
 
