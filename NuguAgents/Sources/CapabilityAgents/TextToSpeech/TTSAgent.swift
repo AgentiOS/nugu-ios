@@ -457,6 +457,9 @@ private extension TTSAgent {
                 
                 if ttsState == .playing {
                     currentPlayer?.play()
+                } else if currentPlayer?.canPlay == true {
+                    // attachment를 수신했지만, focus를 획득하지 못한 상태일 때 focus 요청
+                    focusManager.requestFocus(channelDelegate: self)
                 }
                 
                 ttsResultSubject
@@ -526,6 +529,11 @@ private extension TTSAgent {
                     return
                 }
                 
+                // attachment를 수신했지만, currentPlayer가 존재하지 않으면 focus를 요청하면 안됨.
+                guard currentPlayer != nil else {
+                    log.info("currentPlayer is nil")
+                    return
+                }
                 focusManager.requestFocus(channelDelegate: self)
             }
             

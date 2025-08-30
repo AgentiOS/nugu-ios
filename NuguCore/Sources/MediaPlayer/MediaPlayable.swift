@@ -39,6 +39,8 @@ public protocol MediaPlayable: AnyObject {
     /// The audio playback speed for the player
     var speed: Float { get set }
     
+    var canPlay: Bool { get }
+    
     /// Begins playback of the current item.
     func play()
     
@@ -66,4 +68,6 @@ public extension MediaPlayable {
     func seek(to offset: TimeIntervallic) {
         seek(to: offset, completion: nil)
     }
+    
+    var canPlay: Bool { true }
 }
