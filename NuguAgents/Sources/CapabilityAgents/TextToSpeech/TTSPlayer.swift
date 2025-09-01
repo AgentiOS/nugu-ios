@@ -36,6 +36,7 @@ final class TTSPlayer {
     let header: Downstream.Header
     let asyncKey: AsyncKey?
     var cancelAssociation: Bool = false
+    private var isAttachmentEmpty: Bool = true
     
     init(directive: Downstream.Directive) throws {
         payload = try JSONDecoder().decode(TTSSpeakPayload.self, from: directive.payload)
@@ -57,6 +58,7 @@ final class TTSPlayer {
         
         do {
             try dataSource.appendData(attachment.content)
+            isAttachmentEmpty = false
             
             if attachment.isEnd {
                 try dataSource.lastDataAppended()
@@ -100,6 +102,10 @@ extension TTSPlayer: MediaPlayable {
     var speed: Float {
         get { internalPlayer?.speed ?? 1.0 }
         set { internalPlayer?.speed = newValue }
+    }
+    
+    var canPlay: Bool {
+        isAttachmentEmpty == false
     }
     
     func play() {
