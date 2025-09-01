@@ -79,7 +79,7 @@ extension ASRAgent.Event: Eventable {
                 ]
             }
             
-            if case let .wakeUpWord(keyword, _, start, end, detection) = initiator {
+            if case let .wakeUpWord(_, keyword, _, start, end, detection) = initiator {
                 var wakeup: [String: AnyHashable?] = ["word": keyword]
                 if options.endPointing == .server {
                     /**

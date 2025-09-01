@@ -128,7 +128,7 @@ extension KeywordDetector {
                 guard let self = self else { return }
                 log.debug("tyche keyword detector engine detected: \(notification))")
                 
-                self.delegate?.keywordDetectorDidDetect(keyword: self.keywords.description, data: notification.data, start: notification.start, end: notification.end, detection: notification.detection)
+                self.delegate?.keywordDetectorDidDetect(id: notification.id, keyword: self.keywords.description, data: notification.data, start: notification.start, end: notification.end, detection: notification.detection)
                 self.stop()
             }
         }
