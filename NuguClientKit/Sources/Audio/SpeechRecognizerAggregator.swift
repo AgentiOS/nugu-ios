@@ -293,10 +293,10 @@ extension SpeechRecognizerAggregator: MicInputProviderDelegate {
 // MARK: - KeywordDetectorDelegate
 
 extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
-    public func keywordDetectorDidDetect(keyword: String?, data: Data, start: Int, end: Int, detection: Int) {
+    public func keywordDetectorDidDetect(id: Int, keyword: String?, data: Data, start: Int, end: Int, detection: Int) {
         recognizeQueue.async { [weak self] in
             guard let self else { return }
-            state = .wakeup(initiator: .wakeUpWord(keyword: keyword, data: data, start: start, end: end, detection: detection))
+            state = .wakeup(initiator: .wakeUpWord(id: id, keyword: keyword, data: data, start: start, end: end, detection: detection))
             
             var service: [String: AnyHashable]?
             var requestType: String?
@@ -305,6 +305,7 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
                 requestType = context["requestType"] as? String
             }
             let initiator: ASRInitiator = .wakeUpWord(
+                id: id,
                 keyword: keyword,
                 data: data,
                 start: start,
