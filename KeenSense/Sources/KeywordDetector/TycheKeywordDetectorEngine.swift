@@ -32,7 +32,7 @@ import TycheSDK
  */
 public class TycheKeywordDetectorEngine: TypedNotifyable {
     private let kwdQueue = DispatchQueue(label: "com.sktelecom.romaine.keensense.tyche_key_word_detector")
-    private var engineHandles: [WakeupHandle] = []
+    private var engineHandles: [Int: WakeupHandle] = [:]
     
     /// Window buffer for user's voice. This will help extract certain section of speaking keyword
     private var detectingData = ShiftingData(capacity: Int(KeywordDetectorConst.sampleRate*5*2))
@@ -115,9 +115,11 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
             }
             
             for engineHandle in engineHandles {
-                guard Wakeup_PutAudio(engineHandle, ptrPcmData, Int32(buffer.frameLength)) == 1 else { continue }
+                let handle = engineHandle.value
+                guard Wakeup_PutAudio(handle, ptrPcmData, Int32(buffer.frameLength)) == 1 else { continue }
                 log.debug("detected")
-                self.notifyDetection(engineHandle)
+                let id = engineHandle.key
+                self.notifyDetection(with: id, engineHandle: handle)
                 self.internalStop()
                 
                 return
@@ -145,7 +147,8 @@ public class TycheKeywordDetectorEngine: TypedNotifyable {
     private func releaseWakeupHandle() {
         guard engineHandles.isEmpty == false else { return }
         for engineHandle in engineHandles {
-            Wakeup_Destroy(engineHandle)
+            let handle = engineHandle.value
+            Wakeup_Destroy(handle)
         }
         
         engineHandles.removeAll()
@@ -165,17 +168,18 @@ extension TycheKeywordDetectorEngine {
     private func initTriggerEngine() throws {
         releaseWakeupHandle()
         
-        var wakeUpHandles: [WakeupHandle] = []
+        var wakeUpHandles: [Int: WakeupHandle] = [:]
         for keyword in self.internalKeywords {
             guard let wakeUpHandle = Wakeup_Create(keyword.netFilePath, keyword.searchFilePath, 0) else {
-                wakeUpHandles.forEach { handle in
+                let handles = wakeUpHandles.compactMap { $0.value }
+                handles.forEach { handle in
                     Wakeup_Destroy(handle)
                 }
                 
                 throw KeywordDetectorError.initEngineFailed
             }
             
-            wakeUpHandles.append(wakeUpHandle)
+            wakeUpHandles.updateValue(wakeUpHandle, forKey: keyword.rawValue)
         }
         
         engineHandles = wakeUpHandles
@@ -184,7 +188,7 @@ extension TycheKeywordDetectorEngine {
 
 // MARK: - ETC
 extension TycheKeywordDetectorEngine {
-    private func notifyDetection(_ engineHandle: WakeupHandle) {
+    private func notifyDetection(with id: Int, engineHandle: WakeupHandle) {
         let startMargin = convertTimeToDataOffset(Wakeup_GetStartMargin(engineHandle))
         let start = convertTimeToDataOffset(Wakeup_GetStartTime(engineHandle))
         let end = convertTimeToDataOffset(Wakeup_GetEndTime(engineHandle))
@@ -212,6 +216,7 @@ extension TycheKeywordDetectorEngine {
         
         post(
             DetectedInfo(
+                id: id,
                 data: detectedData,
                 start: start - base,
                 end: end - base,
@@ -258,6 +263,7 @@ public extension TycheKeywordDetectorEngine {
     }
     
     struct DetectedInfo: TypedNotification {
+        public let id: Int
         public let data: Data
         public let start: Int
         public let end: Int
@@ -265,12 +271,13 @@ public extension TycheKeywordDetectorEngine {
         
         public static var name: Notification.Name = .keywordDetectorDetectedInfo
         public static func make(from: [String: Any]) -> TycheKeywordDetectorEngine.DetectedInfo? {
-            guard let data = from["data"] as? Data,
+            guard let id = from["id"] as? Int,
+                  let data = from["data"] as? Data,
                   let start = from["start"] as? Int,
                   let end = from["end"] as? Int,
                   let detection = from["detection"] as? Int else { return nil }
             
-            return DetectedInfo(data: data, start: start, end: end, detection: detection)
+            return DetectedInfo(id: id, data: data, start: start, end: end, detection: detection)
         }
     }
 }

@@ -24,12 +24,13 @@ import Foundation
 public protocol KeywordDetectorDelegate: AnyObject {
     /// <#Description#>
     /// - Parameters:
+    ///   - id: id
     ///   - keyword: <#keyword description#>
     ///   - data: <#data description#>
     ///   - start: <#start description#>
     ///   - end: <#end description#>
     ///   - detection: <#detection description#>
-    func keywordDetectorDidDetect(keyword: String?, data: Data, start: Int, end: Int, detection: Int)
+    func keywordDetectorDidDetect(id: Int, keyword: String?, data: Data, start: Int, end: Int, detection: Int)
     
     /// <#Description#>
     /// - Parameter error: <#error description#>
