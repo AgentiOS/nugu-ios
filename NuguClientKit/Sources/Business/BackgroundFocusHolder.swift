@@ -133,6 +133,7 @@ private extension BackgroundFocusHolder {
                 guard let self = self else { return }
                 
                 if self.focusTargets.contains(notification.event.header.type) {
+                    log.info("insert handlingEvents: \(notification.event)")
                     self.handlingEvents.insert(notification.event.header.messageId)
                     self.requestFocus()
                 }
@@ -144,6 +145,7 @@ private extension BackgroundFocusHolder {
                 guard let self = self else { return }
                 
                 if self.handlingEvents.remove(notification.event.header.messageId) != nil {
+                    log.info("remove handlingEvent. remains \(self.handlingEvents)")
                     self.tryReleaseFocus()
                 }
             }
@@ -159,7 +161,10 @@ private extension BackgroundFocusHolder {
                 } else if handlingPendingDirectives.contains(dialogRequestId) {
                     // PendingTarget과 동일한 dialogRequestId를 수신할 경우 focus를 유지
                 } else {
-                    handlingPendingDirectives.removeAll()
+                    if handlingPendingDirectives.isEmpty == false {
+                        log.info("remove handlingPendingDirectives")
+                        handlingPendingDirectives.removeAll()
+                    }
                     tryReleaseFocus()
                 }
             }
@@ -187,6 +192,7 @@ private extension BackgroundFocusHolder {
                 guard let self = self else { return }
                 
                 if notification.blockingPolicy.blockedBy == .audio, notification.blockingPolicy.blocking == .audioOnly {
+                    log.info("insert handlingSoundDirectives: \(notification.directive)")
                     self.handlingSoundDirectives.insert(notification.directive.header.messageId)
                     self.requestFocus()
                 }
@@ -198,6 +204,7 @@ private extension BackgroundFocusHolder {
                 guard let self = self else { return }
                 
                 if self.handlingSoundDirectives.remove(notification.directive.header.messageId) != nil {
+                    log.info("remove handlingSoundDirectives. remains \(self.handlingSoundDirectives)")
                     self.tryReleaseFocus()
                 }
             }
