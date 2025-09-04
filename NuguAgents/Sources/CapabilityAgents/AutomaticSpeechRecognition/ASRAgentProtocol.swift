@@ -38,12 +38,13 @@ public protocol ASRAgentProtocol: CapabilityAgentable, TypedNotifyable {
     ///   - options: The options for recognition.
     ///   - completion: The completion handler to call when the request is complete.
     /// - Returns: The dialogRequestId for request.
-    @discardableResult func startRecognition(
+    func startRecognition(
+        eventIdentifier: EventIdentifier,
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
         options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
-    ) -> String
+    )
     
     /// Put the audio buffer to be processed.
     func putAudioBuffer(buffer: AVAudioPCMBuffer)
@@ -70,13 +71,14 @@ public extension ASRAgentProtocol {
     /// - Parameters:
     ///   - options: The options for recognition.
     /// - Returns: The dialogRequestId for request.
-    @discardableResult func startRecognition(
+    func startRecognition(
+        eventIdentifier: EventIdentifier = .init(),
         initiator: ASRInitiator,
         service: [String: AnyHashable]? = nil,
         options: ASROptions? = nil,
         completion: ((StreamDataState) -> Void)?
-    ) -> String {
-        return startRecognition(initiator: initiator, service: service, options: options, completion: completion)
+    ) {
+        startRecognition(eventIdentifier: eventIdentifier, initiator: initiator, service: service, options: options, completion: completion)
     }
     
     func setVoiceProcessingEnabled(_ active: Bool) {}
