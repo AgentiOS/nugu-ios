@@ -275,14 +275,14 @@ public final class ASRAgent: ASRAgentProtocol {
 // MARK: - ASRAgentProtocol
 
 public extension ASRAgent {
-    @discardableResult func startRecognition(
+    func startRecognition(
+        eventIdentifier: EventIdentifier,
         initiator: ASRInitiator,
         service: [String: AnyHashable]?,
         options: ASROptions?,
         completion: ((StreamDataState) -> Void)?
-    ) -> String {
+    ) {
         log.debug("startRecognition, initiator: \(initiator)")
-        let eventIdentifier = EventIdentifier()
         
         asrDispatchQueue.async { [weak self] in
             guard let self = self else { return }
@@ -300,8 +300,6 @@ public extension ASRAgent {
                 completion: completion
             )
         }
-        
-        return eventIdentifier.dialogRequestId
     }
     
     func stopSpeech() {
