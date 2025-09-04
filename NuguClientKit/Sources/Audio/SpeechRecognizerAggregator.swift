@@ -131,7 +131,13 @@ public extension SpeechRecognizerAggregator {
                 asrAgent.stopRecognition()
             }
             
-            asrAgent.startRecognition(initiator: initiator, service: service, options: options) { [weak self] state in
+            let eventIdentifier = EventIdentifier()
+            asrAgent.startRecognition(
+                eventIdentifier: eventIdentifier,
+                initiator: initiator,
+                service: service,
+                options: options
+            ) { [weak self] state in
                 guard case .prepared = state else {
                     completion?(state)
                     return
@@ -296,7 +302,17 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
     public func keywordDetectorDidDetect(id: Int, keyword: String?, data: Data, start: Int, end: Int, detection: Int) {
         recognizeQueue.async { [weak self] in
             guard let self else { return }
-            state = .wakeup(initiator: .wakeUpWord(id: id, keyword: keyword, data: data, start: start, end: end, detection: detection))
+            let eventIdentifier = EventIdentifier()
+            let initiator: ASRInitiator = .wakeUpWord(
+                id: id,
+                keyword: keyword,
+                data: data,
+                start: start,
+                end: end,
+                detection: detection,
+                eventIdentifier: eventIdentifier
+            )
+            state = .wakeup(initiator: initiator)
             
             var service: [String: AnyHashable]?
             var requestType: String?
@@ -304,15 +320,8 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
                 service = context["service"] as? [String: AnyHashable]
                 requestType = context["requestType"] as? String
             }
-            let initiator: ASRInitiator = .wakeUpWord(
-                id: id,
-                keyword: keyword,
-                data: data,
-                start: start,
-                end: end,
-                detection: detection
-            )
             asrAgent.startRecognition(
+                eventIdentifier: eventIdentifier,
                 initiator: initiator,
                 service: service,
                 options: .init(endPointing: .client, requestType: requestType),
