@@ -51,12 +51,14 @@ class BackgroundFocusHolder {
     private var directiveReceiveObserver: Any?
     private var directivePrefetchObserver: Any?
     private var directiveCompleteObserver: Any?
+    private var asrResultObserver: Any?
     
     init(
         focusManager: FocusManageable,
         directiveSequener: DirectiveSequenceable,
         streamDataRouter: StreamDataRoutable,
-        dialogStateAggregator: DialogStateAggregator
+        dialogStateAggregator: DialogStateAggregator,
+        asrAgent: ASRAgentProtocol
     ) {
         self.focusManager = focusManager
         
@@ -66,6 +68,7 @@ class BackgroundFocusHolder {
         addStreamDataRouterObserver(streamDataRouter)
         addDialogStateObserver(dialogStateAggregator)
         addDirectiveSequencerObserver(directiveSequener)
+        addAsrResultObserver(asrAgent)
     }
     
     deinit {
@@ -91,6 +94,10 @@ class BackgroundFocusHolder {
         
         if let directiveReceiveObserver = directiveReceiveObserver {
             notificationCenter.removeObserver(directiveReceiveObserver)
+        }
+        
+        if let asrResultObserver {
+            notificationCenter.removeObserver(asrResultObserver)
         }
     }
 }
@@ -118,7 +125,10 @@ private extension BackgroundFocusHolder {
         guard handlingEvents.isEmpty,
               handlingSoundDirectives.isEmpty,
               handlingPendingDirectives.isEmpty,
-              dialogState == .idle else { return }
+              dialogState == .idle else {
+            print("@@@@@@ \(handlingEvents) \(handlingSoundDirectives) \(handlingPendingDirectives)")
+            return
+        }
         
         focusManager.releaseFocus(channelDelegate: self)
     }
@@ -207,6 +217,18 @@ private extension BackgroundFocusHolder {
                     log.info("remove handlingSoundDirectives. remains \(self.handlingSoundDirectives)")
                     self.tryReleaseFocus()
                 }
+            }
+        }
+    }
+    
+    func addAsrResultObserver(_ object: ASRAgentProtocol) {
+        asrResultObserver = object.observe(NuguAgentNotification.ASR.Result.self, queue: nil) { [weak self] notification in
+            self?.queue.async { [weak self] in
+                guard let self,
+                      let state = SpeechRecognizerAggregatorState(notification.result),
+                      case .error = state else { return }
+                log.info("remove handlingPendingDirectives reason: \(state)")
+                handlingPendingDirectives.removeAll()
             }
         }
     }
