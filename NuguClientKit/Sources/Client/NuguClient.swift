@@ -345,7 +345,8 @@ public class NuguClient {
             focusManager: focusManager,
             directiveSequener: directiveSequencer,
             streamDataRouter: streamDataRouter,
-            dialogStateAggregator: dialogStateAggregator
+            dialogStateAggregator: dialogStateAggregator,
+            asrAgent: asrAgent
         )
         
         // Default Agents
