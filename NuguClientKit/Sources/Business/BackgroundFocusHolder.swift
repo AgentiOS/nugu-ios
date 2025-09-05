@@ -125,10 +125,7 @@ private extension BackgroundFocusHolder {
         guard handlingEvents.isEmpty,
               handlingSoundDirectives.isEmpty,
               handlingPendingDirectives.isEmpty,
-              dialogState == .idle else {
-            print("@@@@@@ \(handlingEvents) \(handlingSoundDirectives) \(handlingPendingDirectives)")
-            return
-        }
+              dialogState == .idle else { return }
         
         focusManager.releaseFocus(channelDelegate: self)
     }
