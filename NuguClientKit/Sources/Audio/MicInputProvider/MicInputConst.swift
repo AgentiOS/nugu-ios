@@ -23,8 +23,7 @@ import AVFoundation
 
 /// <#Description#>
 enum MicInputConst {
-    /// Some devices may report 0 input channels, fallback to 1
-    /// Limit the maximum number of channels to 2
+    /// Fallback to 1 if device reports 0 channels in special cases, and limit the maximum number of channels to 2
     public static let defaultChannelCount: AVAudioChannelCount = min(max(AVAudioChannelCount(AVAudioSession.sharedInstance().inputNumberOfChannels), 1), 2)
 
     /// <#Description#>
