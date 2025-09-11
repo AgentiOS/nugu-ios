@@ -329,6 +329,8 @@ public extension ASRAgent {
             self.expectSpeech = nil
             if self.asrState != .idle {
                 self.asrResult = .cancel(dialogRequestId: asrRequest?.eventIdentifier.dialogRequestId)
+            } else {
+                self.asrRequest = nil
             }
         }
     }

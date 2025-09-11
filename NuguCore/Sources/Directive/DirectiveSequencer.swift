@@ -121,6 +121,8 @@ private extension DirectiveSequencer {
             log.debug("Cancel directive \(directive.header)")
             handler.cancelDirective?(directive)
             notifyDidComplete(directive: directive, result: .canceled)
+            handlingDirectives.removeAll { directive.header.messageId == $0.directive.header.messageId }
+            blockedDirectives.removeAll { directive.header.messageId == $0.directive.header.messageId }
             return
         }
         guard shouldBlocked(blockingPolicy: handler.blockingPolicy, directive: directive) == false else {
