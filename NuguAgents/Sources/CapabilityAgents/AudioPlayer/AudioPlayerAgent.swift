@@ -351,8 +351,12 @@ public extension AudioPlayerAgent {
     }
     
     func updateAudioSessionIfNeeded() {
-        guard AVAudioSession.sharedInstance().mode == .voiceChat else { return }
         do {
+            try AVAudioSession.sharedInstance().setCategory(
+                .playAndRecord,
+                mode: .default,
+                options: [.defaultToSpeaker, .allowBluetoothA2DP]
+            )
             try AVAudioSession.sharedInstance().setActive(false)
             try AVAudioSession.sharedInstance().setCategory(
                 .playAndRecord,
