@@ -331,9 +331,15 @@ extension SpeechRecognizerAggregator: KeywordDetectorDelegate {
     }
     
     public func keywordDetectorStateDidChange(_ state: KeywordDetectorState) {
+        guard let state = SpeechRecognizerAggregatorState(state) else { return }
         recognizeQueue.async { [weak self] in
-            if let state = SpeechRecognizerAggregatorState(state) {
-                self?.state = state
+            guard let self else { return }
+            if self.state == .listening {
+                log.info("ignore keyword detecting if listening state, stop keyword detector")
+                // listening일 때 keyword detecting 처리 무시
+                keywordDetector.stop()
+            } else if useKeywordDetector {
+                self.state = state
             }
         }
     }
